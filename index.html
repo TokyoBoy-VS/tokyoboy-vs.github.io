@@ -12,7 +12,7 @@
       --card-bg: #1f1f1f;
       --shadow-color: rgba(0, 0, 0, 0.5);
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-color);
@@ -28,41 +28,18 @@
     }
     .header-container {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       padding: 1rem;
     }
     .header-container h1 {
       font-size: 1.5rem;
       color: var(--accent-color);
     }
-    .hamburger {
-      width: 28px;
-      height: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      background: none;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
-    .hamburger span {
-      display: block;
-      height: 3px;
-      background: var(--fg-color);
-      border-radius: 2px;
-      transition: transform 0.3s, opacity 0.3s;
-    }
-    nav {
-      background: var(--card-bg);
-    }
     nav ul {
       list-style: none;
-      display: flex;
-      justify-content: center;
+      display: none;
       gap: 1.5rem;
-      padding: 1rem;
     }
     nav a {
       color: var(--fg-color);
@@ -83,17 +60,38 @@
     nav a:hover::after {
       width: 100%;
     }
-    /* Mobile menu hidden by default */
-    #nav-menu {
-      display: none;
+    .hamburger {
+      width: 28px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    .hamburger span {
+      display: block;
+      height: 3px;
+      background: var(--fg-color);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    /* Desktop view */
+    @media (min-width: 600px) {
+      nav ul {
+        display: flex;
+      }
+      .hamburger {
+        display: none;
+      }
+    }
+    /* Mobile menu visible when toggled */
+    .show-menu nav ul {
+      display: flex;
       flex-direction: column;
       gap: 1rem;
-      padding: 1rem;
-    }
-    /* Show desktop nav */
-    @media(min-width: 600px) {
-      .hamburger { display: none; }
-      #nav-menu { display: flex !important; flex-direction: row; }
+      margin-top: 1rem;
     }
     .hero {
       display: flex;
@@ -162,7 +160,7 @@
   </style>
 </head>
 <body>
-  <header>
+  <header id="site-header">
     <div class="header-container">
       <h1>L1K1℠</h1>
       <nav>
@@ -175,9 +173,9 @@
         </ul>
       </nav>
       <button class="hamburger" id="menu-btn" aria-label="Menu">
-        <span>.</span>
-        <span>.</span>
-        <span>.</span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
   </header>
@@ -217,11 +215,10 @@
   <footer>&copy; 2025 L1K1℠. Tous droits réservés.</footer>
 
   <script>
+    const header = document.getElementById('site-header');
     const btn = document.getElementById('menu-btn');
-    const menu = document.getElementById('nav-menu');
     btn.addEventListener('click', () => {
-      const isOpen = menu.style.display === 'flex';
-      menu.style.display = isOpen ? 'none' : 'flex';
+      header.classList.toggle('show-menu');
     });
   </script>
 </body>
