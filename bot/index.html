@@ -3,72 +3,49 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mon Bot Discord</title>
-  <link rel="stylesheet" href="../static/styles.css" />
+  <title>Nom du Bot - Présentation</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --header-bg: #1f1f1f;
+      --text-color: #e0e0e0;
+      --accent-color: #2979ff;
+      --section-bg: #1a1a1a;
+      --border-color: #333;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+    header { background: var(--header-bg); padding: 20px 0; text-align: center; }
+    nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; }
+    nav ul li { margin: 0 15px; }
+    nav ul li a { color: var(--text-color); text-decoration: none; font-weight: bold; }
+    .container { width: 90%; max-width: 800px; margin: 40px auto; }
+    section { margin-bottom: 60px; background: var(--section-bg); padding: 20px; border-radius: 8px; }
+    a.button { display: inline-block; padding: 10px 20px; background: var(--accent-color); color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px; }
+    footer { background: var(--header-bg); color: var(--text-color); text-align: center; padding: 20px 0; }
+  </style>
 </head>
 <body>
   <header>
     <h1>Nom du Bot</h1>
     <nav>
       <ul>
-        <li><a href="#features">Fonctionnalités</a></li>
-        <li><a href="#commands">Commandes</a></li>
-        <li><a href="#invite">Invite</a></li>
+        <li><a href="/bot">Accueil</a></li>
+        <li><a href="/commands">Commandes</a></li>
+        <li><a href="/support">Support</a></li>
+        <li><a href="/about">À propos</a></li>
+        <li><a href="/changelog">Changelog</a></li>
       </ul>
     </nav>
   </header>
-
   <div class="container">
-    <section class="hero" id="home">
-      <h1>Bienvenue sur la page officielle de <strong>Nom du Bot</strong></h1>
-      <p>Un bot Discord polyvalent pour animer vos serveurs et faciliter la modération.</p>
-      <a class="button" href="INVITE_LINK_REPLACE">Ajouter le Bot</a>
-    </section>
-
-    <section class="features" id="features">
-      <h2>Fonctionnalités</h2>
-      <ul>
-        <li>Gestion de la modération (kick, ban, mute)</li>
-        <li>Commandes de divertissement (blagues, citations aléatoires)</li>
-        <li>Intégration de musique (play, pause, skip)</li>
-        <li>Notifications personnalisées</li>
-      </ul>
-    </section>
-
-    <section class="commands" id="commands">
-      <h2>Commandes</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Commande</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><code>!ban &lt;@utilisateur&gt;</code></td>
-            <td>Bannit un utilisateur du serveur.</td>
-          </tr>
-          <tr>
-            <td><code>!joke</code></td>
-            <td>Affiche une blague aléatoire.</td>
-          </tr>
-          <tr>
-            <td><code>!play &lt;lien YouTube&gt;</code></td>
-            <td>Joue une musique dans le canal vocal.</td>
-          </tr>
-          <!-- Ajoutez d'autres commandes ici -->
-        </tbody>
-      </table>
-    </section>
-
-    <section class="invite" id="invite">
-      <h2>Invitation</h2>
-      <p>Pour ajouter <strong>Nom du Bot</strong> sur votre serveur, cliquez sur le bouton ci-dessous et autorisez les permissions nécessaires.</p>
-      <a class="button" href="INVITE_LINK_REPLACE">Invitez-moi !</a>
+    <section>
+      <h2>Présentation</h2>
+      <p>Bienvenue sur la page de présentation de <strong>Nom du Bot</strong>, votre assistant Discord pour la modération et le divertissement.</p>
+      <a class="button" href="INVITE_LINK">Ajouter le Bot</a>
+      <a class="button" href="SUPPORT_SERVER_LINK">Serveur de support</a>
     </section>
   </div>
-
   <footer>
     <p>&copy; 2025 Nom du Bot. Tous droits réservés.</p>
   </footer>
