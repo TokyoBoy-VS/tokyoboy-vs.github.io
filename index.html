@@ -12,13 +12,20 @@
       --card-bg: #1f1f1f;
       --shadow-color: rgba(0, 0, 0, 0.5);
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    *, *::before, *::after { 
+      box-sizing: border-box; 
+      margin: 0; 
+      padding: 0; 
+    }
+
     body {
       font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-color);
       color: var(--fg-color);
       line-height: 1.6;
     }
+
     header {
       background: var(--card-bg);
       box-shadow: 0 2px 4px var(--shadow-color);
@@ -26,7 +33,7 @@
       top: 0;
       z-index: 100;
     }
-    /* Header container: title + hamburger + optional desktop nav */
+
     .header-container {
       display: flex;
       align-items: center;
@@ -34,12 +41,15 @@
       padding: 1rem;
       position: relative;
     }
+
     .header-container h1 {
       font-size: 1.5rem;
       color: var(--accent-color);
     }
+
+    /* Hamburger Menu */
     .hamburger {
-      width: 28px;
+      width: 32px;
       height: 24px;
       display: flex;
       flex-direction: column;
@@ -47,27 +57,32 @@
       background: none;
       border: none;
       cursor: pointer;
+      padding: 4px;
     }
+
     .hamburger span {
       display: block;
+      width: 100%;
       height: 3px;
       background: var(--fg-color);
       border-radius: 2px;
       transition: transform 0.3s, opacity 0.3s;
     }
-    /* Desktop nav inside header container */
+
+    /* Desktop Navigation */
     .desktop-nav ul {
       display: none;
       list-style: none;
       gap: 1.5rem;
-      display: flex;
     }
+
     .desktop-nav a {
       color: var(--fg-color);
       text-decoration: none;
       font-weight: 600;
       position: relative;
     }
+
     .desktop-nav a::after {
       content: '';
       position: absolute;
@@ -78,65 +93,142 @@
       background: var(--accent-color);
       transition: width 0.3s;
     }
-    .desktop-nav a:hover::after { width: 100%; }
-    /* Mobile nav below header container */
+
+    .desktop-nav a:hover::after {
+      width: 100%;
+    }
+
+    /* Mobile Navigation */
     .mobile-nav {
       display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
     }
+
     .mobile-nav ul {
       list-style: none;
+      padding: 1rem;
+      display: flex;
       flex-direction: column;
       gap: 1rem;
-      padding: 0 1rem 1rem;
-      display: flex;
     }
+
     .mobile-nav a {
       color: var(--fg-color);
       text-decoration: none;
       font-weight: 600;
-      position: relative;
+      display: block;
+      padding: 0.5rem;
     }
-    .mobile-nav a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent-color);
-      transition: width 0.3s;
-    }
-    .mobile-nav a:hover::after { width: 100%; }
-    /* Show desktop nav on wider screens, hide mobile nav and hamburger */
-    @media (min-width: 600px) {
-      .desktop-nav ul { display: flex; }
-      .hamburger, .mobile-nav { display: none; }
-    }
-    /* Toggle mobile menu */
-    .show-menu .mobile-nav { display: block; }
-    .show-menu .mobile-nav ul { display: flex; }
 
-    /* Rest of page styles */
+    /* Responsive Styles */
+    @media (min-width: 600px) {
+      .desktop-nav ul {
+        display: flex;
+      }
+      .hamburger {
+        display: none;
+      }
+      .mobile-nav {
+        display: none !important;
+      }
+    }
+
+    /* Active States */
+    .show-menu .mobile-nav {
+      display: block;
+    }
+
+    .show-menu .hamburger span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .show-menu .hamburger span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .show-menu .hamburger span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* Content Styles */
     .hero {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       text-align: center;
-      height: 60vh;
+      min-height: 60vh;
       background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
-      padding: 0 1rem;
+      padding: 2rem 1rem;
     }
-    .hero h1 { font-size: 3rem; margin-bottom: 1rem; color: var(--accent-color); }
-    .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 1.5rem; }
-    .buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
-    .button { padding: 0.75rem 1.5rem; background: var(--accent-color); color: #fff; text-decoration: none; border-radius: 4px; transition: opacity 0.2s; text-align: center; }
-    .button:hover { opacity: 0.8; }
-    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 2rem 1rem; }
-    .card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow-color); transition: transform 0.2s; }
-    .card:hover { transform: translateY(-5px); }
-    .card h3 { margin-bottom: 0.5rem; color: var(--accent-color); }
-    footer { text-align: center; padding: 1rem; background: var(--card-bg); font-size: 0.9rem; }
+
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .button {
+      padding: 0.75rem 1.5rem;
+      background: var(--accent-color);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+
+    .button:hover {
+      opacity: 0.8;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 2rem 1rem;
+    }
+
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--accent-color);
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--card-bg);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
@@ -153,9 +245,9 @@
         </ul>
       </nav>
       <button class="hamburger" id="menu-btn" aria-label="Menu">
-        <span>•</span>
-        <span>•</span>
-        <span>•</span>
+        <span></span>
+        <span></span>
+        <span></span>
       </button>
     </div>
     <nav class="mobile-nav">
@@ -206,6 +298,23 @@
   <script>
     document.getElementById('menu-btn').addEventListener('click', () => {
       document.getElementById('site-header').classList.toggle('show-menu');
+    });
+
+    // Close mobile menu when clicking outside
+    document.addEventListener('click', (event) => {
+      const header = document.getElementById('site-header');
+      const isClickInside = header.contains(event.target);
+      
+      if (!isClickInside && header.classList.contains('show-menu')) {
+        header.classList.remove('show-menu');
+      }
+    });
+
+    // Close menu when resizing to desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 600) {
+        document.getElementById('site-header').classList.remove('show-menu');
+      }
     });
   </script>
 </body>
