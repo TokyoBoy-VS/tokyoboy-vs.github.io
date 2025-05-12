@@ -26,39 +26,17 @@
       top: 0;
       z-index: 100;
     }
+    /* Header container: title + hamburger + optional desktop nav */
     .header-container {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 1rem;
+      position: relative;
     }
     .header-container h1 {
       font-size: 1.5rem;
       color: var(--accent-color);
-    }
-    nav ul {
-      list-style: none;
-      display: none;
-      gap: 1.5rem;
-    }
-    nav a {
-      color: var(--fg-color);
-      text-decoration: none;
-      font-weight: 600;
-      position: relative;
-    }
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: -4px;
-      left: 0;
-      width: 0;
-      height: 2px;
-      background: var(--accent-color);
-      transition: width 0.3s;
-    }
-    nav a:hover::after {
-      width: 100%;
     }
     .hamburger {
       width: 28px;
@@ -77,22 +55,68 @@
       border-radius: 2px;
       transition: transform 0.3s, opacity 0.3s;
     }
-    /* Desktop view */
-    @media (min-width: 600px) {
-      nav ul {
-        display: flex;
-      }
-      .hamburger {
-        display: none;
-      }
-    }
-    /* Mobile menu visible when toggled */
-    .show-menu nav ul {
+    /* Desktop nav inside header container */
+    .desktop-nav ul {
+      display: none;
+      list-style: none;
+      gap: 1.5rem;
       display: flex;
+    }
+    .desktop-nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+    .desktop-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s;
+    }
+    .desktop-nav a:hover::after { width: 100%; }
+    /* Mobile nav below header container */
+    .mobile-nav {
+      display: none;
+    }
+    .mobile-nav ul {
+      list-style: none;
       flex-direction: column;
       gap: 1rem;
-      margin-top: 1rem;
+      padding: 0 1rem 1rem;
+      display: flex;
     }
+    .mobile-nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+    .mobile-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s;
+    }
+    .mobile-nav a:hover::after { width: 100%; }
+    /* Show desktop nav on wider screens, hide mobile nav and hamburger */
+    @media (min-width: 600px) {
+      .desktop-nav ul { display: flex; }
+      .hamburger, .mobile-nav { display: none; }
+    }
+    /* Toggle mobile menu */
+    .show-menu .mobile-nav { display: block; }
+    .show-menu .mobile-nav ul { display: flex; }
+
+    /* Rest of page styles */
     .hero {
       display: flex;
       flex-direction: column;
@@ -103,68 +127,24 @@
       background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
       padding: 0 1rem;
     }
-    .hero h1 {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      color: var(--accent-color);
-    }
-    .hero p {
-      font-size: 1.2rem;
-      max-width: 600px;
-      margin-bottom: 1.5rem;
-    }
-    .buttons {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .button {
-      padding: 0.75rem 1.5rem;
-      background: var(--accent-color);
-      color: #fff;
-      text-decoration: none;
-      border-radius: 4px;
-      transition: opacity 0.2s;
-      text-align: center;
-    }
-    .button:hover {
-      opacity: 0.8;
-    }
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 2rem 1rem;
-    }
-    .card {
-      background: var(--card-bg);
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 4px var(--shadow-color);
-      transition: transform 0.2s;
-    }
-    .card:hover {
-      transform: translateY(-5px);
-    }
-    .card h3 {
-      margin-bottom: 0.5rem;
-      color: var(--accent-color);
-    }
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background: var(--card-bg);
-      font-size: 0.9rem;
-    }
+    .hero h1 { font-size: 3rem; margin-bottom: 1rem; color: var(--accent-color); }
+    .hero p { font-size: 1.2rem; max-width: 600px; margin-bottom: 1.5rem; }
+    .buttons { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+    .button { padding: 0.75rem 1.5rem; background: var(--accent-color); color: #fff; text-decoration: none; border-radius: 4px; transition: opacity 0.2s; text-align: center; }
+    .button:hover { opacity: 0.8; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; padding: 2rem 1rem; }
+    .card { background: var(--card-bg); padding: 1.5rem; border-radius: 8px; box-shadow: 0 2px 4px var(--shadow-color); transition: transform 0.2s; }
+    .card:hover { transform: translateY(-5px); }
+    .card h3 { margin-bottom: 0.5rem; color: var(--accent-color); }
+    footer { text-align: center; padding: 1rem; background: var(--card-bg); font-size: 0.9rem; }
   </style>
 </head>
 <body>
   <header id="site-header">
     <div class="header-container">
       <h1>L1K1℠</h1>
-      <nav>
-        <ul id="nav-menu">
+      <nav class="desktop-nav">
+        <ul>
           <li><a href="/">Accueil</a></li>
           <li><a href="/commands/">Commandes</a></li>
           <li><a href="/support/">Support</a></li>
@@ -178,6 +158,15 @@
         <span></span>
       </button>
     </div>
+    <nav class="mobile-nav">
+      <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/commands/">Commandes</a></li>
+        <li><a href="/support/">Support</a></li>
+        <li><a href="/about/">À propos</a></li>
+        <li><a href="/changelog/">Changelog</a></li>
+      </ul>
+    </nav>
   </header>
 
   <section class="hero">
@@ -215,10 +204,8 @@
   <footer>&copy; 2025 L1K1℠. Tous droits réservés.</footer>
 
   <script>
-    const header = document.getElementById('site-header');
-    const btn = document.getElementById('menu-btn');
-    btn.addEventListener('click', () => {
-      header.classList.toggle('show-menu');
+    document.getElementById('menu-btn').addEventListener('click', () => {
+      document.getElementById('site-header').classList.toggle('show-menu');
     });
   </script>
 </body>
