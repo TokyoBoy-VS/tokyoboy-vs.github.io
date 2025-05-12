@@ -3,51 +3,159 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>L1K1℠ - Présentation</title>
+  <title>L1K1℠ - Accueil</title>
   <style>
     :root {
       --bg-color: #121212;
-      --header-bg: #1f1f1f;
-      --text-color: #e0e0e0;
+      --fg-color: #e0e0e0;
       --accent-color: #2979ff;
-      --section-bg: #1a1a1a;
-      --border-color: #333;
+      --card-bg: #1f1f1f;
+      --shadow-color: rgba(0, 0, 0, 0.5);
     }
-    * { box-sizing: border-box; }
-    body { margin: 0; font-family: Arial, sans-serif; background: var(--bg-color); color: var(--text-color); line-height: 1.6; }
-    header { background: var(--header-bg); padding: 20px 0; text-align: center; }
-    nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; }
-    nav ul li { margin: 0 15px; }
-    nav ul li a { color: var(--text-color); text-decoration: none; font-weight: bold; }
-    .container { width: 90%; max-width: 800px; margin: 40px auto; }
-    section { margin-bottom: 60px; background: var(--section-bg); padding: 20px; border-radius: 8px; }
-    a.button { display: inline-block; padding: 10px 20px; background: var(--accent-color); color: #fff; text-decoration: none; border-radius: 5px; margin-top: 10px; }
-    footer { background: var(--header-bg); color: var(--text-color); text-align: center; padding: 20px 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--fg-color);
+      line-height: 1.6;
+    }
+    header {
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+    nav ul {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      padding: 1rem 0;
+    }
+    nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s;
+    }
+    nav a:hover::after {
+      width: 100%;
+    }
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      height: 60vh;
+      background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+      padding: 0 1rem;
+    }
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin-bottom: 1.5rem;
+    }
+    .buttons {
+      display: flex;
+      gap: 1rem;
+    }
+    .button {
+      padding: 0.75rem 1.5rem;
+      background: var(--accent-color);
+      color: #fff;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: opacity 0.2s;
+    }
+    .button:hover {
+      opacity: 0.8;
+    }
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 2rem 1rem;
+    }
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+    }
+    .card h3 {
+      margin-bottom: 0.5rem;
+      color: var(--accent-color);
+    }
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: var(--card-bg);
+      font-size: 0.9rem;
+    }
   </style>
 </head>
 <body>
   <header>
-    <h1>L1K1℠</h1>
     <nav>
       <ul>
         <li><a href="/">Accueil</a></li>
-        <li><a href="/commands">Commandes</a></li>
-        <li><a href="/support">Support</a></li>
-        <li><a href="/about">À propos</a></li>
-        <li><a href="/changelog">Changelog</a></li>
+        <li><a href="/commands/">Commandes</a></li>
+        <li><a href="/support/">Support</a></li>
+        <li><a href="/about/">À propos</a></li>
+        <li><a href="/changelog/">Changelog</a></li>
       </ul>
     </nav>
   </header>
-  <div class="container">
-    <section>
-      <h2>Présentation</h2>
-      <p>Bienvenue sur la page de présentation de <strong>L1K1℠</strong>, votre assistant Discord pour la modération et le divertissement.</p>
+
+  <section class="hero">
+    <h1>Bienvenue sur L1K1℠</h1>
+    <p>Votre assistant Discord ultime pour la modération, le divertissement et l’assistance spécialisée, incluant le suivi Destiny2 et les informations crypto en temps réel.</p>
+    <div class="buttons">
       <a class="button" href="https://discordapp.com/oauth2/authorize?client_id=1063420485230133280&scope=bot+applications.commands&permissions=8">Ajouter le Bot</a>
-      <a class="button" href="https://discord.gg/nSzf5WMsM8">Serveur de support</a>
-    </section>
-  </div>
-  <footer>
-    <p>&copy; 2025 L1K1℠. Tous droits réservés.</p>
-  </footer>
+      <a class="button" href="https://discord.gg/nSzf5WMsM8">Rejoindre le Support</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="card">
+      <h3>Modération</h3>
+      <p>kick, ban, hackban, clear, warnings, nick et plus pour garder votre serveur sûr.</p>
+    </div>
+    <div class="card">
+      <h3>Général</h3>
+      <p>userinfo, serverinfo, ping, botinfo, crypto, profil et commandes utilitaires.</p>
+    </div>
+    <div class="card">
+      <h3>Destiny2</h3>
+      <p>search, profile, manifest et autres pour suivre votre progression.</p>
+    </div>
+    <div class="card">
+      <h3>Fun &amp; Jeux</h3>
+      <p>8ball, rps, coinflip, randomfact pour toujours s’amuser.</p>
+    </div>
+    <div class="card">
+      <h3>Owner</h3>
+      <p>sync, load, unload, say, status et outils avancés réservés aux admins.</p>
+    </div>
+  </section>
+
+  <footer>&copy; 2025 L1K1℠. Tous droits réservés.</footer>
 </body>
 </html>
