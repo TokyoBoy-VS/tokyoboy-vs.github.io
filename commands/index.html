@@ -3,12 +3,35 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nom du Bot - Commandes</title>
-  <link rel="stylesheet" href="../static/styles.css">
+  <title>L1K1℠ - Commandes</title>
+  <style>
+    :root {
+      --bg-color: #121212;
+      --header-bg: #1f1f1f;
+      --text-color: #e0e0e0;
+      --accent-color: #2979ff;
+      --section-bg: #1a1a1a;
+      --border-color: #333;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+    header { background: var(--header-bg); padding: 20px 0; text-align: center; }
+    nav ul { list-style: none; padding: 0; margin: 0; display: flex; justify-content: center; }
+    nav ul li { margin: 0 15px; }
+    nav ul li a { color: var(--text-color); text-decoration: none; font-weight: bold; }
+    .container { width: 90%; max-width: 900px; margin: 40px auto; }
+    section { margin-bottom: 60px; background: var(--section-bg); padding: 20px; border-radius: 8px; }
+    h2 { margin-bottom: 10px; border-bottom: 1px solid var(--border-color); padding-bottom: 5px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    table, th, td { border: 1px solid var(--border-color); }
+    th, td { padding: 8px; text-align: left; }
+    th { background: var(--header-bg); }
+    footer { background: var(--header-bg); color: var(--text-color); text-align: center; padding: 20px 0; }
+  </style>
 </head>
 <body>
   <header>
-    <h1>Commandes de Nom du Bot</h1>
+    <h1>Commandes de L1K1℠</h1>
     <nav>
       <ul>
         <li><a href="/bot">Accueil</a></li>
@@ -19,23 +42,106 @@
       </ul>
     </nav>
   </header>
+
   <div class="container">
     <section>
-      <h2>Liste des commandes</h2>
+      <h2>Modération</h2>
       <table>
         <thead>
           <tr><th>Commande</th><th>Description</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>!ban &lt;@user&gt;</code></td><td>Bannit un utilisateur.</td></tr>
-          <tr><td><code>!joke</code></td><td>Affiche une blague aléatoire.</td></tr>
-          <tr><td><code>!play &lt;lien&gt;</code></td><td>Joue une musique.</td></tr>
+          <tr><td><code>!hackban &lt;user&gt;</code></td><td>Bannit un utilisateur même s’il n’est pas sur le serveur.</td></tr>
+          <tr><td><code>!kick &lt;user&gt;</code></td><td>Expulse un utilisateur du serveur.</td></tr>
+          <tr><td><code>!forward</code></td><td>Active/désactive le transfert des messages pour ce serveur.</td></tr>
+          <tr><td><code>!warning &lt;action&gt;</code></td><td>Gère les avertissements d’un utilisateur.</td></tr>
+          <tr><td><code>!clear &lt;nombre&gt;</code></td><td>Supprime un certain nombre de messages.</td></tr>
+          <tr><td><code>!ban &lt;user&gt;</code></td><td>Bannit un utilisateur du serveur.</td></tr>
+          <tr><td><code>!nick &lt;user&gt; &lt>pseudo&gt;</code></td><td>Change le pseudo d’un utilisateur.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Général</h2>
+      <table>
+        <thead>
+          <tr><th>Commande</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>!userinfo &lt;user&gt;</code></td><td>Affiche des informations sur l’utilisateur spécifié.</td></tr>
+          <tr><td><code>!crypto &lt;symbol&gt;</code></td><td>Donne le prix USD actuel d’une cryptomonnaie.</td></tr>
+          <tr><td><code>!server</code></td><td>Lien d’invitation du serveur de support du bot.</td></tr>
+          <tr><td><code>!serverinfo</code></td><td>Affiche des informations sur le serveur.</td></tr>
+          <tr><td><code>!invite</code></td><td>Lien d’invitation du bot.</td></tr>
+          <tr><td><code>!ping</code></td><td>Vérifie que le bot est en ligne.</td></tr>
+          <tr><td><code>!botinfo</code></td><td>Affiche des informations sur le bot.</td></tr>
+          <tr><td><code>!profile_picture &lt;ID&gt;</code></td><td>Récupère l’avatar d’un utilisateur par son ID.</td></tr>
+          <tr><td><code>!help</code></td><td>Liste toutes les commandes par catégorie.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Destiny2</h2>
+      <table>
+        <thead>
+          <tr><th>Commande</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>!search &lt;nom Bungie&gt;</code></td><td>Recherche un joueur Destiny2.</td></tr>
+          <tr><td><code>!destiny2</code></td><td>Informations principales Destiny2.</td></tr>
+          <tr><td><code>!profile</code></td><td>Affiche votre profil Destiny2.</td></tr>
+          <tr><td><code>!manifest</code></td><td>Affiche les URLs du manifest Destiny2.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Fun</h2>
+      <table>
+        <thead>
+          <tr><th>Commande</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>!8ball &lt;question&gt;</code></td><td>Pose une question au bot.</td></tr>
+          <tr><td><code>!rps</code></td><td>Jeu pierre-papier-ciseaux contre le bot.</td></tr>
+          <tr><td><code>!randomfact</code></td><td>Donne un fait aléatoire.</td></tr>
+          <tr><td><code>!coinflip &lt>votre pari&gt;</code></td><td>Lance une pièce selon votre pari.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section>
+      <h2>Owner (Propriétaire)</h2>
+      <table>
+        <thead>
+          <tr><th>Commande</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>!reply &lt>message&gt;</code></td><td>[Admins] Envoie un message spécifique.</td></tr>
+          <tr><td><code>!shutdown</code></td><td>Arrête le bot.</td></tr>
+          <tr><td><code>!sync</code></td><td>Synchronise les slash commands/status.</td></tr>
+          <tr><td><code>!load &lt>cog&gt;</code></td><td>Charge un cog.</td></tr>
+          <tr><td><code>!mkrole</code></td><td>[Admins] Crée un rôle Staff L1K1.</td></tr>
+          <tr><td><code>!say &lt>texte&gt;</code></td><td>Le bot dit ce que vous voulez.</td></tr>
+          <tr><td><code>!cinvite</code></td><td>[Admins] Crée une invitation sur le channel spécifié.</td></tr>
+          <tr><td><code>!blacklist</code></td><td>Liste tous les utilisateurs blacklistés.</td></tr>
+          <tr><td><code>!rmdm</code></td><td>[Admins] Supprime un message privé envoyé par le bot.</td></tr>
+          <tr><td><code>!unsync</code></td><td>Annule la synchronisation des slash commands.</td></tr>
+          <tr><td><code>!reload</code></td><td>Recharge un cog.</td></tr>
+          <tr><td><code>!guilds</code></td><td>[Admins] Liste tous les serveurs du bot.</td></tr>
+          <tr><td><code>!unload &lt>cog&gt;</code></td><td>Décharge un cog.</td></tr>
+          <tr><td><code>!vip</code></td><td>Liste tous les VIP.</td></tr>
+          <tr><td><code>!embed &lt>texte&gt;</code></td><td>Le bot dit ce que vous voulez en embed.</td></tr>
+          <tr><td><code>!status &lt>option&gt;</code></td><td>Gère la présence du bot.</td></tr>
         </tbody>
       </table>
     </section>
   </div>
+
   <footer>
-    <p>&copy; 2025 Nom du Bot.</p>
+    <p>&copy; 2025 L1K1℠. Tous droits réservés.</p>
   </footer>
 </body>
 </html>
