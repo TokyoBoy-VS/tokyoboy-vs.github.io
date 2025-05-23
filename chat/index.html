@@ -3,126 +3,226 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
   <title>Chat Export – L1K1℠</title>
-  <!-- Récupère tes variables CSS depuis :root -->
-  <link rel="stylesheet" href="../static/styles.css" />
   <style>
-    /* Mini-header fixe sous la navbar principale */
-    .mini-header {
-      position: sticky;
-      top: 4rem; /* Ajuste selon la hauteur réelle de ton header */
+    :root {
+      --bg-color: #121212;
+      --fg-color: #e0e0e0;
+      --accent-color: #2979ff;
+      --card-bg: #1f1f1f;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--fg-color);
+      line-height: 1.6;
+    }
+    /* === Header/Nav === */
+    header {
       background: var(--card-bg);
-      padding: 0.75rem 1rem;
-      box-shadow: 0 1px 3px var(--shadow-color);
-      z-index: 90;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .header-container {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 1rem; position: relative;
+    }
+    .header-container h1 { font-size: 1.5rem; color: var(--accent-color); }
+    .desktop-nav ul { display: none; list-style: none; gap: 1.5rem; }
+    .desktop-nav a {
+      color: var(--fg-color); text-decoration: none; font-weight: 600;
+      position: relative;
+    }
+    .desktop-nav a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0;
+      width: 0; height: 2px; background: var(--accent-color);
+      transition: width 0.3s;
+    }
+    .desktop-nav a:hover::after { width: 100%; }
+    .hamburger {
+      width: 32px; height: 24px; display: flex; flex-direction: column;
+      justify-content: space-between; background: none; border: none;
+      cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 100%; height: 3px;
+      background: var(--fg-color); border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .mobile-nav {
+      display: none; position: absolute; top: 100%; left: 0; right: 0;
+      background: var(--card-bg); box-shadow: 0 2px 4px var(--shadow-color);
+    }
+    .mobile-nav ul {
+      list-style: none; padding: 1rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .mobile-nav a {
+      color: var(--fg-color); text-decoration: none;
+      font-weight: 600; display: block; padding: 0.5rem;
+    }
+    @media (min-width: 600px) {
+      .desktop-nav ul { display: flex; }
+      .hamburger { display: none; }
+      .mobile-nav { display: none !important; }
+    }
+    .show-menu .mobile-nav { display: block; }
+    .show-menu .hamburger span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+    .show-menu .hamburger span:nth-child(2) { opacity: 0; }
+    .show-menu .hamburger span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+    /* === Chat page styles === */
+    section.form {
+      padding: 1rem; background: var(--card-bg);
+      display: flex; gap: 1rem; flex-wrap: wrap;
+      align-items: center;
+    }
+    section.form label {
+      color: var(--fg-color); font-weight: 600;
+    }
+    section.form input[type="text"] {
+      margin-left: 0.5rem; padding: 0.25rem 0.5rem;
+      border-radius: 4px; border: none;
+      background: #2a2a2a; color: var(--fg-color);
+    }
+    section.form input[type="file"] {
+      margin-left: 0.5rem;
+    }
+    .mini-header {
+      position: sticky; top: 4rem;
+      background: var(--card-bg); padding: 0.75rem 1rem;
+      box-shadow: 0 1px 3px var(--shadow-color); z-index: 90;
     }
     .mini-header h2 {
-      font-size: 1.25rem;
-      margin: 0;
+      font-size: 1.25rem; margin: 0;
     }
     .mini-header h2 b { color: var(--accent-color); }
     .mini-header h2 i { color: var(--fg-color); }
-
-    /* Container des bulles */
     .chat-container {
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+      padding: 1rem; display: flex;
+      flex-direction: column; gap: 1rem;
     }
     .bubble {
-      max-width: 70%;
-      background: var(--card-bg);
-      padding: 0.75rem 1rem;
-      border-radius: 12px;
+      max-width: 70%; background: var(--card-bg);
+      padding: 0.75rem 1rem; border-radius: 12px;
       box-shadow: 0 1px 2px var(--shadow-color);
       position: relative;
     }
-    .bubble.received {
-      align-self: flex-start;
-      border-top-left-radius: 0;
-    }
+    .bubble.received { align-self: flex-start; border-top-left-radius: 0; }
     .bubble.sent {
-      align-self: flex-end;
-      border-top-right-radius: 0;
-      background: var(--accent-color);
-      color: #fff;
+      align-self: flex-end; border-top-right-radius: 0;
+      background: var(--accent-color); color: #fff;
     }
     .bubble .meta {
-      font-size: 0.85rem;
-      color: var(--fg-color);
-      opacity: 0.8;
-      margin-bottom: 0.25rem;
+      font-size: 0.85rem; color: var(--fg-color);
+      opacity: 0.8; margin-bottom: 0.25rem;
     }
-    .bubble .content {
-      margin-bottom: 0.5rem;
-    }
+    .bubble .content { margin-bottom: 0.5rem; }
     .bubble .id {
-      font-size: 0.75rem;
-      opacity: 0.6;
-      text-align: right;
+      font-size: 0.75rem; opacity: 0.6; text-align: right;
     }
   </style>
 </head>
 <body>
-  <!-- Reprendre ton <header> existant -->
-  <header id="site-header">…</header>
-
-  <!-- Formulaire de saisie -->
-  <section style="padding:1rem; background: var(--card-bg);">
+  <!-- === Header / Navbars === -->
+  <header id="site-header">
+    <div class="header-container">
+      <h1>L1K1℠</h1>
+      <nav class="desktop-nav">
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/commands/">Commandes</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/about/">À propos</a></li>
+          <li><a href="/changelog/">Changelog</a></li>
+          <li><a href="/chat.html">Chat</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="menu-btn" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav class="mobile-nav">
+      <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/commands/">Commandes</a></li>
+        <li><a href="/support/">Support</a></li>
+        <li><a href="/about/">À propos</a></li>
+        <li><a href="/changelog/">Changelog</a></li>
+        <li><a href="/chat.html">Chat</a></li>
+      </ul>
+    </nav>
+  </header>
+  <script>
+    document.getElementById('menu-btn').addEventListener('click', () => {
+      document.getElementById('site-header').classList.toggle('show-menu');
+    });
+    document.addEventListener('click', (event) => {
+      const header = document.getElementById('site-header');
+      if (!header.contains(event.target) && header.classList.contains('show-menu')) {
+        header.classList.remove('show-menu');
+      }
+    });
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 600) {
+        document.getElementById('site-header').classList.remove('show-menu');
+      }
+    });
+  </script>
+  <!-- === Formulaire ID + JSON === -->
+  <section class="form">
     <label>
-      Ton Discord ID :
+      Ton Discord ID:
       <input type="text" id="userIdInput" placeholder="372682865370202125" />
     </label>
-    <label style="margin-left:1rem;">
-      Fichier JSON :
+    <label>
+      Fichier JSON:
       <input type="file" id="fileInput" accept=".json" />
     </label>
   </section>
-
-  <!-- Mini-header (rempli dynamiquement) -->
+  <!-- === Mini-header dynamique === -->
   <section class="mini-header" id="chatHeader" style="display:none;">
-    <h2>
-      #<b id="channelName"></b> (<i id="channelId"></i>)
-    </h2>
+    <h2>#<b id="channelName"></b> (<i id="channelId"></i>)</h2>
   </section>
-
-  <!-- Conteneur des messages -->
+  <!-- === Messages === -->
   <section class="chat-container" id="chatContainer"></section>
-
+  <!-- === Script de parsing JSON === -->
   <script>
-    const userIdInput = document.getElementById('userIdInput');
-    const fileInput   = document.getElementById('fileInput');
-    const chatHeader  = document.getElementById('chatHeader');
-    const channelName = document.getElementById('channelName');
-    const channelId   = document.getElementById('channelId');
-    const chatCont    = document.getElementById('chatContainer');
+    const userIdInput  = document.getElementById('userIdInput');
+    const fileInput    = document.getElementById('fileInput');
+    const chatHeader   = document.getElementById('chatHeader');
+    const channelName  = document.getElementById('channelName');
+    const channelId    = document.getElementById('channelId');
+    const chatContainer= document.getElementById('chatContainer');
 
     fileInput.addEventListener('change', () => {
-      const file = fileInput.files[0];
       const userId = userIdInput.value.trim();
-      if (!userId) return alert("Entre ton ID Discord d'abord ! 🚀");
-
+      if (!userId) return alert("🛑 Entre ton ID Discord d'abord !");
       const reader = new FileReader();
       reader.onload = () => {
         try {
-          const data = JSON.parse(reader.result);
-          // Affiche le mini-header
+          // Forcer tous les *_id en string pour éviter les overflow
+          const fixed = reader.result.replace(/"(\w+_id)":\s*(\d+)/g, '"$1":"$2"');
+          const data  = JSON.parse(fixed);
+
+          // Afficher le mini-header
           channelName.textContent = data.channel_name;
           channelId.textContent   = data.channel_id;
-          chatHeader.style.display = 'block';
-          // Vide les anciennes bulles
-          chatCont.innerHTML = '';
-          // Génère chaque message
+          chatHeader.style.display= 'block';
+          chatContainer.innerHTML = '';
+
+          // Générer chaque bulle
           data.messages.forEach(msg => {
             const div = document.createElement('div');
             div.classList.add('bubble');
-            // class selon envoi/reçu
-            if (msg.author_id.toString() === userId) {
-              div.classList.add('sent');
-            } else {
-              div.classList.add('received');
-            }
+            if (msg.author_id === userId) div.classList.add('sent');
+            else                            div.classList.add('received');
             div.innerHTML = `
               <div class="meta">
                 <b>${msg.author_name}</b> (<i>${msg.author_id}</i>)<br>
@@ -131,13 +231,18 @@
               <div class="content">${msg.content}</div>
               <div class="id">${msg.message_id}</div>
             `;
-            chatCont.appendChild(div);
+            chatContainer.appendChild(div);
           });
+
+          // Optionnel : message si aucun message
+          if (data.messages.length === 0) {
+            chatContainer.innerHTML = '<p style="opacity:0.6;">Aucun message trouvé…</p>';
+          }
         } catch (e) {
-          alert("Fichier JSON invalide ! 📛");
+          alert("❌ JSON invalide ou erreur de parsing !");
         }
       };
-      reader.readAsText(file);
+      reader.readAsText(fileInput.files[0]);
     });
   </script>
 </body>
