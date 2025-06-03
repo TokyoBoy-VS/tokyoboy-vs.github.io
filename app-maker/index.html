@@ -5,39 +5,65 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Générateur WebClip iOS</title>
   <style>
+    /* ===== Styles de base ===== */
     body {
-      font-family: Arial, sans-serif;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 1rem;
-      background: #f9f9f9;
+      background: #f0f2f5;
       color: #333;
     }
     h1 {
       text-align: center;
       color: #2c3e50;
     }
-    form {
-      max-width: 500px;
-      margin: 1.5rem auto;
-      background: #fff;
-      padding: 1.5rem;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    label {
-      display: block;
-      margin-bottom: 0.3rem;
-      font-weight: bold;
-    }
-    input[type="text"], textarea {
-      width: 100%;
-      padding: 0.5rem;
-      margin-bottom: 1rem;
-      border: 1px solid #ccc;
+
+    /* ===== Alerte "Ouvre dans Safari" ===== */
+    .alert {
+      background: #fff3cd;
+      border: 1px solid #ffeeba;
+      color: #856404;
+      padding: 0.8rem 1rem;
       border-radius: 4px;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .alert svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Formulaire ===== */
+    form {
+      max-width: 550px;
+      margin: 0.5rem auto 2rem;
+      background: #ffffff;
+      padding: 1.5rem 1.8rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      position: relative;
+    }
+    form label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.3rem;
+      font-weight: 600;
       font-size: 1rem;
     }
-    button {
+    form input[type="text"],
+    form textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+    form button {
       display: block;
       width: 100%;
       padding: 0.7rem;
@@ -47,185 +73,518 @@
       border-radius: 4px;
       font-size: 1.1rem;
       cursor: pointer;
+      transition: background 0.2s ease;
     }
-    button:hover {
+    form button:hover {
       background: #1f6391;
     }
-    .alert {
-      background: #ffeeba;
-      border: 1px solid #f0c36d;
-      padding: 0.8rem;
-      border-radius: 4px;
-      margin-bottom: 1rem;
-      color: #856404;
+
+    /* ===== Switches (checkbox stylisée) ===== */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 1.2rem;
+      gap: 0.6rem;
     }
-    small {
-      color: #777;
+    .switch-label {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      border-radius: 34px;
+      transition: 0.2s;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
+
+    /* ===== Tooltip “ℹ️” ===== */
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip-icon {
+      font-style: normal;
+      background: #3498db;
+      color: #fff;
+      border-radius: 50%;
+      width: 18px;
+      height: 18px;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      cursor: default;
+    }
+    .tooltip-text {
+      visibility: hidden;
+      width: 220px;
+      background-color: #333;
+      color: #fff;
+      text-align: left;
+      padding: 0.5rem;
+      border-radius: 4px;
+      position: absolute;
+      z-index: 1000;
+      bottom: 125%; /* Au-dessus de l’icône */
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-size: 0.85rem;
+      line-height: 1.2;
+    }
+    .tooltip-wrapper:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+    .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%; /* pointe vers l’icône */
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: #333 transparent transparent transparent;
+    }
+
+    /* ===== Modal flottant pour IsRemovable OFF ===== */
+    .modal-overlay {
+      display: none; /* caché par défaut */
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
+    .modal-content {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 6px;
+      max-width: 320px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .modal-content p {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+    .modal-buttons button {
+      flex: 1;
+      padding: 0.5rem 0.6rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    .btn-cancel {
+      background: #e74c3c;
+      color: #fff;
+    }
+    .btn-cancel:hover {
+      background: #c0392b;
+    }
+    .btn-continue {
+      background: #27ae60;
+      color: #fff;
+    }
+    .btn-continue:hover {
+      background: #1e8449;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 600px) {
+      form {
+        padding: 1rem;
+        margin: 0.3rem;
+      }
+      .tooltip-text {
+        width: 180px;
+      }
     }
   </style>
 </head>
 <body>
   <h1>📱 Générateur WebClip iOS</h1>
 
-  <!-- Alerte si pas sur Safari -->
+  <!-- Alerte si pas sur Safari iOS -->
   <div id="safari-alert" class="alert" style="display: none;">
+    <!-- Icône ⚠️ en SVG -->
+    <svg viewBox="0 0 512 512"><path fill="#856404" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z"/></svg>
     Pour installer le profil sur iPhone/iPad, ouvre cette page <strong>dans Safari</strong> ! 🌊📲
   </div>
 
-  <form id="webclipForm">
-    <label for="appName">Nom de l'application 📛</label>
-    <input type="text" id="appName" placeholder="Ex. Mon super WebApp" required />
+  <!-- ===== Formulaire ===== -->
+  <form id="webclipForm" novalidate>
+    <!-- 1. Nom de l’application (Label / PayloadIdentifier / PayloadDisplayName) -->
+    <label for="appName">
+      Nom de l’application&nbsp;📛
+      <span class="tooltip-wrapper">
+        <span class="tooltip-icon">ℹ️</span>
+        <span class="tooltip-text">
+          C’est le nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
+          <br>Ex. : “Mon Super App”.
+          <br>Ce même nom sert pour :
+          <ul style="margin:4px 0 0 1rem; padding:0; font-size:0.9rem;">
+            <li>PayloadIdentifier</li>
+            <li>PayloadDisplayName</li>
+            <li>Label</li>
+          </ul>
+        </span>
+      </span>
+    </label>
+    <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
 
-    <label for="appDesc">Description 📝 <small>(facultatif)</small></label>
-    <textarea id="appDesc" rows="2" placeholder="Petite description (ex. Accès rapide à mon site)"></textarea>
+    <!-- 2. Description (PayloadDescription) -->
+    <label for="appDesc">
+      Description de l’application&nbsp;📝
+      <span class="tooltip-wrapper">
+        <span class="tooltip-icon">ℹ️</span>
+        <span class="tooltip-text">
+          Texte descriptif qui apparaîtra dans l’écran d’installation du profil.
+          <br>Ex. : “Ce WebClip ouvre mon site en plein écran.”
+        </span>
+      </span>
+    </label>
+    <textarea id="appDesc" rows="2" placeholder="Petite description"></textarea>
 
-    <label for="appURL">URL cible 🔗</label>
-    <input type="text" id="appURL" placeholder="https://example.com" required />
+    <!-- 3. URL du WebClip -->
+    <label for="appURL">
+      URL cible 🔗
+      <span class="tooltip-wrapper">
+        <span class="tooltip-icon">ℹ️</span>
+        <span class="tooltip-text">
+          L’adresse du site / web app qui sera lancée en plein écran.
+          <br>Doit impérativement commencer par <code>https://</code>.
+        </span>
+      </span>
+    </label>
+    <input type="text" id="appURL" placeholder="https://exemple.com" required />
 
-    <label for="appOrg">Organisation 🏢 <small>(facultatif)</small></label>
-    <input type="text" id="appOrg" placeholder="Ex. Mon Entreprise" />
+    <!-- 4. Icône (Base64) -->
+    <label for="iconFile">
+      Icône de l’application&nbsp;🖼️
+      <span class="tooltip-wrapper">
+        <span class="tooltip-icon">ℹ️</span>
+        <span class="tooltip-text">
+          Image PNG/JPG convertie automatiquement en Base64.
+          <br>Format conseillé : carré, 144×144 pixels.
+          <br>Si aucun fichier n’est fourni, le champ reste vide (pas d’icône).
+        </span>
+      </span>
+    </label>
+    <input type="file" id="iconFile" accept="image/png, image/jpeg" />
+    <small style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:#555;">
+      Sélectionne un fichier, il sera encodé en Base64 automatiquement.
+    </small>
 
-    <label for="iconURL">URL d'icône 🖼️ <small>(PNG recommandé, facultatif)</small></label>
-    <input type="text" id="iconURL" placeholder="https://example.com/icon.png" />
+    <!-- 5. IsRemovable (Switch ON/OFF) -->
+    <div class="switch-container">
+      <label class="switch-label" for="isRemovable">
+        Est-ce que l’icône est retirable ? 
+        <span class="tooltip-wrapper">
+          <span class="tooltip-icon">ℹ️</span>
+          <span class="tooltip-text">
+            Si <strong>ON</strong> (par défaut), l’utilisateur pourra supprimer l’icône de l’écran d’accueil.
+            <br>Si <strong>OFF</strong>, l’icône restera “fixée” sur l’écran. 
+            (<em>une popup te demandera de confirmer</em>)
+          </span>
+        </span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="isRemovable" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+
+    <!-- 6. IgnoreManifestScope (Switch ON/OFF) -->
+    <div class="switch-container">
+      <label class="switch-label" for="ignoreScope">
+        Ignorer le manifest ? 
+        <span class="tooltip-wrapper">
+          <span class="tooltip-icon">ℹ️</span>
+          <span class="tooltip-text">
+            Si <strong>ON</strong> (par défaut), iOS ne cherchera pas à télécharger un manifest.appcache.
+            <br>Si <strong>OFF</strong>, iOS contrôle le manifest avant d’afficher le WebClip.
+          </span>
+        </span>
+      </label>
+      <label class="switch">
+        <input type="checkbox" id="ignoreScope" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
 
     <button type="submit">✅ Générer et Installer</button>
   </form>
 
+  <!-- ===== Modal pour avertir si IsRemovable = OFF ===== -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <p>
+        ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
+        de l’écran d’accueil. Veux-tu continuer ?
+      </p>
+      <div class="modal-buttons">
+        <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
+        <button id="btn-continue" class="btn-continue">✅ Continuer</button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Détecter Safari sur iOS
+    /* ===== 1. Détection Safari iOS ===== */
     function isIosSafari() {
       const ua = window.navigator.userAgent;
       const isIOS = /iP(ad|hone|od)/.test(ua);
       const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
       return isIOS && isSafari;
     }
-
-    // Afficher alerte si besoin
     document.addEventListener('DOMContentLoaded', () => {
       if (!isIosSafari()) {
-        document.getElementById('safari-alert').style.display = 'block';
+        document.getElementById('safari-alert').style.display = 'flex';
       }
     });
 
-    // Générateur d'UUID pour les PayloadUUID
+    /* ===== 2. Conversion de l’icône en Base64 ===== */
+    let iconBase64String = "";
+    const iconInput = document.getElementById('iconFile');
+    iconInput.addEventListener('change', () => {
+      const file = iconInput.files[0];
+      if (!file) {
+        iconBase64String = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // On récupère la chaîne Base64 (data:image/png;base64,AAA...)
+        const dataUrl = e.target.result;
+        // On nettoie l’en-tête “data:image/...;base64,”
+        const commaIndex = dataUrl.indexOf(',');
+        iconBase64String = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    /* ===== 3. Gestion du modal “IsRemovable OFF” ===== */
+    const isRemovableCheckbox = document.getElementById('isRemovable');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const btnCancel = document.getElementById('btn-cancel');
+    const btnContinue = document.getElementById('btn-continue');
+    let previousRemovableState = isRemovableCheckbox.checked;
+
+    isRemovableCheckbox.addEventListener('change', (e) => {
+      // Si on passe de true → false, on affiche le modal
+      if (previousRemovableState === true && !isRemovableCheckbox.checked) {
+        modalOverlay.style.display = 'flex';
+      }
+      previousRemovableState = isRemovableCheckbox.checked;
+    });
+    // Si l’utilisateur annule : on remet le switch à ON
+    btnCancel.addEventListener('click', () => {
+      isRemovableCheckbox.checked = true;
+      previousRemovableState = true;
+      modalOverlay.style.display = 'none';
+    });
+    // Si l’utilisateur confirme : on ferme le modal et garde OFF
+    btnContinue.addEventListener('click', () => {
+      previousRemovableState = false;
+      modalOverlay.style.display = 'none';
+    });
+
+    /* ===== 4. Générer les UUID ===== */
     function generateUUID() {
-      // La méthode native crypto.randomUUID() existe sur Safari 14+
       if (crypto && crypto.randomUUID) {
         return crypto.randomUUID().toUpperCase();
       }
-      // Fallback simple pour anciennes versions
-      const hex = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
         const r = Math.random() * 16 | 0;
         const v = c === 'x' ? r : (r & 0x3 | 0x8);
         return v.toString(16);
-      });
-      return hex.toUpperCase();
+      }).toUpperCase();
     }
 
-    // Construction du XML (.mobileconfig) 
-    function buildMobileConfig({ name, desc, url, org, iconURL, uuidProfile, uuidPayload }) {
-      // Note : si iconURL est fourni, on peut ajouter un <key>IconURL</key> à l'intérieur de PayloadContent
-      // sinon, on laisse sans icône.
-      const iconBlock = iconURL
-        ? `
-        <key>Icon</key>
-        <data>
-          <!-- Si tu veux intégrer l'image encodée en base64, remplace iconURL par le binaire encodé. -->
-        </data>
-        <key>IsRemovable</key><true/>
-        <!-- Optionnel : FullScreen et IconIsPrecomposed -->
-        <key>FullScreen</key><true/>`
-        : `
-        <key>IsRemovable</key><true/>
-        <key>FullScreen</key><true/>`;
+    /* ===== 5. Construire le XML (.mobileconfig) ===== */
+    function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
+      // Bloc ConsentText (inchangé par champ dynamique)
+      const consentText = `
+  <key>ConsentText</key>
+  <dict>
+    <key>default</key>
+    <string>
+      This configuration profile will install a Web Clip on your device’s home screen. 
+      The Web Clip acts as a shortcut to open a specific website in full-screen mode, 
+      removing the browser interface to offer an app-like experience. It is designed 
+      to simplify access and provide an immersive, standalone view of the site. 
+      To proceed tap 'Install' and enter your device's passcode when prompted.
+    </string>
+  </dict>`;
 
-      // On peut insérer IconURL en commentaire pour pointer vers une URL externe (mais iOS préfère l'encodage directement)
-      const iconURLComment = iconURL
-        ? `\n        <!-- IconURL externe : ${iconURL} -->`
-        : '';
+      // Bloc principal PayloadContent (array avec un seul dict)
+      // On injecte Icon en base64 si fourni, sinon vide.
+      const iconBlock = iconData
+        ? `<key>Icon</key>
+     <data>${iconData}</data>`
+        : `<key>Icon</key>
+     <data></data>`;
 
-      // Exemple d'identifiants : on utilise des UUID, mais tu peux adapter au reverse-domain si tu veux.
       return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>PayloadContent</key>
+${consentText}
+  <key>PayloadContent</key>
+  <array>
     <dict>
-        <key>URL</key>
-        <string>${url}</string>
-        <key>Label</key>
-        <string>${name}</string>${iconURLComment}${iconBlock}
-        <key>PayloadDescription</key>
-        <string>${desc || name}</string>
-        <key>PayloadIdentifier</key>
-        <string>com.webclip.payload.${uuidPayload}</string>
-        <key>PayloadType</key>
-        <string>com.apple.webClip.managed</string>
-        <key>PayloadUUID</key>
-        <string>${uuidPayload}</string>
-        <key>PayloadVersion</key>
-        <integer>1</integer>
+      <key>FullScreen</key>
+      <true/>
+      <key>IgnoreManifestScope</key>
+      <${ignoreScope}/>
+      ${iconBlock}
+      <key>IsRemovable</key>
+      <${isRemovable}/>
+      <key>Label</key>
+      <string>${name}</string>
+      <key>PayloadDescription</key>
+      <string>${desc || name}</string>
+      <key>PayloadDisplayName</key>
+      <string>Web Clip (${name})</string>
+      <key>PayloadIdentifier</key>
+      <string>${name.replace(/\s+/g, "_")}</string>
+      <key>PayloadOrganization</key>
+      <string>TokyoBoyVS</string>
+      <key>PayloadType</key>
+      <string>com.apple.webClip.managed</string>
+      <key>PayloadUUID</key>
+      <string>${uuidPayload}</string>
+      <key>PayloadVersion</key>
+      <integer>1</integer>
+      <key>Precomposed</key>
+      <false/>
+      <key>URL</key>
+      <string>${url}</string>
     </dict>
-    <key>PayloadDisplayName</key>
-    <string>${name}</string>
-    ${org ? `<key>PayloadOrganization</key>
-    <string>${org}</string>` : ''}
-    <key>PayloadIdentifier</key>
-    <string>com.webclip.profile.${uuidProfile}</string>
-    <key>PayloadRemovalDisallowed</key>
-    <false/>
-    <key>PayloadType</key>
-    <string>Configuration</string>
-    <key>PayloadUUID</key>
-    <string>${uuidProfile}</string>
-    <key>PayloadVersion</key>
-    <integer>1</integer>
+  </array>
+  <key>PayloadDescription</key>
+  <string>${desc || name}</string>
+  <key>PayloadDisplayName</key>
+  <string>${name}</string>
+  <key>PayloadIdentifier</key>
+  <string>${name.replace(/\s+/g, "_")}</string>
+  <key>PayloadOrganization</key>
+  <string>TokyoBoyVS</string>
+  <key>PayloadRemovalDisallowed</key>
+  <false/>
+  <key>PayloadType</key>
+  <string>Configuration</string>
+  <key>PayloadUUID</key>
+  <string>${uuidProfile}</string>
+  <key>PayloadVersion</key>
+  <integer>1</integer>
 </dict>
 </plist>`;
     }
 
-    // Au clic sur "Générer et Installer"
+    /* ===== 6. À la soumission du formulaire ===== */
     document.getElementById('webclipForm').addEventListener('submit', (e) => {
       e.preventDefault();
 
-      // Récupérer les valeurs
+      // 6.1 Récupérer valeurs
       const name = document.getElementById('appName').value.trim();
-      const desc = document.getElementById('appDesc').value.trim();
       let url = document.getElementById('appURL').value.trim();
-      const org = document.getElementById('appOrg').value.trim();
-      const iconURL = document.getElementById('iconURL').value.trim();
+      const desc = document.getElementById('appDesc').value.trim();
+      const isRemovable = document.getElementById('isRemovable').checked ? "true" : "false";
+      const ignoreScope = document.getElementById('ignoreScope').checked ? "true" : "false";
 
-      // Validation basique de l'URL
+      // 6.2 Validation basique
+      if (!name) {
+        alert('❌ Le nom de l’application est requis.');
+        return;
+      }
       try {
         url = new URL(url).href;
       } catch {
-        alert('❌ L’URL n’est pas valide ! Vérifie bien (ex. : https://example.com).');
+        alert('❌ L’URL n’est pas valide ! Doit commencer par https://');
         return;
       }
 
-      // Générer deux UUID
+      // 6.3 Générer UUIDs
       const uuidPayload = generateUUID();
       const uuidProfile = generateUUID();
 
-      // Construire l'XML -> chaîne de caractères
-      const xmlContent = buildMobileConfig({ name, desc, url, org, iconURL, uuidProfile, uuidPayload });
+      // 6.4 Construire le contenu XML
+      const xmlContent = buildMobileConfig({
+        name,
+        desc,
+        url,
+        iconData: iconBase64String,
+        isRemovable,
+        ignoreScope,
+        uuidProfile,
+        uuidPayload
+      });
 
-      // Créer un Blob avec le bon type MIME pour .mobileconfig
+      // 6.5 Créer un blob et lancer le téléchargement
       const blob = new Blob([xmlContent], {
         type: 'application/x-apple-aspen-config'
       });
-
-      // Créer un lien de téléchargement (target _blank pour forcer Safari)
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
-      link.download = `${name.replace(/\s+/g, '_') || 'webclip'}.mobileconfig`;
-      link.target = '_blank';
+      // On remplace les espaces par des underscores pour nommer le fichier
+      link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
+      link.target = '_blank'; 
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
 
-      // Note : sur Safari iOS, rendre le lien cliqué suffit pour lancer l’installation du profil.
-      // Sur d’autres navigateurs iOS, cela ouvrira un nouvel onglet (mais l’install échouera).
+      // Note : sur Safari iOS, le lien déclenche l’installation du profil.
+      // Sur d’autres navigateurs, un nouvel onglet s’ouvrira mais l’installation échouera.
     });
   </script>
 </body>
