@@ -1,468 +1,518 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Générateur WebClip iOS</title>
-  <style>
-    /* ===== Couleurs & typographie ===== */
-    :root {
-      --bg-color: #2c2c2c;
-      --text-color: #f0f0f0;
-      --input-bg: #3a3a3a;
-      --input-border: #555;
-      --placeholder: #bbb;
-      --btn-bg: #1f6391;
-      --btn-bg-hover: #16607a;
-      --alert-bg: #4f4e50;
-      --alert-text: #ffdd57;
-      --modal-bg: rgba(0, 0, 0, 0.6);
-      --modal-content-bg: #3a3a3a;
-      --modal-text: #f0f0f0;
-      --tooltip-bg: #444;
-      --tooltip-text: #f0f0f0;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Générateur WebClip iOS</title>
+    <style>
+        /* ===== Couleurs & typographie ===== */
+        :root {
+            --bg-color: #2c2c2c;
+            --text-color: #f0f0f0;
+            --input-bg: #3a3a3a;
+            --input-border: #555;
+            --placeholder: #bbb;
+            --btn-bg: #1f6391;
+            --btn-bg-hover: #16607a;
+            --alert-bg: #4f4e50;
+            --alert-text: #ffdd57;
+            --modal-bg: rgba(0, 0, 0, 0.6);
+            --modal-content-bg: #3a3a3a;
+            --modal-text: #f0f0f0;
+            --tooltip-bg: #444;
+            --tooltip-text: #f0f0f0;
+        }
 
-    body {
-      margin: 0;
-      padding: 1rem;
-      background-color: var(--bg-color);
-      color: var(--text-color);
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      line-height: 1.4;
-    }
-    h1 {
-      text-align: center;
-      color: var(--text-color);
-      font-size: 1.5rem;
-      margin-bottom: 1rem;
-    }
+        body {
+            margin: 0;
+            padding: 1rem;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+        }
 
-    /* ===== Alerte "Ouvre dans Safari" ===== */
-    .alert {
-      background: var(--alert-bg);
-      border-radius: 4px;
-      padding: 0.8rem 1rem;
-      margin-bottom: 1rem;
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-      color: var(--alert-text);
-      font-size: 0.95rem;
-    }
-    .alert svg {
-      width: 20px;
-      height: 20px;
-      flex-shrink: 0;
-    }
+        h1 {
+            text-align: center;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
 
-    /* ===== Formulaire ===== */
-    form {
-      width: 100%;
-      max-width: 100%;
-      margin: 0 auto 2rem;
-      background: var(--input-bg);
-      padding: 1rem;
-      border-radius: 8px;
-    }
-    form label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 0.4rem;
-      font-size: 1rem;
-    }
-    form input[type="text"],
-    form textarea {
-      width: 100%;
-      background: var(--input-bg);
-      color: var(--text-color);
-      border: 1px solid var(--input-border);
-      border-radius: 4px;
-      padding: 0.6rem;
-      margin-bottom: 1.2rem;
-      font-size: 1rem;
-    }
-    form input::placeholder,
-    form textarea::placeholder {
-      color: var(--placeholder);
-    }
-    form input[type="file"] {
-      color: var(--text-color);
-      margin-bottom: 1.2rem;
-    }
-    form button {
-      width: 100%;
-      padding: 0.8rem;
-      background: var(--btn-bg);
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      font-size: 1.1rem;
-      cursor: pointer;
-      margin-top: 0.5rem;
-    }
-    form button:hover {
-      background: var(--btn-bg-hover);
-    }
+        /* ===== Alerte "Ouvre dans Safari" ===== */
+        .alert {
+            background: var(--alert-bg);
+            border-radius: 4px;
+            padding: 0.8rem 1rem;
+            margin-bottom: 1rem;
+            display: none;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--alert-text);
+            font-size: 0.95rem;
+        }
 
-    /* ===== Switches ===== */
-    .switch-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.2rem;
-    }
-    .switch-label {
-      font-weight: 600;
-      font-size: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-      color: var(--text-color);
-    }
-    .switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #555;
-      border-radius: 34px;
-      transition: 0.2s;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      border-radius: 50%;
-      transition: 0.2s;
-    }
-    input:checked + .slider {
-      background-color: #4caf50;
-    }
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
+        .alert svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
 
-    /* ===== Tooltip “ℹ️” ===== */
-    .tooltip-wrapper {
-      position: relative;
-      display: inline-block;
-    }
-    .tooltip-icon {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      background: #3498db;
-      color: #fff;
-      border-radius: 50%;
-      font-size: 12px;
-      line-height: 18px;
-      text-align: center;
-      cursor: default;
-    }
-    .tooltip-text {
-      visibility: hidden;
-      width: 200px;
-      background-color: var(--tooltip-bg);
-      color: var(--tooltip-text);
-      text-align: left;
-      padding: 0.4rem;
-      border-radius: 4px;
-      position: absolute;
-      z-index: 1000;
-      bottom: 125%;
-      left: 50%;
-      transform: translateX(-50%);
-      opacity: 0;
-      transition: opacity 0.2s;
-      font-size: 0.85rem;
-      line-height: 1.2;
-    }
-    .tooltip-wrapper:hover .tooltip-text {
-      visibility: visible;
-      opacity: 1;
-    }
-    .tooltip-text::after {
-      content: "";
-      position: absolute;
-      top: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: var(--tooltip-bg) transparent transparent transparent;
-    }
+        /* ===== Formulaire ===== */
+        form {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto 2rem;
+            background: var(--input-bg);
+            padding: 1rem;
+            border-radius: 8px;
+        }
 
-    /* ===== Modal ===== */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: var(--modal-bg);
-      z-index: 2000;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: var(--modal-content-bg);
-      padding: 1rem;
-      border-radius: 6px;
-      max-width: 300px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-    }
-    .modal-content p {
-      margin-bottom: 1rem;
-      font-size: 0.95rem;
-      color: var(--modal-text);
-    }
-    .modal-buttons {
-      display: flex;
-      justify-content: space-between;
-      gap: 0.5rem;
-    }
-    .modal-buttons button {
-      flex: 1;
-      padding: 0.6rem 0;
-      border: none;
-      border-radius: 4px;
-      font-size: 0.95rem;
-      cursor: pointer;
-      transition: background 0.2s ease;
-      color: #fff;
-    }
-    .btn-cancel {
-      background: #e74c3c;
-    }
-    .btn-cancel:hover {
-      background: #c0392b;
-    }
-    .btn-continue {
-      background: #27ae60;
-    }
-    .btn-continue:hover {
-      background: #1e8449;
-    }
+        form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 1rem;
+        }
 
-    /* ===== Responsive ===== */
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 1.3rem;
-      }
-      form {
-        padding: 0.8rem;
-      }
-      .tooltip-text {
-        width: 160px;
-      }
-    }
-  </style>
+        form input[type="text"],
+        form textarea {
+            width: 100%;
+            background: var(--input-bg);
+            color: var(--text-color);
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            padding: 0.6rem;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+        }
+
+        form input::placeholder,
+        form textarea::placeholder {
+            color: var(--placeholder);
+        }
+
+        form input[type="file"] {
+            color: var(--text-color);
+            margin-bottom: 1.2rem;
+        }
+
+        form button {
+            width: 100%;
+            padding: 0.8rem;
+            background: var(--btn-bg);
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-top: 0.5rem;
+        }
+
+        form button:hover {
+            background: var(--btn-bg-hover);
+        }
+
+        /* ===== Switches ===== */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.2rem;
+        }
+
+        .switch-label {
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-color);
+        }
+
+        .switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #555;
+            border-radius: 34px;
+            transition: 0.2s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.2s;
+        }
+
+        input:checked+.slider {
+            background-color: #4caf50;
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(20px);
+        }
+
+        /* ===== Tooltip “𝖎” ===== */
+        .tooltip-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-right: 0.25rem;
+        }
+
+        .tooltip-icon {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            background: #3498db;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 12px;
+            line-height: 18px;
+            text-align: center;
+            cursor: default;
+        }
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--tooltip-bg);
+            color: var(--tooltip-text);
+            text-align: left;
+            padding: 0.4rem;
+            border-radius: 4px;
+            position: absolute;
+            z-index: 1000;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-size: 0.85rem;
+            line-height: 1.2;
+        }
+
+        .tooltip-wrapper:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .tooltip-text::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--tooltip-bg) transparent transparent transparent;
+        }
+
+        /* ===== Modal ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--modal-bg);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: var(--modal-content-bg);
+            padding: 1rem;
+            border-radius: 6px;
+            max-width: 300px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content p {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--modal-text);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 0.5rem;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 0.6rem 0;
+            border: none;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            color: #fff;
+        }
+
+        .btn-cancel {
+            background: #e74c3c;
+        }
+
+        .btn-cancel:hover {
+            background: #c0392b;
+        }
+
+        .btn-continue {
+            background: #27ae60;
+        }
+
+        .btn-continue:hover {
+            background: #1e8449;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.3rem;
+            }
+
+            form {
+                padding: 0.8rem;
+            }
+
+            .tooltip-text {
+                width: 160px;
+            }
+        }
+    </style>
 </head>
+
 <body>
-  <h1>📱 Générateur WebClip iOS</h1>
+    <h1>📱 Générateur WebClip iOS</h1>
 
-  <!-- Alerte si pas sur Safari iOS -->
-  <div id="safari-alert" class="alert">
-    <svg viewBox="0 0 512 512"><path fill="currentColor" d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z"/></svg>
-    Pour installer le profil sur iPhone/iPad, ouvre cette page <strong>dans Safari</strong> 📲
-  </div>
-
-  <!-- ===== Formulaire ===== -->
-  <form id="webclipForm" novalidate>
-    <!-- 1. Nom de l’application -->
-    <label for="appName">
-      Nom de l’application 📛
-      <span class="tooltip-wrapper">
-        <span class="tooltip-icon">ℹ️</span>
-        <span class="tooltip-text">
-          Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.  
-          Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
-        </span>
-      </span>
-    </label>
-    <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
-
-    <!-- 2. Description -->
-    <label for="appDesc">
-      Description de l’application 📝
-      <span class="tooltip-wrapper">
-        <span class="tooltip-icon">ℹ️</span>
-        <span class="tooltip-text">
-          Texte descriptif visible lors de l’installation du profil.  
-          Si vide, on prendra le nom comme description.
-        </span>
-      </span>
-    </label>
-    <textarea id="appDesc" rows="2" placeholder="Petite description"></textarea>
-
-    <!-- 3. URL cible -->
-    <label for="appURL">
-      URL cible 🔗
-      <span class="tooltip-wrapper">
-        <span class="tooltip-icon">ℹ️</span>
-        <span class="tooltip-text">
-          Adresse du site/web app à ouvrir en plein écran.  
-          Doit commencer par <code>https://</code>.
-        </span>
-      </span>
-    </label>
-    <input type="text" id="appURL" placeholder="https://exemple.com" required />
-
-    <!-- 4. Icône (Base64) -->
-    <label for="iconFile">
-      Icône de l’application 🖼️
-      <span class="tooltip-wrapper">
-        <span class="tooltip-icon">ℹ️</span>
-        <span class="tooltip-text">
-          Image PNG/JPG convertie automatiquement en Base64.  
-          (Idéal : carré 144×144 px)
-        </span>
-      </span>
-    </label>
-    <input type="file" id="iconFile" accept="image/png, image/jpeg" />
-    <small style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
-      Sélectionne un fichier, il sera encodé en Base64.
-    </small>
-
-    <!-- 5. IsRemovable (Switch) -->
-    <div class="switch-container">
-      <label class="switch-label" for="isRemovable">
-        Icône retirable ?
-        <span class="tooltip-wrapper">
-          <span class="tooltip-icon">ℹ️</span>
-          <span class="tooltip-text">
-            Si ON (par défaut), l’utilisateur pourra supprimer l’icône.  
-            Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
-          </span>
-        </span>
-      </label>
-      <label class="switch">
-        <input type="checkbox" id="isRemovable" checked>
-        <span class="slider"></span>
-      </label>
+    <!-- Alerte si pas sur Safari iOS -->
+    <div id="safari-alert" class="alert">
+        <svg viewBox="0 0 512 512">
+            <path fill="currentColor"
+                d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
+        </svg>
+        Pour installer le profil sur iPhone/iPad, ouvre cette page <strong>dans Safari</strong> 📲
     </div>
 
-    <!-- 6. IgnoreManifestScope (Switch) -->
-    <div class="switch-container">
-      <label class="switch-label" for="ignoreScope">
-        Ignorer le manifest ?
-        <span class="tooltip-wrapper">
-          <span class="tooltip-icon">ℹ️</span>
-          <span class="tooltip-text">
-            Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.  
-            Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
-          </span>
-        </span>
-      </label>
-      <label class="switch">
-        <input type="checkbox" id="ignoreScope" checked>
-        <span class="slider"></span>
-      </label>
+    <!-- ===== Formulaire ===== -->
+    <form id="webclipForm" novalidate>
+        <!-- 1. Nom de l’application -->
+        <label for="appName">
+            <span class="tooltip-wrapper">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
+                    Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
+                </span>
+            </span>
+            Nom de l’application 📛
+        </label>
+        <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
+
+        <!-- 2. Description -->
+        <label for="appDesc">
+            <span class="tooltip-wrapper">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Texte descriptif visible lors de l’installation du profil.
+                    Si vide, on prendra le nom comme description.
+                </span>
+            </span>
+            Description de l’application 📝
+        </label>
+        <textarea id="appDesc" rows="2" placeholder="Petite description" required></textarea>
+
+        <!-- 3. URL cible -->
+        <label for="appURL">
+            <span class="tooltip-wrapper">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Adresse du site/web app à ouvrir en plein écran.
+                    Doit commencer par <code>https://</code>.
+                </span>
+            </span>
+            URL cible 🔗
+        </label>
+        <input type="text" id="appURL" placeholder="https://exemple.com" required />
+
+        <!-- 4. Icône (Base64) -->
+        <label for="iconFile">
+            <span class="tooltip-wrapper">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Image PNG/JPG convertie automatiquement en Base64.
+                    (Idéal : carré 144×144 px)
+                </span>
+            </span>
+            Icône de l’application 🖼️
+        </label>
+        <input type="file" id="iconFile" accept="image/png, image/jpeg" required />
+        <small
+            style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
+            Sélectionne un fichier, il sera encodé en Base64.
+        </small>
+
+        <!-- 5. IsRemovable (Switch) -->
+        <div class="switch-container">
+            <label class="switch-label" for="isRemovable">
+                <span class="tooltip-wrapper">
+                    <span class="tooltip-icon">𝖎</span>
+                    <span class="tooltip-text">
+                        Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
+                        Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
+                    </span>
+                </span>
+                Icône retirable ?
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="isRemovable" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- 6. IgnoreManifestScope (Switch) -->
+        <div class="switch-container">
+            <label class="switch-label" for="ignoreScope">
+                <span class="tooltip-wrapper">
+                    <span class="tooltip-icon">𝖎</span>
+                    <span class="tooltip-text">
+                        Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
+                        Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
+                    </span>
+                </span>
+                Ignorer le manifest ?
+            </label>
+            <label class="switch">
+                <input type="checkbox" id="ignoreScope" checked>
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <button type="submit">✅ Générer et Installer</button>
+    </form>
+
+    <!-- ===== Modal pour IsRemovable OFF ===== -->
+    <div id="modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <p style="color: var(--modal-text);">
+                ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
+                de l’écran d’accueil. Veux-tu continuer ?
+            </p>
+            <div class="modal-buttons">
+                <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
+                <button id="btn-continue" class="btn-continue">✅ Continuer</button>
+            </div>
+        </div>
     </div>
 
-    <button type="submit">✅ Générer et Installer</button>
-  </form>
-
-  <!-- ===== Modal pour IsRemovable OFF ===== -->
-  <div id="modal-overlay" class="modal-overlay">
-    <div class="modal-content">
-      <p style="color: var(--modal-text);">
-        ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
-        de l’écran d’accueil. Veux-tu continuer ?
-      </p>
-      <div class="modal-buttons">
-        <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
-        <button id="btn-continue" class="btn-continue">✅ Continuer</button>
-      </div>
+    <!-- ===== Modal d’alerte générique ===== -->
+    <div id="modal-alert" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modal-alert-message" style="color: var(--modal-text);"></p>
+            <div class="modal-buttons" style="justify-content: center;">
+                <button id="btn-alert-ok" class="btn-continue" style="max-width: 120px;">OK</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <script>
-    /* ===== Détection Safari iOS ===== */
-    function isIosSafari() {
-      const ua = window.navigator.userAgent;
-      const isIOS = /iP(ad|hone|od)/.test(ua);
-      const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
-      return isIOS && isSafari;
-    }
-    document.addEventListener('DOMContentLoaded', () => {
-      if (!isIosSafari()) {
-        const alertDiv = document.getElementById('safari-alert');
-        alertDiv.style.display = 'flex';
-      }
-    });
+    <script>
+        /* ===== Détection Safari iOS ===== */
+        function isIosSafari() {
+            const ua = window.navigator.userAgent;
+            const isIOS = /iP(ad|hone|od)/.test(ua);
+            const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
+            return isIOS && isSafari;
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!isIosSafari()) {
+                const alertDiv = document.getElementById('safari-alert');
+                alertDiv.style.display = 'flex';
+            }
+        });
 
-    /* ===== Conversion Icône en Base64 ===== */
-    let iconBase64String = "";
-    const iconInput = document.getElementById('iconFile');
-    iconInput.addEventListener('change', () => {
-      const file = iconInput.files[0];
-      if (!file) {
-        iconBase64String = "";
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const dataUrl = e.target.result;
-        const commaIndex = dataUrl.indexOf(',');
-        iconBase64String = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
-      };
-      reader.readAsDataURL(file);
-    });
+        /* ===== Conversion Icône en Base64 ===== */
+        let iconBase64String = "";
+        const iconInput = document.getElementById('iconFile');
+        iconInput.addEventListener('change', () => {
+            const file = iconInput.files[0];
+            if (!file) {
+                iconBase64String = "";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const dataUrl = e.target.result;
+                const commaIndex = dataUrl.indexOf(',');
+                iconBase64String = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
+            };
+            reader.readAsDataURL(file);
+        });
 
-    /* ===== Modal “IsRemovable OFF” ===== */
-    const isRemovableCheckbox = document.getElementById('isRemovable');
-    const modalOverlay = document.getElementById('modal-overlay');
-    const btnCancel = document.getElementById('btn-cancel');
-    const btnContinue = document.getElementById('btn-continue');
-    let previousRemovableState = isRemovableCheckbox.checked;
+        /* ===== Modal “IsRemovable OFF” ===== */
+        const isRemovableCheckbox = document.getElementById('isRemovable');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const btnCancel = document.getElementById('btn-cancel');
+        const btnContinue = document.getElementById('btn-continue');
+        let previousRemovableState = isRemovableCheckbox.checked;
 
-    isRemovableCheckbox.addEventListener('change', () => {
-      if (previousRemovableState === true && !isRemovableCheckbox.checked) {
-        modalOverlay.style.display = 'flex';
-      }
-      previousRemovableState = isRemovableCheckbox.checked;
-    });
-    btnCancel.addEventListener('click', () => {
-      isRemovableCheckbox.checked = true;
-      previousRemovableState = true;
-      modalOverlay.style.display = 'none';
-    });
-    btnContinue.addEventListener('click', () => {
-      previousRemovableState = false;
-      modalOverlay.style.display = 'none';
-    });
+        isRemovableCheckbox.addEventListener('change', () => {
+            if (previousRemovableState === true && !isRemovableCheckbox.checked) {
+                modalOverlay.style.display = 'flex';
+            }
+            previousRemovableState = isRemovableCheckbox.checked;
+        });
+        btnCancel.addEventListener('click', () => {
+            isRemovableCheckbox.checked = true;
+            previousRemovableState = true;
+            modalOverlay.style.display = 'none';
+        });
+        btnContinue.addEventListener('click', () => {
+            previousRemovableState = false;
+            modalOverlay.style.display = 'none';
+        });
 
-    /* ===== Génération d’UUID ===== */
-    function generateUUID() {
-      if (crypto && crypto.randomUUID) {
-        return crypto.randomUUID().toUpperCase();
-      }
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      }).toUpperCase();
-    }
+        /* ===== Génération d’UUID ===== */
+        function generateUUID() {
+            if (crypto && crypto.randomUUID) {
+                return crypto.randomUUID().toUpperCase();
+            }
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            }).toUpperCase();
+        }
 
-    /* ===== Construction du XML (.mobileconfig) ===== */
-    function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
-      const consentText = `
+        /* ===== Construction du XML (.mobileconfig) ===== */
+        function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
+            const consentText = `
   <key>ConsentText</key>
   <dict>
     <key>default</key>
@@ -475,13 +525,13 @@
     </string>
   </dict>`;
 
-      const iconBlock = iconData
-        ? `<key>Icon</key>
+            const iconBlock = iconData
+                ? `<key>Icon</key>
      <data>${iconData}</data>`
-        : `<key>Icon</key>
+                : `<key>Icon</key>
      <data></data>`;
 
-      return `<?xml version="1.0" encoding="UTF-8"?>
+            return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -537,54 +587,67 @@ ${consentText}
   <integer>1</integer>
 </dict>
 </plist>`;
-    }
+        }
 
-    /* ===== Soumission du formulaire ===== */
-    document.getElementById('webclipForm').addEventListener('submit', (e) => {
-      e.preventDefault();
+        /* ===== Soumission du formulaire ===== */
+        document.getElementById('webclipForm').addEventListener('submit', (e) => {
+            e.preventDefault();
 
-      const name = document.getElementById('appName').value.trim();
-      let url = document.getElementById('appURL').value.trim();
-      const desc = document.getElementById('appDesc').value.trim();
-      const isRemovable = document.getElementById('isRemovable').checked ? "true" : "false";
-      const ignoreScope = document.getElementById('ignoreScope').checked ? "true" : "false";
+            const name = document.getElementById('appName').value.trim();
+            let url = document.getElementById('appURL').value.trim();
+            const desc = document.getElementById('appDesc').value.trim();
+            const isRemovable = document.getElementById('isRemovable').checked ? "true" : "false";
+            const ignoreScope = document.getElementById('ignoreScope').checked ? "true" : "false";
 
-      if (!name) {
-        alert('❌ Le nom de l’application est requis.');
-        return;
-      }
-      try {
-        url = new URL(url).href;
-      } catch {
-        alert('❌ L’URL n’est pas valide ! Doit commencer par https://');
-        return;
-      }
+            if (!name) {
+                showModalAlert('❌ Le nom de l’application est requis.');
+                return;
+            }
+            try {
+                url = new URL(url).href;
+            } catch {
+                showModalAlert('❌ L’URL n’est pas valide ! Doit commencer par https://');
+                return;
+            }
 
-      const uuidPayload = generateUUID();
-      const uuidProfile = generateUUID();
+            const uuidPayload = generateUUID();
+            const uuidProfile = generateUUID();
 
-      const xmlContent = buildMobileConfig({
-        name,
-        desc,
-        url,
-        iconData: iconBase64String,
-        isRemovable,
-        ignoreScope,
-        uuidProfile,
-        uuidPayload
-      });
+            const xmlContent = buildMobileConfig({
+                name,
+                desc,
+                url,
+                iconData: iconBase64String,
+                isRemovable,
+                ignoreScope,
+                uuidProfile,
+                uuidPayload
+            });
 
-      const blob = new Blob([xmlContent], {
-        type: 'application/x-apple-aspen-config'
-      });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    });
-  </script>
+            const blob = new Blob([xmlContent], {
+                type: 'application/x-apple-aspen-config'
+            });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
+            link.target = '_blank';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        /* ===== Modal d’alerte générique ===== */
+        const modalAlert = document.getElementById('modal-alert');
+        const modalAlertMsg = document.getElementById('modal-alert-message');
+        const btnAlertOk = document.getElementById('btn-alert-ok');
+        function showModalAlert(message) {
+            modalAlertMsg.textContent = message;
+            modalAlert.style.display = 'flex';
+        }
+        btnAlertOk.addEventListener('click', () => {
+            modalAlert.style.display = 'none';
+        });
+    </script>
 </body>
+
 </html>
