@@ -324,21 +324,21 @@
     <!-- ===== Formulaire ===== -->
     <form id="webclipForm" novalidate>
         <!-- 1. Nom de l’application -->
-        <span class="tooltip-wrapper">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
-                Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
-            </span>
-        </span>
         <label for="appName">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
+                    Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
+                </span>
+            </span>
             Nom de l’application 📛
         </label>
         <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
 
         <!-- 2. Description -->
         <label for="appDesc">
-            <span class="tooltip-wrapper">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
                 <span class="tooltip-icon">𝖎</span>
                 <span class="tooltip-text">
                     Texte descriptif visible lors de l’installation du profil.
@@ -351,7 +351,7 @@
 
         <!-- 3. URL cible -->
         <label for="appURL">
-            <span class="tooltip-wrapper">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
                 <span class="tooltip-icon">𝖎</span>
                 <span class="tooltip-text">
                     Adresse du site/web app à ouvrir en plein écran.
@@ -364,7 +364,7 @@
 
         <!-- 4. Icône (Base64) -->
         <label for="iconFile">
-            <span class="tooltip-wrapper">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
                 <span class="tooltip-icon">𝖎</span>
                 <span class="tooltip-text">
                     Image PNG/JPG convertie automatiquement en Base64.
@@ -382,7 +382,7 @@
         <!-- 5. IsRemovable (Switch) -->
         <div class="switch-container">
             <label class="switch-label" for="isRemovable">
-                <span class="tooltip-wrapper">
+                <span class="tooltip-wrapper" onclick="event.stopPropagation()">
                     <span class="tooltip-icon">𝖎</span>
                     <span class="tooltip-text">
                         Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
@@ -400,7 +400,7 @@
         <!-- 6. IgnoreManifestScope (Switch) -->
         <div class="switch-container">
             <label class="switch-label" for="ignoreScope">
-                <span class="tooltip-wrapper">
+                <span class="tooltip-wrapper" onclick="event.stopPropagation()">
                     <span class="tooltip-icon">𝖎</span>
                     <span class="tooltip-text">
                         Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
