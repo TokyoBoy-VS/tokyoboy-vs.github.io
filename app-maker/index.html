@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Générateur WebClip iOS</title>
+    <title>WebClip iOS</title>
     <style>
         /* ===== Couleurs & typographie ===== */
         :root {
@@ -310,7 +310,7 @@
 </head>
 
 <body>
-    <h1>📱 Générateur WebClip iOS</h1>
+    <h1>📱 WebClip iOS</h1>
 
     <!-- Alerte si pas sur Safari iOS -->
     <div id="safari-alert" class="alert">
@@ -318,59 +318,60 @@
             <path fill="currentColor"
                 d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
         </svg>
-        Pour installer le profil sur iPhone/iPad, ouvre cette page <strong>dans Safari</strong> 📲
+        Pour installer un profil de façon optimale sur votre iPhone/iPad, ouvrez cette page sur votre navigateur
+        <strong>Apple Safari</strong> 📲
     </div>
 
     <!-- ===== Formulaire ===== -->
     <form id="webclipForm" novalidate>
         <!-- 1. Nom de l’application -->
-        <label for="appName">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
-                    Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
-                </span>
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
+                Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
             </span>
+        </span>
+        <label for="appName">
             Nom de l’application 📛
         </label>
         <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
 
         <!-- 2. Description -->
-        <label for="appDesc">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Texte descriptif visible lors de l’installation du profil.
-                    Si vide, on prendra le nom comme description.
-                </span>
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Texte descriptif visible lors de l’installation du profil.
+                Si vide, on prendra le nom comme description.
             </span>
+        </span>
+        <label for="appDesc">
             Description de l’application 📝
         </label>
         <textarea id="appDesc" rows="2" placeholder="Petite description" required></textarea>
 
         <!-- 3. URL cible -->
-        <label for="appURL">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Adresse du site/web app à ouvrir en plein écran.
-                    Doit commencer par <code>https://</code>.
-                </span>
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Adresse du site/web app à ouvrir en plein écran.
+                Doit commencer par <code>https://</code>.
             </span>
+        </span>
+        <label for="appURL">
             URL cible 🔗
         </label>
         <input type="text" id="appURL" placeholder="https://exemple.com" required />
 
         <!-- 4. Icône (Base64) -->
-        <label for="iconFile">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Image PNG/JPG convertie automatiquement en Base64.
-                    (Idéal : carré 144×144 px)
-                </span>
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Image PNG/JPG convertie automatiquement en Base64.
+                (Idéal : carré 144×144 px)
             </span>
+        </span>
+        <label for="iconFile">
             Icône de l’application 🖼️
         </label>
         <input type="file" id="iconFile" accept="image/png, image/jpeg" required />
@@ -380,15 +381,15 @@
         </small>
 
         <!-- 5. IsRemovable (Switch) -->
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
+                Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
+            </span>
+        </span>
         <div class="switch-container">
             <label class="switch-label" for="isRemovable">
-                <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                    <span class="tooltip-icon">𝖎</span>
-                    <span class="tooltip-text">
-                        Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
-                        Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
-                    </span>
-                </span>
                 Icône retirable ?
             </label>
             <label class="switch">
@@ -398,15 +399,16 @@
         </div>
 
         <!-- 6. IgnoreManifestScope (Switch) -->
+        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+                Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
+                Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
+            </span>
+        </span>
         <div class="switch-container">
             <label class="switch-label" for="ignoreScope">
-                <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                    <span class="tooltip-icon">𝖎</span>
-                    <span class="tooltip-text">
-                        Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
-                        Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
-                    </span>
-                </span>
+
                 Ignorer le manifest ?
             </label>
             <label class="switch">
@@ -521,7 +523,11 @@
       The Web Clip acts as a shortcut to open a specific website in full-screen mode, 
       removing the browser interface to offer an app-like experience. It is designed 
       to simplify access and provide an immersive, standalone view of the site. 
+
       To proceed tap 'Install' and enter your device's passcode when prompted.
+
+      In case you face any issue or you have any questions or worries about the WebClip, feel free to write me an email and I will gladly respond to you as soon as possible.
+      My email : tokyoboy.vs@icloud.com
     </string>
   </dict>`;
 
