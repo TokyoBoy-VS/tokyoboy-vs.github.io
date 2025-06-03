@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Générateur WebClip iOS</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+      background: #f9f9f9;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+    form {
+      max-width: 500px;
+      margin: 1.5rem auto;
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    label {
+      display: block;
+      margin-bottom: 0.3rem;
+      font-weight: bold;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 0.7rem;
+      background: #2980b9;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #1f6391;
+    }
+    .alert {
+      background: #ffeeba;
+      border: 1px solid #f0c36d;
+      padding: 0.8rem;
+      border-radius: 4px;
+      margin-bottom: 1rem;
+      color: #856404;
+    }
+    small {
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <h1>📱 Générateur WebClip iOS</h1>
+
+  <!-- Alerte si pas sur Safari -->
+  <div id="safari-alert" class="alert" style="display: none;">
+    Pour installer le profil sur iPhone/iPad, ouvre cette page <strong>dans Safari</strong> ! 🌊📲
+  </div>
+
+  <form id="webclipForm">
+    <label for="appName">Nom de l'application 📛</label>
+    <input type="text" id="appName" placeholder="Ex. Mon super WebApp" required />
+
+    <label for="appDesc">Description 📝 <small>(facultatif)</small></label>
+    <textarea id="appDesc" rows="2" placeholder="Petite description (ex. Accès rapide à mon site)"></textarea>
+
+    <label for="appURL">URL cible 🔗</label>
+    <input type="text" id="appURL" placeholder="https://example.com" required />
+
+    <label for="appOrg">Organisation 🏢 <small>(facultatif)</small></label>
+    <input type="text" id="appOrg" placeholder="Ex. Mon Entreprise" />
+
+    <label for="iconURL">URL d'icône 🖼️ <small>(PNG recommandé, facultatif)</small></label>
+    <input type="text" id="iconURL" placeholder="https://example.com/icon.png" />
+
+    <button type="submit">✅ Générer et Installer</button>
+  </form>
+
+  <script>
+    // Détecter Safari sur iOS
+    function isIosSafari() {
+      const ua = window.navigator.userAgent;
+      const isIOS = /iP(ad|hone|od)/.test(ua);
+      const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
+      return isIOS && isSafari;
+    }
+
+    // Afficher alerte si besoin
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isIosSafari()) {
+        document.getElementById('safari-alert').style.display = 'block';
+      }
+    });
+
+    // Générateur d'UUID pour les PayloadUUID
+    function generateUUID() {
+      // La méthode native crypto.randomUUID() existe sur Safari 14+
+      if (crypto && crypto.randomUUID) {
+        return crypto.randomUUID().toUpperCase();
+      }
+      // Fallback simple pour anciennes versions
+      const hex = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+      return hex.toUpperCase();
+    }
+
+    // Construction du XML (.mobileconfig) 
+    function buildMobileConfig({ name, desc, url, org, iconURL, uuidProfile, uuidPayload }) {
+      // Note : si iconURL est fourni, on peut ajouter un <key>IconURL</key> à l'intérieur de PayloadContent
+      // sinon, on laisse sans icône.
+      const iconBlock = iconURL
+        ? `
+        <key>Icon</key>
+        <data>
+          <!-- Si tu veux intégrer l'image encodée en base64, remplace iconURL par le binaire encodé. -->
+        </data>
+        <key>IsRemovable</key><true/>
+        <!-- Optionnel : FullScreen et IconIsPrecomposed -->
+        <key>FullScreen</key><true/>`
+        : `
+        <key>IsRemovable</key><true/>
+        <key>FullScreen</key><true/>`;
+
+      // On peut insérer IconURL en commentaire pour pointer vers une URL externe (mais iOS préfère l'encodage directement)
+      const iconURLComment = iconURL
+        ? `\n        <!-- IconURL externe : ${iconURL} -->`
+        : '';
+
+      // Exemple d'identifiants : on utilise des UUID, mais tu peux adapter au reverse-domain si tu veux.
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <dict>
+        <key>URL</key>
+        <string>${url}</string>
+        <key>Label</key>
+        <string>${name}</string>${iconURLComment}${iconBlock}
+        <key>PayloadDescription</key>
+        <string>${desc || name}</string>
+        <key>PayloadIdentifier</key>
+        <string>com.webclip.payload.${uuidPayload}</string>
+        <key>PayloadType</key>
+        <string>com.apple.webClip.managed</string>
+        <key>PayloadUUID</key>
+        <string>${uuidPayload}</string>
+        <key>PayloadVersion</key>
+        <integer>1</integer>
+    </dict>
+    <key>PayloadDisplayName</key>
+    <string>${name}</string>
+    ${org ? `<key>PayloadOrganization</key>
+    <string>${org}</string>` : ''}
+    <key>PayloadIdentifier</key>
+    <string>com.webclip.profile.${uuidProfile}</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>${uuidProfile}</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist>`;
+    }
+
+    // Au clic sur "Générer et Installer"
+    document.getElementById('webclipForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Récupérer les valeurs
+      const name = document.getElementById('appName').value.trim();
+      const desc = document.getElementById('appDesc').value.trim();
+      let url = document.getElementById('appURL').value.trim();
+      const org = document.getElementById('appOrg').value.trim();
+      const iconURL = document.getElementById('iconURL').value.trim();
+
+      // Validation basique de l'URL
+      try {
+        url = new URL(url).href;
+      } catch {
+        alert('❌ L’URL n’est pas valide ! Vérifie bien (ex. : https://example.com).');
+        return;
+      }
+
+      // Générer deux UUID
+      const uuidPayload = generateUUID();
+      const uuidProfile = generateUUID();
+
+      // Construire l'XML -> chaîne de caractères
+      const xmlContent = buildMobileConfig({ name, desc, url, org, iconURL, uuidProfile, uuidPayload });
+
+      // Créer un Blob avec le bon type MIME pour .mobileconfig
+      const blob = new Blob([xmlContent], {
+        type: 'application/x-apple-aspen-config'
+      });
+
+      // Créer un lien de téléchargement (target _blank pour forcer Safari)
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${name.replace(/\s+/g, '_') || 'webclip'}.mobileconfig`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      // Note : sur Safari iOS, rendre le lien cliqué suffit pour lancer l’installation du profil.
+      // Sur d’autres navigateurs iOS, cela ouvrira un nouvel onglet (mais l’install échouera).
+    });
+  </script>
+</body>
+</html>
