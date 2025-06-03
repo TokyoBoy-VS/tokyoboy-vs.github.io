@@ -306,6 +306,14 @@
                 width: 160px;
             }
         }
+
+        /* Add to CSS (in <style>): */
+        .label-row {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin-bottom: 0.4rem;
+        }
     </style>
 </head>
 
@@ -325,55 +333,63 @@
     <!-- ===== Formulaire ===== -->
     <form id="webclipForm" novalidate>
         <!-- 1. Nom de l’application -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
-                Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
+                    Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
+                </span>
             </span>
-        </span>
-        <label for="appName">
-            Nom de l’application 📛
-        </label>
+            <label for="appName">
+                Nom de l’application 📛
+            </label>
+        </div>
         <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
 
         <!-- 2. Description -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Texte descriptif visible lors de l’installation du profil.
-                Si vide, on prendra le nom comme description.
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Texte descriptif visible lors de l’installation du profil.
+                    Si vide, on prendra le nom comme description.
+                </span>
             </span>
-        </span>
-        <label for="appDesc">
-            Description de l’application 📝
-        </label>
+            <label for="appDesc">
+                Description de l’application 📝
+            </label>
+        </div>
         <textarea id="appDesc" rows="2" placeholder="Petite description" required></textarea>
 
         <!-- 3. URL cible -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Adresse du site/web app à ouvrir en plein écran.
-                Doit commencer par <code>https://</code>.
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Adresse du site/web app à ouvrir en plein écran.
+                    Doit commencer par <code>https://</code>.
+                </span>
             </span>
-        </span>
-        <label for="appURL">
-            URL cible 🔗
-        </label>
+            <label for="appURL">
+                URL cible 🔗
+            </label>
+        </div>
         <input type="text" id="appURL" placeholder="https://exemple.com" required />
 
         <!-- 4. Icône (Base64) -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Image PNG/JPG convertie automatiquement en Base64.
-                (Idéal : carré 144×144 px)
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Image PNG/JPG convertie automatiquement en Base64.
+                    (Idéal : carré 144×144 px)
+                </span>
             </span>
-        </span>
-        <label for="iconFile">
-            Icône de l’application 🖼️
-        </label>
+            <label for="iconFile">
+                Icône de l’application 🖼️
+            </label>
+        </div>
         <input type="file" id="iconFile" accept="image/png, image/jpeg" required />
         <small
             style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
@@ -381,17 +397,19 @@
         </small>
 
         <!-- 5. IsRemovable (Switch) -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
-                Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
+                    Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
+                </span>
             </span>
-        </span>
-        <div class="switch-container">
             <label class="switch-label" for="isRemovable">
                 Icône retirable ?
             </label>
+        </div>
+        <div class="switch-container">
             <label class="switch">
                 <input type="checkbox" id="isRemovable" checked>
                 <span class="slider"></span>
@@ -399,18 +417,19 @@
         </div>
 
         <!-- 6. IgnoreManifestScope (Switch) -->
-        <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-            <span class="tooltip-icon">𝖎</span>
-            <span class="tooltip-text">
-                Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
-                Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
+        <div class="label-row">
+            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+                <span class="tooltip-icon">𝖎</span>
+                <span class="tooltip-text">
+                    Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
+                    Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
+                </span>
             </span>
-        </span>
-        <div class="switch-container">
             <label class="switch-label" for="ignoreScope">
-
                 Ignorer le manifest ?
             </label>
+        </div>
+        <div class="switch-container">
             <label class="switch">
                 <input type="checkbox" id="ignoreScope" checked>
                 <span class="slider"></span>
@@ -646,13 +665,32 @@ ${consentText}
         const modalAlert = document.getElementById('modal-alert');
         const modalAlertMsg = document.getElementById('modal-alert-message');
         const btnAlertOk = document.getElementById('btn-alert-ok');
-        function showModalAlert(message) {
-            modalAlertMsg.textContent = message;
+        function showModalAlert(message, customBtnText) {
+            modalAlertMsg.innerHTML = message;
             modalAlert.style.display = 'flex';
+            if (customBtnText) {
+                btnAlertOk.textContent = customBtnText;
+            } else {
+                btnAlertOk.textContent = 'OK';
+            }
         }
         btnAlertOk.addEventListener('click', () => {
             modalAlert.style.display = 'none';
         });
+
+        // ===== Tooltip as modal alert =====
+        document.querySelectorAll('.tooltip-wrapper').forEach(function(wrapper) {
+            wrapper.addEventListener('click', function() {
+                var tooltip = wrapper.querySelector('.tooltip-text');
+                if (tooltip) {
+                    showModalAlert(tooltip.innerHTML, "J'ai compris !");
+                }
+            });
+        });
+        // Hide tooltip bubble
+        var style = document.createElement('style');
+        style.innerHTML = `.tooltip-text { display: none !important; }`;
+        document.head.appendChild(style);
     </script>
 </body>
 
