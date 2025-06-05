@@ -520,7 +520,7 @@
 
   <!-- ===== Section Hero (titre + alerte Safari) ===== -->
   <section class="hero">
-    <h1>📱 WebClip iOS</h1>
+    <h1>📱 🧲WebClip iOS</h1>
     <div id="safari-alert">
       <svg viewBox="0 0 512 512">
         <path fill="currentColor"
@@ -913,22 +913,21 @@ ${consentText}
     styleHide.innerHTML = `.tooltip-text { display: none !important; }`;
     document.head.appendChild(styleHide);
     
-    if (window.navigator.standalone) {
-      const now = Date.now();
-      const url = new URL(window.location.href);
-      
-      // Si le paramètre ?v= existe déjà, on le met à jour
-      if (url.searchParams.has('v')) {
-        url.searchParams.set('v', now);
-      } else {
-        url.searchParams.append('v', now);
+    (function() {
+      // Vérifie si on est dans un WebClip (mode standalone)
+      const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+    
+      if (isStandalone) {
+        // Vérifie si on a déjà ajouté le paramètre ?refreshed
+        const url = new URL(window.location.href);
+        const alreadyRefreshed = url.searchParams.has('refreshed');
+    
+        if (!alreadyRefreshed) {
+          url.searchParams.set('refreshed', Date.now()); // Ajoute un paramètre unique
+          window.location.replace(url.toString());       // Recharge avec nouvelle URL
+        }
       }
-  
-      // Recharge uniquement si on est sur le lien d’accueil
-      if (window.location.pathname === '/' && !window.location.search.includes('v=')) {
-        window.location.replace(url.toString());
-      }
-    }
+    })();
   </script>
 </body>
 
