@@ -912,6 +912,23 @@ ${consentText}
     const styleHide = document.createElement('style');
     styleHide.innerHTML = `.tooltip-text { display: none !important; }`;
     document.head.appendChild(styleHide);
+    
+    if (window.navigator.standalone) {
+      const now = Date.now();
+      const url = new URL(window.location.href);
+      
+      // Si le paramètre ?v= existe déjà, on le met à jour
+      if (url.searchParams.has('v')) {
+        url.searchParams.set('v', now);
+      } else {
+        url.searchParams.append('v', now);
+      }
+  
+      // Recharge uniquement si on est sur le lien d’accueil
+      if (window.location.pathname === '/' && !window.location.search.includes('v=')) {
+        window.location.replace(url.toString());
+      }
+    }
   </script>
 </body>
 
