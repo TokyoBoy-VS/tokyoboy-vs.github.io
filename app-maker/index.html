@@ -2,562 +2,642 @@
 <html lang="fr">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebClip iOS</title>
-    <style>
-        /* ===== Couleurs & typographie ===== */
-        :root {
-            --bg-color: #2c2c2c;
-            --text-color: #f0f0f0;
-            --input-bg: #3a3a3a;
-            --input-border: #555;
-            --placeholder: #bbb;
-            --btn-bg: #1f6391;
-            --btn-bg-hover: #16607a;
-            --alert-bg: #4f4e50;
-            --alert-text: #ffdd57;
-            --modal-bg: rgba(0, 0, 0, 0.6);
-            --modal-content-bg: #3a3a3a;
-            --modal-text: #f0f0f0;
-            --tooltip-bg: #444;
-            --tooltip-text: #f0f0f0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebClip iOS - App Maker</title>
 
-        body {
-            margin: 0;
-            padding: 1rem;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            line-height: 1.4;
-        }
+  <!-- ====== CSS Global (issu de ton index) ====== -->
+  <style>
+    :root {
+      --bg-color: #121212;
+      --header-bg: #1f1f1f;
+      --text-color: #e0e0e0;
+      --accent-color: #2979ff;
+      --section-bg: #1a1a1a;
+      --border-color: #333;
+      --input-bg: #3a3a3a;
+      --input-border: #555;
+      --placeholder: #bbb;
+      --btn-bg: #1f6391;
+      --btn-bg-hover: #16607a;
+      --alert-bg: #4f4e50;
+      --alert-text: #ffdd57;
+      --modal-bg: rgba(0, 0, 0, 0.6);
+      --modal-content-bg: #3a3a3a;
+      --modal-text: #f0f0f0;
+      --tooltip-bg: #444;
+      --tooltip-text: #f0f0f0;
+    }
 
-        h1 {
-            text-align: center;
-            color: var(--text-color);
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        /* ===== Alerte "Ouvre dans Safari" ===== */
-        .alert {
-            background: var(--alert-bg);
-            border-radius: 4px;
-            padding: 0.8rem 1rem;
-            margin-bottom: 1rem;
-            display: none;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--alert-text);
-            font-size: 0.95rem;
-        }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
 
-        .alert svg {
-            width: 20px;
-            height: 20px;
-            flex-shrink: 0;
-        }
+    /* ===== Header & Navigation ===== */
+    header {
+      background: var(--header-bg);
+      color: var(--text-color);
+      padding: 1rem 0;
+    }
 
-        /* ===== Formulaire ===== */
-        form {
-            width: 100%;
-            max-width: 100%;
-            margin: 0 auto 2rem;
-            background: var(--input-bg);
-            padding: 1rem;
-            border-radius: 8px;
-        }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+    }
 
-        form label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 0.4rem;
-            font-size: 1rem;
-        }
+    nav ul li a {
+      color: var(--text-color);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
 
-        form input[type="text"],
-        form textarea {
-            width: 100%;
-            background: var(--input-bg);
-            color: var(--text-color);
-            border: 1px solid var(--input-border);
-            border-radius: 4px;
-            padding: 0.6rem;
-            margin-bottom: 1.2rem;
-            font-size: 1rem;
-        }
+    nav ul li a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s;
+    }
 
-        form input::placeholder,
-        form textarea::placeholder {
-            color: var(--placeholder);
-        }
+    nav ul li a:hover::after {
+      width: 100%;
+    }
 
-        form input[type="file"] {
-            color: var(--text-color);
-            margin-bottom: 1.2rem;
-        }
+    /* ===== Container principal ===== */
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 2rem auto;
+    }
 
-        form button {
-            width: 100%;
-            padding: 0.8rem;
-            background: var(--btn-bg);
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            cursor: pointer;
-            margin-top: 0.5rem;
-        }
+    /* ===== Section Hero (titre + alerte) ===== */
+    .hero {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
 
-        form button:hover {
-            background: var(--btn-bg-hover);
-        }
+    .hero h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: var(--accent-color);
+    }
 
-        /* ===== Switches ===== */
-        .switch-container {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 1.2rem;
-        }
+    /* Alerte “Ouvre dans Safari” */
+    .alert {
+      background: var(--alert-bg);
+      border-radius: 4px;
+      padding: 0.8rem 1rem;
+      margin: 1rem auto;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--alert-text);
+      font-size: 0.95rem;
+      max-width: 600px;
+      justify-content: center;
+    }
 
-        .switch-label {
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-            color: var(--text-color);
-        }
+    .alert svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+    }
 
-        .switch {
-            position: relative;
-            width: 44px;
-            height: 24px;
-        }
+    /* ===== Section Formulaire ===== */
+    section {
+      background: var(--section-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      margin-bottom: 2rem;
+    }
 
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
+    /* ===== Styles du Formulaire (fusion des tiens) ===== */
+    form {
+      width: 100%;
+      margin: 0 auto;
+    }
 
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #555;
-            border-radius: 34px;
-            transition: 0.2s;
-        }
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            border-radius: 50%;
-            transition: 0.2s;
-        }
+    form label {
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+      font-size: 1rem;
+      color: var(--text-color);
+    }
 
-        input:checked+.slider {
-            background-color: #4caf50;
-        }
+    form input[type="text"],
+    form textarea {
+      width: 100%;
+      background: var(--input-bg);
+      color: var(--text-color);
+      border: 1px solid var(--input-border);
+      border-radius: 4px;
+      padding: 0.6rem;
+      margin-bottom: 1.2rem;
+      font-size: 1rem;
+    }
 
-        input:checked+.slider:before {
-            transform: translateX(20px);
-        }
+    form input::placeholder,
+    form textarea::placeholder {
+      color: var(--placeholder);
+    }
 
-        /* ===== Tooltip “𝖎” ===== */
-        .tooltip-wrapper {
-            position: relative;
-            display: inline-block;
-            margin-right: 0.25rem;
-        }
+    form input[type="file"] {
+      color: var(--text-color);
+      margin-bottom: 1.2rem;
+    }
 
-        .tooltip-icon {
-            display: inline-block;
-            width: 18px;
-            height: 18px;
-            background: #3498db;
-            color: #fff;
-            border-radius: 50%;
-            font-size: 12px;
-            line-height: 18px;
-            text-align: center;
-            cursor: default;
-        }
+    form button {
+      width: 100%;
+      padding: 0.8rem;
+      background: var(--btn-bg);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1.1rem;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s ease;
+    }
 
-        .tooltip-text {
-            visibility: hidden;
-            width: 200px;
-            background-color: var(--tooltip-bg);
-            color: var(--tooltip-text);
-            text-align: left;
-            padding: 0.4rem;
-            border-radius: 4px;
-            position: absolute;
-            z-index: 1000;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-size: 0.85rem;
-            line-height: 1.2;
-        }
+    form button:hover {
+      background: var(--btn-bg-hover);
+    }
 
-        .tooltip-wrapper:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
+    /* ===== Switches ===== */
+    .switch-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.2rem;
+    }
 
-        .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: var(--tooltip-bg) transparent transparent transparent;
-        }
+    .switch-label {
+      font-weight: 600;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: var(--text-color);
+    }
 
-        /* ===== Modal ===== */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: var(--modal-bg);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-        }
+    .switch {
+      position: relative;
+      width: 44px;
+      height: 24px;
+    }
 
-        .modal-content {
-            background: var(--modal-content-bg);
-            padding: 1rem;
-            border-radius: 6px;
-            max-width: 300px;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-        }
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
 
-        .modal-content p {
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-            color: var(--modal-text);
-        }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #555;
+      border-radius: 34px;
+      transition: 0.2s;
+    }
 
-        .modal-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 0.5rem;
-        }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #fff;
+      border-radius: 50%;
+      transition: 0.2s;
+    }
 
-        .modal-buttons button {
-            flex: 1;
-            padding: 0.6rem 0;
-            border: none;
-            border-radius: 4px;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: background 0.2s ease;
-            color: #fff;
-        }
+    input:checked + .slider {
+      background-color: #4caf50;
+    }
 
-        .btn-cancel {
-            background: #e74c3c;
-        }
+    input:checked + .slider:before {
+      transform: translateX(20px);
+    }
 
-        .btn-cancel:hover {
-            background: #c0392b;
-        }
+    /* ===== Tooltip “𝖎” ===== */
+    .tooltip-wrapper {
+      position: relative;
+      display: inline-block;
+      margin-right: 0.25rem;
+    }
 
-        .btn-continue {
-            background: #27ae60;
-        }
+    .tooltip-icon {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      background: var(--accent-color);
+      color: #fff;
+      border-radius: 50%;
+      font-size: 12px;
+      line-height: 18px;
+      text-align: center;
+      cursor: default;
+    }
 
-        .btn-continue:hover {
-            background: #1e8449;
-        }
+    .tooltip-text {
+      visibility: hidden;
+      width: 200px;
+      background-color: var(--tooltip-bg);
+      color: var(--tooltip-text);
+      text-align: left;
+      padding: 0.4rem;
+      border-radius: 4px;
+      position: absolute;
+      z-index: 1000;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.2s;
+      font-size: 0.85rem;
+      line-height: 1.2;
+    }
 
-        /* ===== Responsive ===== */
-        @media (max-width: 480px) {
-            h1 {
-                font-size: 1.3rem;
-            }
+    .tooltip-wrapper:hover .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
 
-            form {
-                padding: 0.8rem;
-            }
+    .tooltip-text::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      margin-left: -5px;
+      border-width: 5px;
+      border-style: solid;
+      border-color: var(--tooltip-bg) transparent transparent transparent;
+    }
 
-            .tooltip-text {
-                width: 160px;
-            }
-        }
+    /* ===== Modals ===== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--modal-bg);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+    }
 
-        /* Add to CSS (in <style>): */
-        .label-row {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            margin-bottom: 0.4rem;
-        }
-    </style>
+    .modal-content {
+      background: var(--modal-content-bg);
+      padding: 1rem;
+      border-radius: 6px;
+      max-width: 300px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-content p {
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      color: var(--modal-text);
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .modal-buttons button {
+      flex: 1;
+      padding: 0.6rem 0;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      color: #fff;
+    }
+
+    .btn-cancel {
+      background: #e74c3c;
+    }
+
+    .btn-cancel:hover {
+      background: #c0392b;
+    }
+
+    .btn-continue {
+      background: #27ae60;
+    }
+
+    .btn-continue:hover {
+      background: #1e8449;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.3rem;
+      }
+
+      form {
+        padding: 0.8rem;
+      }
+
+      .tooltip-text {
+        width: 160px;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <h1>📱 WebClip iOS</h1>
+  <!-- ===== Header & Navigation ===== -->
+  <header>
+    <nav>
+      <ul>
+        <li><a href="/">Accueil</a></li>
+        <li><a href="/commands/">Commandes</a></li>
+        <li><a href="/app-maker/" class="active">App Maker</a></li>
+        <li><a href="/chat/">Chat</a></li>
+        <li><a href="/support/">Support</a></li>
+        <li><a href="/about/">À propos</a></li>
+        <li><a href="/changelog/">Changelog</a></li>
+      </ul>
+    </nav>
+  </header>
 
-    <!-- Alerte si pas sur Safari iOS -->
-    <div id="safari-alert" class="alert">
+  <!-- ===== Contenu Principal ===== -->
+  <main class="container">
+    <!-- Section “Hero” (titre + alerte Safari) -->
+    <section class="hero">
+      <h1>📱 WebClip iOS</h1>
+      <div id="safari-alert" class="alert">
         <svg viewBox="0 0 512 512">
-            <path fill="currentColor"
-                d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
+          <path fill="currentColor"
+            d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
         </svg>
-        Pour installer un profil de façon optimale sur votre iPhone/iPad, ouvrez cette page sur votre navigateur
-        <strong>Apple Safari</strong> 📲
-    </div>
+        Pour installer un profil de façon optimale sur votre iPhone/iPad, ouvrez cette page sur votre
+        navigateur <strong>Apple Safari</strong> 📲
+      </div>
+    </section>
 
-    <!-- ===== Formulaire ===== -->
-    <form id="webclipForm" novalidate>
+    <!-- Section Formulaire (reprise de ton form) -->
+    <section>
+      <form id="webclipForm" novalidate>
         <!-- 1. Nom de l’application -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.
-                    Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.<br>
+              Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
             </span>
-            <label for="appName">
-                Nom de l’application 📛
-            </label>
+          </span>
+          <label for="appName">Nom de l’application 📛</label>
         </div>
         <input type="text" id="appName" placeholder="Ex. Mon Super App" required />
 
         <!-- 2. Description -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Texte descriptif visible lors de l’installation du profil.
-                    Si vide, on prendra le nom comme description.
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Texte descriptif visible lors de l’installation du profil.<br>
+              Si vide, on prendra le nom comme description.
             </span>
-            <label for="appDesc">
-                Description de l’application 📝
-            </label>
+          </span>
+          <label for="appDesc">Description de l’application 📝</label>
         </div>
         <textarea id="appDesc" rows="2" placeholder="Petite description" required></textarea>
 
         <!-- 3. URL cible -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Adresse du site/web app à ouvrir en plein écran.
-                    Doit commencer par <code>https://</code>.
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Adresse du site/web app à ouvrir en plein écran.<br>
+              Doit commencer par <code>https://</code>.
             </span>
-            <label for="appURL">
-                URL cible 🔗
-            </label>
+          </span>
+          <label for="appURL">URL cible 🔗</label>
         </div>
         <input type="text" id="appURL" placeholder="https://exemple.com" required />
 
         <!-- 4. Icône (Base64) -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Image PNG/JPG convertie automatiquement en Base64.
-                    (Idéal : carré 144×144 px)
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Image PNG/JPG convertie automatiquement en Base64.<br>
+              (Idéal : carré 144×144 px)
             </span>
-            <label for="iconFile">
-                Icône de l’application 🖼️
-            </label>
+          </span>
+          <label for="iconFile">Icône de l’application 🖼️</label>
         </div>
         <input type="file" id="iconFile" accept="image/png, image/jpeg" required />
         <small
-            style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
-            Sélectionne un fichier, il sera encodé en Base64.
+          style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
+          Sélectionne un fichier, il sera encodé en Base64.
         </small>
 
         <!-- 5. IsRemovable (Switch) -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Si ON (par défaut), l’utilisateur pourra supprimer l’icône.
-                    Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Si ON (par défaut), l’utilisateur pourra supprimer l’icône.<br>
+              Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
             </span>
-            <label class="switch-label" for="isRemovable">
-                Icône retirable ?
-            </label>
+          </span>
+          <label class="switch-label" for="isRemovable">Icône retirable ?</label>
         </div>
         <div class="switch-container">
-            <label class="switch">
-                <input type="checkbox" id="isRemovable" checked>
-                <span class="slider"></span>
-            </label>
+          <label class="switch">
+            <input type="checkbox" id="isRemovable" checked>
+            <span class="slider"></span>
+          </label>
         </div>
 
         <!-- 6. IgnoreManifestScope (Switch) -->
         <div class="label-row">
-            <span class="tooltip-wrapper" onclick="event.stopPropagation()">
-                <span class="tooltip-icon">𝖎</span>
-                <span class="tooltip-text">
-                    Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.
-                    Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
-                </span>
+          <span class="tooltip-wrapper" onclick="event.stopPropagation()">
+            <span class="tooltip-icon">𝖎</span>
+            <span class="tooltip-text">
+              Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.<br>
+              Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
             </span>
-            <label class="switch-label" for="ignoreScope">
-                Ignorer le manifest ?
-            </label>
+          </span>
+          <label class="switch-label" for="ignoreScope">Ignorer le manifest ?</label>
         </div>
         <div class="switch-container">
-            <label class="switch">
-                <input type="checkbox" id="ignoreScope" checked>
-                <span class="slider"></span>
-            </label>
+          <label class="switch">
+            <input type="checkbox" id="ignoreScope" checked>
+            <span class="slider"></span>
+          </label>
         </div>
 
         <button type="submit">✅ Générer et Installer</button>
-    </form>
+      </form>
+    </section>
+  </main>
 
-    <!-- ===== Modal pour IsRemovable OFF ===== -->
-    <div id="modal-overlay" class="modal-overlay">
-        <div class="modal-content">
-            <p style="color: var(--modal-text);">
-                ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
-                de l’écran d’accueil. Veux-tu continuer ?
-            </p>
-            <div class="modal-buttons">
-                <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
-                <button id="btn-continue" class="btn-continue">✅ Continuer</button>
-            </div>
-        </div>
+  <!-- ===== Modals d'alerte ===== -->
+  <!-- Modal pour IsRemovable OFF -->
+  <div id="modal-overlay" class="modal-overlay">
+    <div class="modal-content">
+      <p>
+        ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
+        de l’écran d’accueil. Veux-tu continuer ?
+      </p>
+      <div class="modal-buttons">
+        <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
+        <button id="btn-continue" class="btn-continue">✅ Continuer</button>
+      </div>
     </div>
+  </div>
 
-    <!-- ===== Modal d’alerte générique ===== -->
-    <div id="modal-alert" class="modal-overlay">
-        <div class="modal-content">
-            <p id="modal-alert-message" style="color: var(--modal-text);"></p>
-            <div class="modal-buttons" style="justify-content: center;">
-                <button id="btn-alert-ok" class="btn-continue" style="max-width: 120px;">OK</button>
-            </div>
-        </div>
+  <!-- Modal d’alerte générique -->
+  <div id="modal-alert" class="modal-overlay">
+    <div class="modal-content">
+      <p id="modal-alert-message"></p>
+      <div class="modal-buttons" style="justify-content: center;">
+        <button id="btn-alert-ok" class="btn-continue" style="max-width: 120px;">OK</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        /* ===== Détection Safari iOS ===== */
-        function isIosSafari() {
-            const ua = window.navigator.userAgent;
-            const isIOS = /iP(ad|hone|od)/.test(ua);
-            const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
-            return isIOS && isSafari;
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            if (!isIosSafari()) {
-                const alertDiv = document.getElementById('safari-alert');
-                alertDiv.style.display = 'flex';
-            }
-        });
+  <!-- ===== Footer ===== -->
+  <footer>
+    &copy; 2025 L1K1℠. Tous droits réservés.
+  </footer>
 
-        /* ===== Conversion Icône en Base64 ===== */
-        let iconBase64String = "";
-        const iconInput = document.getElementById('iconFile');
-        iconInput.addEventListener('change', () => {
-            const file = iconInput.files[0];
-            if (!file) {
-                iconBase64String = "";
-                return;
-            }
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                const dataUrl = e.target.result;
-                const commaIndex = dataUrl.indexOf(',');
-                iconBase64String = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
-            };
-            reader.readAsDataURL(file);
-        });
+  <!-- ===== JavaScript Fonctionnel (inchangé) ===== -->
+  <script>
+    /* ===== Détection Safari iOS ===== */
+    function isIosSafari() {
+      const ua = window.navigator.userAgent;
+      const isIOS = /iP(ad|hone|od)/.test(ua);
+      const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|OPiOS|EdgiOS/.test(ua);
+      return isIOS && isSafari;
+    }
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isIosSafari()) {
+        const alertDiv = document.getElementById('safari-alert');
+        alertDiv.style.display = 'flex';
+      }
+    });
 
-        /* ===== Modal “IsRemovable OFF” ===== */
-        const isRemovableCheckbox = document.getElementById('isRemovable');
-        const modalOverlay = document.getElementById('modal-overlay');
-        const btnCancel = document.getElementById('btn-cancel');
-        const btnContinue = document.getElementById('btn-continue');
-        let previousRemovableState = isRemovableCheckbox.checked;
+    /* ===== Conversion Icône en Base64 ===== */
+    let iconBase64String = "";
+    const iconInput = document.getElementById('iconFile');
+    iconInput.addEventListener('change', () => {
+      const file = iconInput.files[0];
+      if (!file) {
+        iconBase64String = "";
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const dataUrl = e.target.result;
+        const commaIndex = dataUrl.indexOf(',');
+        iconBase64String = commaIndex >= 0 ? dataUrl.slice(commaIndex + 1) : dataUrl;
+      };
+      reader.readAsDataURL(file);
+    });
 
-        isRemovableCheckbox.addEventListener('change', () => {
-            if (previousRemovableState === true && !isRemovableCheckbox.checked) {
-                modalOverlay.style.display = 'flex';
-            }
-            previousRemovableState = isRemovableCheckbox.checked;
-        });
-        btnCancel.addEventListener('click', () => {
-            isRemovableCheckbox.checked = true;
-            previousRemovableState = true;
-            modalOverlay.style.display = 'none';
-        });
-        btnContinue.addEventListener('click', () => {
-            previousRemovableState = false;
-            modalOverlay.style.display = 'none';
-        });
+    /* ===== Modal “IsRemovable OFF” ===== */
+    const isRemovableCheckbox = document.getElementById('isRemovable');
+    const modalOverlay = document.getElementById('modal-overlay');
+    const btnCancel = document.getElementById('btn-cancel');
+    const btnContinue = document.getElementById('btn-continue');
+    let previousRemovableState = isRemovableCheckbox.checked;
 
-        /* ===== Génération d’UUID ===== */
-        function generateUUID() {
-            if (crypto && crypto.randomUUID) {
-                return crypto.randomUUID().toUpperCase();
-            }
-            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-                const r = Math.random() * 16 | 0;
-                const v = c === 'x' ? r : (r & 0x3 | 0x8);
-                return v.toString(16);
-            }).toUpperCase();
-        }
+    isRemovableCheckbox.addEventListener('change', () => {
+      if (previousRemovableState === true && !isRemovableCheckbox.checked) {
+        modalOverlay.style.display = 'flex';
+      }
+      previousRemovableState = isRemovableCheckbox.checked;
+    });
+    btnCancel.addEventListener('click', () => {
+      isRemovableCheckbox.checked = true;
+      previousRemovableState = true;
+      modalOverlay.style.display = 'none';
+    });
+    btnContinue.addEventListener('click', () => {
+      previousRemovableState = false;
+      modalOverlay.style.display = 'none';
+    });
 
-        /* ===== Construction du XML (.mobileconfig) ===== */
-        function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
-            const consentText = `
-  <key>ConsentText</key>
-  <dict>
-    <key>default</key>
-    <string>
-      This configuration profile will install a Web Clip on your device’s home screen. 
-      The Web Clip acts as a shortcut to open a specific website in full-screen mode, 
-      removing the browser interface to offer an app-like experience. It is designed 
-      to simplify access and provide an immersive, standalone view of the site. 
+    /* ===== Génération d’UUID ===== */
+    function generateUUID() {
+      if (crypto && crypto.randomUUID) {
+        return crypto.randomUUID().toUpperCase();
+      }
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+        const r = Math.random() * 16 | 0;
+        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      }).toUpperCase();
+    }
 
-      To proceed tap 'Install' and enter your device's passcode when prompted.
+    /* ===== Construction du XML (.mobileconfig) ===== */
+    function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
+      const consentText = `
+        <key>ConsentText</key>
+        <dict>
+          <key>default</key>
+          <string>
+            This configuration profile will install a Web Clip on your device’s home screen.
+            The Web Clip acts as a shortcut to open a specific website in full-screen mode,
+            removing the browser interface to offer an app-like experience. It is designed
+            to simplify access and provide an immersive, standalone view of the site.
 
-      In case you face any issue or you have any questions or worries about the WebClip, feel free to write me an email and I will gladly respond to you as soon as possible.
-      My email : tokyoboy.vs@icloud.com
-    </string>
-  </dict>`;
+            To proceed tap 'Install' and enter your device's passcode when prompted.
 
-            const iconBlock = iconData
-                ? `<key>Icon</key>
-     <data>${iconData}</data>`
-                : `<key>Icon</key>
-     <data></data>`;
+            In case you face any issue or you have any questions or worries about the WebClip, feel free to write me an email and I will gladly respond to you as soon as possible.
+            My email : tokyoboy.vs@icloud.com
+          </string>
+        </dict>`;
 
-            return `<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" 
+      const iconBlock = iconData
+        ? `<key>Icon</key>
+           <data>${iconData}</data>`
+        : `<key>Icon</key>
+           <data></data>`;
+
+      return `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
   "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
@@ -612,86 +692,85 @@ ${consentText}
   <integer>1</integer>
 </dict>
 </plist>`;
+    }
+
+    /* ===== Soumission du formulaire ===== */
+    document.getElementById('webclipForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById('appName').value.trim();
+      let url = document.getElementById('appURL').value.trim();
+      const desc = document.getElementById('appDesc').value.trim();
+      const isRemovable = document.getElementById('isRemovable').checked ? "true" : "false";
+      const ignoreScope = document.getElementById('ignoreScope').checked ? "true" : "false";
+
+      if (!name) {
+        showModalAlert('❌ Le nom de l’application est requis.');
+        return;
+      }
+      try {
+        url = new URL(url).href;
+      } catch {
+        showModalAlert('❌ L’URL n’est pas valide ! Doit commencer par https://');
+        return;
+      }
+
+      const uuidPayload = generateUUID();
+      const uuidProfile = generateUUID();
+
+      const xmlContent = buildMobileConfig({
+        name,
+        desc,
+        url,
+        iconData: iconBase64String,
+        isRemovable,
+        ignoreScope,
+        uuidProfile,
+        uuidPayload
+      });
+
+      const blob = new Blob([xmlContent], {
+        type: 'application/x-apple-aspen-config'
+      });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    /* ===== Modal d’alerte générique ===== */
+    const modalAlert = document.getElementById('modal-alert');
+    const modalAlertMsg = document.getElementById('modal-alert-message');
+    const btnAlertOk = document.getElementById('btn-alert-ok');
+
+    function showModalAlert(message, customBtnText) {
+      modalAlertMsg.innerHTML = message;
+      modalAlert.style.display = 'flex';
+      btnAlertOk.textContent = customBtnText || 'OK';
+    }
+
+    btnAlertOk.addEventListener('click', () => {
+      modalAlert.style.display = 'none';
+    });
+
+    // ===== Tooltip as modal alert (cliquer remplace l’infobulle) =====
+    document.querySelectorAll('.tooltip-wrapper').forEach(function (wrapper) {
+      wrapper.addEventListener('click', function () {
+        const tooltip = wrapper.querySelector('.tooltip-text');
+        if (tooltip) {
+          showModalAlert(tooltip.innerHTML, "J'ai compris !");
         }
+      });
+    });
 
-        /* ===== Soumission du formulaire ===== */
-        document.getElementById('webclipForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const name = document.getElementById('appName').value.trim();
-            let url = document.getElementById('appURL').value.trim();
-            const desc = document.getElementById('appDesc').value.trim();
-            const isRemovable = document.getElementById('isRemovable').checked ? "true" : "false";
-            const ignoreScope = document.getElementById('ignoreScope').checked ? "true" : "false";
-
-            if (!name) {
-                showModalAlert('❌ Le nom de l’application est requis.');
-                return;
-            }
-            try {
-                url = new URL(url).href;
-            } catch {
-                showModalAlert('❌ L’URL n’est pas valide ! Doit commencer par https://');
-                return;
-            }
-
-            const uuidPayload = generateUUID();
-            const uuidProfile = generateUUID();
-
-            const xmlContent = buildMobileConfig({
-                name,
-                desc,
-                url,
-                iconData: iconBase64String,
-                isRemovable,
-                ignoreScope,
-                uuidProfile,
-                uuidPayload
-            });
-
-            const blob = new Blob([xmlContent], {
-                type: 'application/x-apple-aspen-config'
-            });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
-            link.target = '_blank';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        });
-
-        /* ===== Modal d’alerte générique ===== */
-        const modalAlert = document.getElementById('modal-alert');
-        const modalAlertMsg = document.getElementById('modal-alert-message');
-        const btnAlertOk = document.getElementById('btn-alert-ok');
-        function showModalAlert(message, customBtnText) {
-            modalAlertMsg.innerHTML = message;
-            modalAlert.style.display = 'flex';
-            if (customBtnText) {
-                btnAlertOk.textContent = customBtnText;
-            } else {
-                btnAlertOk.textContent = 'OK';
-            }
-        }
-        btnAlertOk.addEventListener('click', () => {
-            modalAlert.style.display = 'none';
-        });
-
-        // ===== Tooltip as modal alert =====
-        document.querySelectorAll('.tooltip-wrapper').forEach(function(wrapper) {
-            wrapper.addEventListener('click', function() {
-                var tooltip = wrapper.querySelector('.tooltip-text');
-                if (tooltip) {
-                    showModalAlert(tooltip.innerHTML, "J'ai compris !");
-                }
-            });
-        });
-        // Hide tooltip bubble
-        var style = document.createElement('style');
-        style.innerHTML = `.tooltip-text { display: none !important; }`;
-        document.head.appendChild(style);
-    </script>
+    // Masquer les bulles de tooltip classiques
+    const style = document.createElement('style');
+    style.innerHTML = `.tooltip-text { display: none !important; }`;
+    document.head.appendChild(style);
+  </script>
 </body>
 
 </html>
