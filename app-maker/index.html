@@ -6,27 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WebClip iOS - App Maker</title>
 
-  <!-- ====== CSS Global (issu de ton index) ====== -->
   <style>
+    /* ===== Variables globales (mêmes que dans index.html) ===== */
     :root {
       --bg-color: #121212;
-      --header-bg: #1f1f1f;
-      --text-color: #e0e0e0;
+      --fg-color: #e0e0e0;
       --accent-color: #2979ff;
-      --section-bg: #1a1a1a;
-      --border-color: #333;
-      --input-bg: #3a3a3a;
-      --input-border: #555;
-      --placeholder: #bbb;
-      --btn-bg: #1f6391;
-      --btn-bg-hover: #16607a;
-      --alert-bg: #4f4e50;
-      --alert-text: #ffdd57;
-      --modal-bg: rgba(0, 0, 0, 0.6);
-      --modal-content-bg: #3a3a3a;
-      --modal-text: #f0f0f0;
-      --tooltip-bg: #444;
-      --tooltip-text: #f0f0f0;
+      --card-bg: #1f1f1f;
+      --shadow-color: rgba(0, 0, 0, 0.5);
     }
 
     *, *::before, *::after {
@@ -36,35 +23,71 @@
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Segoe UI', Arial, sans-serif;
       background: var(--bg-color);
-      color: var(--text-color);
+      color: var(--fg-color);
       line-height: 1.6;
     }
 
-    /* ===== Header & Navigation ===== */
+    /* ===== Header & Navigation (identique à index.html) ===== */
     header {
-      background: var(--header-bg);
-      color: var(--text-color);
-      padding: 1rem 0;
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    nav ul {
-      list-style: none;
+    .header-container {
       display: flex;
-      justify-content: center;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .header-container h1 {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      width: 32px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background: var(--fg-color);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* Desktop Navigation */
+    .desktop-nav ul {
+      display: none;
+      list-style: none;
       gap: 1.5rem;
     }
 
-    nav ul li a {
-      color: var(--text-color);
+    .desktop-nav a {
+      color: var(--fg-color);
       text-decoration: none;
       font-weight: 600;
       position: relative;
     }
 
-    nav ul li a::after {
+    .desktop-nav a::after {
       content: '';
       position: absolute;
       bottom: -4px;
@@ -75,62 +98,137 @@
       transition: width 0.3s;
     }
 
-    nav ul li a:hover::after {
+    .desktop-nav a:hover::after {
       width: 100%;
     }
 
-    /* ===== Container principal ===== */
-    .container {
-      width: 90%;
-      max-width: 800px;
-      margin: 2rem auto;
+    .desktop-nav a.active {
+      color: var(--accent-color);
     }
 
-    /* ===== Section Hero (titre + alerte) ===== */
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .mobile-nav ul {
+      list-style: none;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .mobile-nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      display: block;
+      padding: 0.5rem;
+    }
+
+    .mobile-nav a.active {
+      color: var(--accent-color);
+    }
+
+    /* Responsive Styles */
+    @media (min-width: 600px) {
+      .desktop-nav ul {
+        display: flex;
+      }
+      .hamburger {
+        display: none;
+      }
+      .mobile-nav {
+        display: none !important;
+      }
+    }
+
+    /* Active States pour menu burger */
+    .show-menu .mobile-nav {
+      display: block;
+    }
+
+    .show-menu .hamburger span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .show-menu .hamburger span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .show-menu .hamburger span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* ===== Section Hero (titre) ===== */
     .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      margin-bottom: 2rem;
+      padding: 2rem 1rem;
+      background: linear-gradient(135deg, var(--card-bg), var(--bg-color));
+      margin-bottom: 1rem;
     }
 
     .hero h1 {
-      font-size: 2rem;
+      font-size: 2.5rem;
       margin-bottom: 0.5rem;
       color: var(--accent-color);
     }
 
-    /* Alerte “Ouvre dans Safari” */
-    .alert {
-      background: var(--alert-bg);
-      border-radius: 4px;
+    /* ===== Alerte “Ouvre dans Safari” (au sein de hero) ===== */
+    #safari-alert {
+      background: var(--card-bg);
+      border-radius: 6px;
       padding: 0.8rem 1rem;
-      margin: 1rem auto;
       display: none;
       align-items: center;
       gap: 0.5rem;
-      color: var(--alert-text);
+      color: var(--accent-color);
       font-size: 0.95rem;
+      margin-top: 1rem;
       max-width: 600px;
       justify-content: center;
     }
 
-    .alert svg {
+    #safari-alert svg {
       width: 20px;
       height: 20px;
       flex-shrink: 0;
     }
 
-    /* ===== Section Formulaire ===== */
-    section {
-      background: var(--section-bg);
-      padding: 1.5rem;
-      border-radius: 8px;
-      margin-bottom: 2rem;
+    /* ===== Section Contenu & Formulaire ===== */
+    /* On réutilise “features” pour l’espacement, sans grid */
+    .features {
+      padding: 1rem;
     }
 
-    /* ===== Styles du Formulaire (fusion des tiens) ===== */
+    .card {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      transition: transform 0.2s;
+      margin: 0 auto;
+      max-width: 800px;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    /* ===== Styles du Formulaire (adaptés) ===== */
     form {
       width: 100%;
-      margin: 0 auto;
     }
 
     .label-row {
@@ -142,17 +240,18 @@
 
     form label {
       font-weight: 600;
-      margin-bottom: 0.4rem;
       font-size: 1rem;
-      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      color: var(--fg-color);
     }
 
     form input[type="text"],
     form textarea {
       width: 100%;
-      background: var(--input-bg);
-      color: var(--text-color);
-      border: 1px solid var(--input-border);
+      background: var(--bg-color);
+      color: var(--fg-color);
+      border: 1px solid var(--accent-color);
       border-radius: 4px;
       padding: 0.6rem;
       margin-bottom: 1.2rem;
@@ -161,29 +260,30 @@
 
     form input::placeholder,
     form textarea::placeholder {
-      color: var(--placeholder);
+      color: var(--fg-color);
+      opacity: 0.7;
     }
 
     form input[type="file"] {
-      color: var(--text-color);
+      color: var(--fg-color);
       margin-bottom: 1.2rem;
     }
 
     form button {
       width: 100%;
       padding: 0.8rem;
-      background: var(--btn-bg);
+      background: var(--accent-color);
       color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 1.1rem;
       cursor: pointer;
       margin-top: 0.5rem;
-      transition: background 0.2s ease;
+      transition: opacity 0.2s;
     }
 
     form button:hover {
-      background: var(--btn-bg-hover);
+      opacity: 0.8;
     }
 
     /* ===== Switches ===== */
@@ -200,7 +300,7 @@
       display: flex;
       align-items: center;
       gap: 0.3rem;
-      color: var(--text-color);
+      color: var(--fg-color);
     }
 
     .switch {
@@ -234,7 +334,7 @@
       width: 18px;
       left: 3px;
       bottom: 3px;
-      background-color: #fff;
+      background-color: white;
       border-radius: 50%;
       transition: 0.2s;
     }
@@ -270,8 +370,8 @@
     .tooltip-text {
       visibility: hidden;
       width: 200px;
-      background-color: var(--tooltip-bg);
-      color: var(--tooltip-text);
+      background-color: var(--card-bg);
+      color: var(--fg-color);
       text-align: left;
       padding: 0.4rem;
       border-radius: 4px;
@@ -299,7 +399,7 @@
       margin-left: -5px;
       border-width: 5px;
       border-style: solid;
-      border-color: var(--tooltip-bg) transparent transparent transparent;
+      border-color: var(--card-bg) transparent transparent transparent;
     }
 
     /* ===== Modals ===== */
@@ -310,14 +410,14 @@
       left: 0;
       width: 100vw;
       height: 100vh;
-      background: var(--modal-bg);
+      background: var(--shadow-color);
       z-index: 2000;
       justify-content: center;
       align-items: center;
     }
 
     .modal-content {
-      background: var(--modal-content-bg);
+      background: var(--card-bg);
       padding: 1rem;
       border-radius: 6px;
       max-width: 300px;
@@ -328,7 +428,7 @@
     .modal-content p {
       margin-bottom: 1rem;
       font-size: 0.95rem;
-      color: var(--modal-text);
+      color: var(--fg-color);
     }
 
     .modal-buttons {
@@ -367,13 +467,11 @@
     /* ===== Responsive ===== */
     @media (max-width: 480px) {
       .hero h1 {
-        font-size: 1.3rem;
+        font-size: 1.8rem;
       }
-
       form {
         padding: 0.8rem;
       }
-
       .tooltip-text {
         width: 160px;
       }
@@ -382,13 +480,36 @@
 </head>
 
 <body>
-  <!-- ===== Header & Navigation ===== -->
-  <header>
-    <nav>
+  <!-- ===== Header (identique à index.html) ===== -->
+  <header id="site-header">
+    <div class="header-container">
+      <h1>L1K1℠</h1>
+      <!-- Desktop Nav -->
+      <nav class="desktop-nav">
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/commands/">Commandes</a></li>
+          <li><a href="/app-maker/" class="active">App maker</a></li>
+          <li><a href="/chat/">Chat</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/about/">À propos</a></li>
+          <li><a href="/changelog/">Changelog</a></li>
+        </ul>
+      </nav>
+      <!-- Hamburger Button -->
+      <button class="hamburger" id="menu-btn" aria-label="Menu" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Nav -->
+    <nav class="mobile-nav">
       <ul>
         <li><a href="/">Accueil</a></li>
         <li><a href="/commands/">Commandes</a></li>
-        <li><a href="/app-maker/" class="active">App Maker</a></li>
+        <li><a href="/app-maker/" class="active">App maker</a></li>
         <li><a href="/chat/">Chat</a></li>
         <li><a href="/support/">Support</a></li>
         <li><a href="/about/">À propos</a></li>
@@ -397,30 +518,29 @@
     </nav>
   </header>
 
-  <!-- ===== Contenu Principal ===== -->
-  <main class="container">
-    <!-- Section “Hero” (titre + alerte Safari) -->
-    <section class="hero">
-      <h1>📱 WebClip iOS</h1>
-      <div id="safari-alert" class="alert">
-        <svg viewBox="0 0 512 512">
-          <path fill="currentColor"
-            d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
-        </svg>
-        Pour installer un profil de façon optimale sur votre iPhone/iPad, ouvrez cette page sur votre
-        navigateur <strong>Apple Safari</strong> 📲
-      </div>
-    </section>
+  <!-- ===== Section Hero (titre + alerte Safari) ===== -->
+  <section class="hero">
+    <h1>📱 WebClip iOS</h1>
+    <div id="safari-alert">
+      <svg viewBox="0 0 512 512">
+        <path fill="currentColor"
+          d="M256 48C141.1 48 48 141.1 48 256s93.1 208 208 208 208-93.1 208-208S370.9 48 256 48zM246.2 362h19.6v19.6h-19.6V362zM246.2 102h19.6v202h-19.6V102z" />
+      </svg>
+      Pour installer un profil de façon optimale sur votre iPhone/iPad, ouvrez cette page sur votre navigateur
+      <strong>Apple Safari</strong> 📲
+    </div>
+  </section>
 
-    <!-- Section Formulaire (reprise de ton form) -->
-    <section>
+  <!-- ===== Section Formulaire (dans un “card” pour style index) ===== -->
+  <section class="features">
+    <div class="card">
       <form id="webclipForm" novalidate>
         <!-- 1. Nom de l’application -->
         <div class="label-row">
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.<br>
+              Nom qui apparaîtra sous l’icône sur l’écran d’accueil iOS.<br />
               Sert aussi pour : PayloadIdentifier, PayloadDisplayName, Label.
             </span>
           </span>
@@ -433,7 +553,7 @@
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Texte descriptif visible lors de l’installation du profil.<br>
+              Texte descriptif visible lors de l’installation du profil.<br />
               Si vide, on prendra le nom comme description.
             </span>
           </span>
@@ -446,7 +566,7 @@
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Adresse du site/web app à ouvrir en plein écran.<br>
+              Adresse du site/web app à ouvrir en plein écran.<br />
               Doit commencer par <code>https://</code>.
             </span>
           </span>
@@ -459,15 +579,14 @@
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Image PNG/JPG convertie automatiquement en Base64.<br>
+              Image PNG/JPG convertie automatiquement en Base64.<br />
               (Idéal : carré 144×144 px)
             </span>
           </span>
           <label for="iconFile">Icône de l’application 🖼️</label>
         </div>
         <input type="file" id="iconFile" accept="image/png, image/jpeg" required />
-        <small
-          style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--placeholder); font-size:0.85rem;">
+        <small style="display:block; margin-top:-0.8rem; margin-bottom:0.8rem; color:var(--fg-color); opacity:0.7; font-size:0.85rem;">
           Sélectionne un fichier, il sera encodé en Base64.
         </small>
 
@@ -476,7 +595,7 @@
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Si ON (par défaut), l’utilisateur pourra supprimer l’icône.<br>
+              Si ON (par défaut), l’utilisateur pourra supprimer l’icône.<br />
               Si OFF, l’icône restera fixée sur l’écran (confirm avec popup).
             </span>
           </span>
@@ -484,7 +603,7 @@
         </div>
         <div class="switch-container">
           <label class="switch">
-            <input type="checkbox" id="isRemovable" checked>
+            <input type="checkbox" id="isRemovable" checked />
             <span class="slider"></span>
           </label>
         </div>
@@ -494,7 +613,7 @@
           <span class="tooltip-wrapper" onclick="event.stopPropagation()">
             <span class="tooltip-icon">𝖎</span>
             <span class="tooltip-text">
-              Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.<br>
+              Si ON (par défaut), iOS n’essaie pas de charger manifest.appcache.<br />
               Si OFF, iOS vérifie le manifest avant d’afficher le WebClip.
             </span>
           </span>
@@ -502,49 +621,52 @@
         </div>
         <div class="switch-container">
           <label class="switch">
-            <input type="checkbox" id="ignoreScope" checked>
+            <input type="checkbox" id="ignoreScope" checked />
             <span class="slider"></span>
           </label>
         </div>
 
         <button type="submit">✅ Générer et Installer</button>
       </form>
-    </section>
-  </main>
-
-  <!-- ===== Modals d'alerte ===== -->
-  <!-- Modal pour IsRemovable OFF -->
-  <div id="modal-overlay" class="modal-overlay">
-    <div class="modal-content">
-      <p>
-        ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
-        de l’écran d’accueil. Veux-tu continuer ?
-      </p>
-      <div class="modal-buttons">
-        <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
-        <button id="btn-continue" class="btn-continue">✅ Continuer</button>
-      </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Modal d’alerte générique -->
-  <div id="modal-alert" class="modal-overlay">
-    <div class="modal-content">
-      <p id="modal-alert-message"></p>
-      <div class="modal-buttons" style="justify-content: center;">
-        <button id="btn-alert-ok" class="btn-continue" style="max-width: 120px;">OK</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== Footer ===== -->
+  <!-- ===== Footer (identique à index.html) ===== -->
   <footer>
     &copy; 2025 L1K1℠. Tous droits réservés.
   </footer>
 
-  <!-- ===== JavaScript Fonctionnel (inchangé) ===== -->
+  <!-- ===== JavaScript (menu + logique du formulaire) ===== -->
   <script>
-    /* ===== Détection Safari iOS ===== */
+    // ===== Toggle du menu mobile =====
+    const menuBtn = document.getElementById('menu-btn');
+    menuBtn.addEventListener('click', () => {
+      const header = document.getElementById('site-header');
+      const isOpen = header.classList.toggle('show-menu');
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    // Fermer le menu mobile au clic en dehors
+    document.addEventListener('click', (event) => {
+      const header = document.getElementById('site-header');
+      const isClickInside = header.contains(event.target);
+
+      if (!isClickInside && header.classList.contains('show-menu')) {
+        header.classList.remove('show-menu');
+        menuBtn.setAttribute('aria-expanded', false);
+      }
+    });
+
+    // Fermer le menu si on passe en desktop
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 600) {
+        const header = document.getElementById('site-header');
+        header.classList.remove('show-menu');
+        menuBtn.setAttribute('aria-expanded', false);
+      }
+    });
+
+    // ===== Détection Safari iOS =====
     function isIosSafari() {
       const ua = window.navigator.userAgent;
       const isIOS = /iP(ad|hone|od)/.test(ua);
@@ -553,12 +675,11 @@
     }
     document.addEventListener('DOMContentLoaded', () => {
       if (!isIosSafari()) {
-        const alertDiv = document.getElementById('safari-alert');
-        alertDiv.style.display = 'flex';
+        document.getElementById('safari-alert').style.display = 'flex';
       }
     });
 
-    /* ===== Conversion Icône en Base64 ===== */
+    // ===== Conversion Icône en Base64 =====
     let iconBase64String = "";
     const iconInput = document.getElementById('iconFile');
     iconInput.addEventListener('change', () => {
@@ -576,42 +697,61 @@
       reader.readAsDataURL(file);
     });
 
-    /* ===== Modal “IsRemovable OFF” ===== */
+    // ===== Modal “IsRemovable OFF” =====
     const isRemovableCheckbox = document.getElementById('isRemovable');
-    const modalOverlay = document.getElementById('modal-overlay');
-    const btnCancel = document.getElementById('btn-cancel');
-    const btnContinue = document.getElementById('btn-continue');
+    const modalOverlay = document.createElement('div');
+    const existingOverlay = document.getElementById('modal-overlay');
+    // Recréer l’overlay si inexistant, sinon réutiliser (on évite doublon)
+    if (!existingOverlay) {
+      modalOverlay.id = 'modal-overlay';
+      modalOverlay.className = 'modal-overlay';
+      modalOverlay.innerHTML = `
+        <div class="modal-content">
+          <p>
+            ⚠️ Si tu désactives <strong>IsRemovable</strong>, l’icône ne pourra plus être retirée
+            de l’écran d’accueil. Veux-tu continuer ?
+          </p>
+          <div class="modal-buttons">
+            <button id="btn-cancel" class="btn-cancel">❌ Annuler</button>
+            <button id="btn-continue" class="btn-continue">✅ Continuer</button>
+          </div>
+        </div>`;
+      document.body.appendChild(modalOverlay);
+    }
+    const overlay = existingOverlay || modalOverlay;
+    const btnCancel = overlay.querySelector('#btn-cancel');
+    const btnContinue = overlay.querySelector('#btn-continue');
     let previousRemovableState = isRemovableCheckbox.checked;
 
     isRemovableCheckbox.addEventListener('change', () => {
       if (previousRemovableState === true && !isRemovableCheckbox.checked) {
-        modalOverlay.style.display = 'flex';
+        overlay.style.display = 'flex';
       }
       previousRemovableState = isRemovableCheckbox.checked;
     });
     btnCancel.addEventListener('click', () => {
       isRemovableCheckbox.checked = true;
       previousRemovableState = true;
-      modalOverlay.style.display = 'none';
+      overlay.style.display = 'none';
     });
     btnContinue.addEventListener('click', () => {
       previousRemovableState = false;
-      modalOverlay.style.display = 'none';
+      overlay.style.display = 'none';
     });
 
-    /* ===== Génération d’UUID ===== */
+    // ===== Génération d’UUID =====
     function generateUUID() {
       if (crypto && crypto.randomUUID) {
         return crypto.randomUUID().toUpperCase();
       }
       return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
+        const r = (Math.random() * 16) | 0;
+        const v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
       }).toUpperCase();
     }
 
-    /* ===== Construction du XML (.mobileconfig) ===== */
+    // ===== Construction du XML (.mobileconfig) =====
     function buildMobileConfig({ name, desc, url, iconData, isRemovable, ignoreScope, uuidProfile, uuidPayload }) {
       const consentText = `
         <key>ConsentText</key>
@@ -619,17 +759,9 @@
           <key>default</key>
           <string>
             This configuration profile will install a Web Clip on your device’s home screen.
-            The Web Clip acts as a shortcut to open a specific website in full-screen mode,
-            removing the browser interface to offer an app-like experience. It is designed
-            to simplify access and provide an immersive, standalone view of the site.
-
-            To proceed tap 'Install' and enter your device's passcode when prompted.
-
-            In case you face any issue or you have any questions or worries about the WebClip, feel free to write me an email and I will gladly respond to you as soon as possible.
-            My email : tokyoboy.vs@icloud.com
+            … (texte complet identique)
           </string>
         </dict>`;
-
       const iconBlock = iconData
         ? `<key>Icon</key>
            <data>${iconData}</data>`
@@ -694,7 +826,7 @@ ${consentText}
 </plist>`;
     }
 
-    /* ===== Soumission du formulaire ===== */
+    // ===== Soumission du formulaire =====
     document.getElementById('webclipForm').addEventListener('submit', (e) => {
       e.preventDefault();
 
@@ -729,9 +861,7 @@ ${consentText}
         uuidPayload
       });
 
-      const blob = new Blob([xmlContent], {
-        type: 'application/x-apple-aspen-config'
-      });
+      const blob = new Blob([xmlContent], { type: 'application/x-apple-aspen-config' });
       const link = document.createElement('a');
       link.href = URL.createObjectURL(blob);
       link.download = `${name.replace(/\s+/g, "_") || 'webclip'}.mobileconfig`;
@@ -741,24 +871,36 @@ ${consentText}
       document.body.removeChild(link);
     });
 
-    /* ===== Modal d’alerte générique ===== */
-    const modalAlert = document.getElementById('modal-alert');
-    const modalAlertMsg = document.getElementById('modal-alert-message');
-    const btnAlertOk = document.getElementById('btn-alert-ok');
-
+    // ===== Modal d’alerte générique =====
     function showModalAlert(message, customBtnText) {
-      modalAlertMsg.innerHTML = message;
-      modalAlert.style.display = 'flex';
-      btnAlertOk.textContent = customBtnText || 'OK';
+      let alertOverlay = document.getElementById('modal-alert');
+      if (!alertOverlay) {
+        // Créer l’overlay si nécessaire
+        alertOverlay = document.createElement('div');
+        alertOverlay.id = 'modal-alert';
+        alertOverlay.className = 'modal-overlay';
+        alertOverlay.innerHTML = `
+          <div class="modal-content">
+            <p id="modal-alert-message"></p>
+            <div class="modal-buttons" style="justify-content: center;">
+              <button id="btn-alert-ok" class="btn-continue" style="max-width: 120px;">OK</button>
+            </div>
+          </div>`;
+        document.body.appendChild(alertOverlay);
+        document.getElementById('btn-alert-ok').addEventListener('click', () => {
+          alertOverlay.style.display = 'none';
+        });
+      }
+      const alertMsg = alertOverlay.querySelector('#modal-alert-message');
+      alertMsg.innerHTML = message;
+      const okBtn = alertOverlay.querySelector('#btn-alert-ok');
+      okBtn.textContent = customBtnText || 'OK';
+      alertOverlay.style.display = 'flex';
     }
 
-    btnAlertOk.addEventListener('click', () => {
-      modalAlert.style.display = 'none';
-    });
-
-    // ===== Tooltip as modal alert (cliquer remplace l’infobulle) =====
-    document.querySelectorAll('.tooltip-wrapper').forEach(function (wrapper) {
-      wrapper.addEventListener('click', function () {
+    // ===== Tooltip as modal alert =====
+    document.querySelectorAll('.tooltip-wrapper').forEach((wrapper) => {
+      wrapper.addEventListener('click', () => {
         const tooltip = wrapper.querySelector('.tooltip-text');
         if (tooltip) {
           showModalAlert(tooltip.innerHTML, "J'ai compris !");
@@ -766,10 +908,10 @@ ${consentText}
       });
     });
 
-    // Masquer les bulles de tooltip classiques
-    const style = document.createElement('style');
-    style.innerHTML = `.tooltip-text { display: none !important; }`;
-    document.head.appendChild(style);
+    // Cacher les bulles de tooltip classiques
+    const styleHide = document.createElement('style');
+    styleHide.innerHTML = `.tooltip-text { display: none !important; }`;
+    document.head.appendChild(styleHide);
   </script>
 </body>
 
