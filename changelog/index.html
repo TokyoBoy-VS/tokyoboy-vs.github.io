@@ -8,7 +8,6 @@
   <title>Changelog – L1K1℠</title>
 
   <style>
-    /* ===== Variables globales (mêmes que dans index.html) ===== */
     :root {
       --bg-color: #121212;
       --fg-color: #e0e0e0;
@@ -30,7 +29,6 @@
       line-height: 1.6;
     }
 
-    /* ===== Header & Navigation (identique à index.html) ===== */
     header {
       background: var(--card-bg);
       box-shadow: 0 2px 4px var(--shadow-color);
@@ -44,7 +42,6 @@
       align-items: center;
       justify-content: space-between;
       padding: 1rem;
-      position: relative;
     }
 
     .header-container h1 {
@@ -52,7 +49,6 @@
       color: var(--accent-color);
     }
 
-    /* Hamburger Menu */
     .hamburger {
       width: 32px;
       height: 24px;
@@ -74,7 +70,6 @@
       transition: transform 0.3s, opacity 0.3s;
     }
 
-    /* Desktop Navigation */
     .desktop-nav ul {
       display: none;
       list-style: none;
@@ -107,7 +102,6 @@
       color: var(--accent-color);
     }
 
-    /* Mobile Navigation */
     .mobile-nav {
       display: none;
       position: absolute;
@@ -130,26 +124,22 @@
       color: var(--fg-color);
       text-decoration: none;
       font-weight: 600;
-      display: block;
       padding: 0.5rem;
+      display: block;
     }
 
-    /* Responsive Styles */
     @media (min-width: 600px) {
       .desktop-nav ul {
         display: flex;
       }
-
       .hamburger {
         display: none;
       }
-
       .mobile-nav {
         display: none !important;
       }
     }
 
-    /* Active States pour menu burger */
     .show-menu .mobile-nav {
       display: block;
     }
@@ -166,20 +156,17 @@
       transform: translateY(-8px) rotate(-45deg);
     }
 
-    /* ===== Container principal ===== */
     .container {
       width: 90%;
       max-width: 800px;
       margin: 2rem auto;
     }
 
-    /* ===== Section Changelog ===== */
     .changelog-section {
       background: var(--card-bg);
       padding: 1.5rem;
       border-radius: 8px;
       box-shadow: 0 2px 4px var(--shadow-color);
-      margin-bottom: 2rem;
     }
 
     .changelog-section h2 {
@@ -194,35 +181,25 @@
     }
 
     .changelog-list li {
-      padding: 0.75rem 1rem;
-      margin-bottom: 0.5rem;
       background: var(--bg-color);
       border: 1px solid var(--accent-color);
       border-radius: 4px;
-      font-family: monospace;
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
       white-space: pre-wrap;
+      font-family: monospace;
     }
 
-    /* ===== Footer ===== */
     footer {
       background: var(--card-bg);
-      color: var(--fg-color);
       text-align: center;
       padding: 1rem 0;
       margin-top: 2rem;
-    }
-
-    /* ===== Responsive ===== */
-    @media (max-width: 480px) {
-      .changelog-list li {
-        font-size: 0.9rem;
-      }
     }
   </style>
 </head>
 
 <body>
-  <!-- ===== Header (identique à index.html) ===== -->
   <header id="site-header">
     <div class="header-container">
       <h1>L1K1℠</h1>
@@ -241,7 +218,6 @@
         <span></span><span></span><span></span>
       </button>
     </div>
-
     <nav class="mobile-nav">
       <ul>
         <li><a href="/">Accueil</a></li>
@@ -256,26 +232,24 @@
   </header>
 
   <script>
-    const menuBtn = document.getElementById('menu-btn');
-    menuBtn.addEventListener('click', () => {
-      const header = document.getElementById('site-header');
-      const isOpen = header.classList.toggle('show-menu');
-      menuBtn.setAttribute('aria-expanded', isOpen);
+    const btn = document.getElementById('menu-btn');
+    btn.addEventListener('click', () => {
+      const hdr = document.getElementById('site-header');
+      const open = hdr.classList.toggle('show-menu');
+      btn.setAttribute('aria-expanded', open);
     });
-
-    document.addEventListener('click', (event) => {
-      const header = document.getElementById('site-header');
-      if (!header.contains(event.target) && header.classList.contains('show-menu')) {
-        header.classList.remove('show-menu');
-        menuBtn.setAttribute('aria-expanded', false);
+    document.addEventListener('click', e => {
+      const hdr = document.getElementById('site-header');
+      if (!hdr.contains(e.target) && hdr.classList.contains('show-menu')) {
+        hdr.classList.remove('show-menu');
+        btn.setAttribute('aria-expanded', false);
       }
     });
-
     window.addEventListener('resize', () => {
       if (window.innerWidth >= 600) {
-        const header = document.getElementById('site-header');
-        header.classList.remove('show-menu');
-        menuBtn.setAttribute('aria-expanded', false);
+        const hdr = document.getElementById('site-header');
+        hdr.classList.remove('show-menu');
+        btn.setAttribute('aria-expanded', false);
       }
     });
   </script>
@@ -284,7 +258,7 @@
     <div class="changelog-section">
       <h2>Historique des versions</h2>
       <ul class="changelog-list" id="changelogList">
-        <!-- Les <li> seront ajoutés dynamiquement -->
+        <!-- Liens ajoutés dynamiquement -->
       </ul>
     </div>
   </main>
@@ -294,68 +268,44 @@
   </footer>
 
   <script>
-    /**
-     * Ce script tente de récupérer la liste des fichiers .log dans le dossier "logs/"
-     * (en s'appuyant sur un index HTML généré côté serveur, ou sur la configuration d’un listing de répertoire),
-     * puis pour chaque fichier .log trouvé, récupère son contenu et l’insère dans un <li>.
-     */
-    (function () {
-      const listElement = document.getElementById('changelogList');
-
-      // Tenter de récupérer la liste des fichiers dans logs/
-      fetch('./logs/')
-        .then(response => response.text())
-        .then(html => {
-          // Parser en DOM pour extraire les liens vers .log
-          const parser = new DOMParser();
-          const doc = parser.parseFromString(html, 'text/html');
-          // On cherche tous les <a href="…"> qui se terminent par .log
-          const links = Array.from(doc.querySelectorAll('a'))
-            .filter(a => a.getAttribute('href').toLowerCase().endsWith('.log'));
-
-          if (links.length === 0) {
-            const li = document.createElement('li');
-            li.textContent = 'Aucun fichier .log trouvé dans le dossier "logs/".';
-            listElement.appendChild(li);
-            return;
-          }
-
-          // Pour chaque lien vers un .log, on le fetch et on ajoute son contenu
-          links.forEach(a => {
-            const logUrl = 'logs/' + a.getAttribute('href');
-            fetch(logUrl)
-              .then(resp => {
-                if (!resp.ok) throw new Error(`Impossible de charger ${logUrl}`);
-                return resp.text();
-              })
-              .then(text => {
-                const li = document.createElement('li');
-                // Affiche le nom du fichier suivi du contenu
-                li.textContent = `${a.getAttribute('href')} :\n${text}`;
-                listElement.appendChild(li);
-              })
-              .catch(err => {
-                const li = document.createElement('li');
-                li.textContent = `Erreur lors de la lecture de ${a.getAttribute('href')}`;
-                listElement.appendChild(li);
-              });
-          });
-        })
-        .catch(err => {
-          const li = document.createElement('li');
-          li.textContent = 'Impossible de lister le dossier "logs/".';
-          listElement.appendChild(li);
+    // Charge d'abord logs/index.json
+    fetch('logs/index.json')
+      .then(res => res.json())
+      .then(files => {
+        const ul = document.getElementById('changelogList');
+        if (!files.length) {
+          ul.innerHTML = '<li>Aucun .log trouvé.</li>';
+          return;
+        }
+        files.forEach(file => {
+          fetch(`logs/${file}`)
+            .then(r => r.text())
+            .then(txt => {
+              const li = document.createElement('li');
+              li.textContent = `${file} :\n${txt}`;
+              ul.appendChild(li);
+            })
+            .catch(() => {
+              const li = document.createElement('li');
+              li.textContent = `Erreur lecture ${file}`;
+              ul.appendChild(li);
+            });
         });
-    })();
+      })
+      .catch(() => {
+        document.getElementById('changelogList').innerHTML =
+          '<li>Impossible de charger logs/index.json</li>';
+      });
 
-    // === Forcer le rafraîchissement en mode standalone (WebClip) ===
-    (function () {
-      const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-      if (isStandalone) {
-        const url = new URL(window.location.href);
+    // Force reload en mode standalone (WebClip)
+    (function(){
+      const standalone = window.navigator.standalone ||
+        window.matchMedia('(display-mode: standalone)').matches;
+      if (standalone) {
+        const url = new URL(location.href);
         if (!url.searchParams.has('refreshed')) {
           url.searchParams.set('refreshed', Date.now());
-          window.location.replace(url.toString());
+          location.replace(url);
         }
       }
     })();
