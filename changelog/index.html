@@ -1,36 +1,365 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Changelog - L1K1℠</title>
-  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="../static/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="./assets/favicon.ico" type="image/x-icon" />
+  <title>Changelog – L1K1℠</title>
+
+  <style>
+    /* ===== Variables globales (mêmes que dans index.html) ===== */
+    :root {
+      --bg-color: #121212;
+      --fg-color: #e0e0e0;
+      --accent-color: #2979ff;
+      --card-bg: #1f1f1f;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: var(--bg-color);
+      color: var(--fg-color);
+      line-height: 1.6;
+    }
+
+    /* ===== Header & Navigation (identique à index.html) ===== */
+    header {
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .header-container h1 {
+      font-size: 1.5rem;
+      color: var(--accent-color);
+    }
+
+    /* Hamburger Menu */
+    .hamburger {
+      width: 32px;
+      height: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background: var(--fg-color);
+      border-radius: 2px;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+
+    /* Desktop Navigation */
+    .desktop-nav ul {
+      display: none;
+      list-style: none;
+      gap: 1.5rem;
+    }
+
+    .desktop-nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .desktop-nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--accent-color);
+      transition: width 0.3s;
+    }
+
+    .desktop-nav a:hover::after {
+      width: 100%;
+    }
+
+    .desktop-nav a.active {
+      color: var(--accent-color);
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .mobile-nav ul {
+      list-style: none;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .mobile-nav a {
+      color: var(--fg-color);
+      text-decoration: none;
+      font-weight: 600;
+      display: block;
+      padding: 0.5rem;
+    }
+
+    /* Responsive Styles */
+    @media (min-width: 600px) {
+      .desktop-nav ul {
+        display: flex;
+      }
+
+      .hamburger {
+        display: none;
+      }
+
+      .mobile-nav {
+        display: none !important;
+      }
+    }
+
+    /* Active States pour menu burger */
+    .show-menu .mobile-nav {
+      display: block;
+    }
+
+    .show-menu .hamburger span:nth-child(1) {
+      transform: translateY(8px) rotate(45deg);
+    }
+
+    .show-menu .hamburger span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .show-menu .hamburger span:nth-child(3) {
+      transform: translateY(-8px) rotate(-45deg);
+    }
+
+    /* ===== Container principal ===== */
+    .container {
+      width: 90%;
+      max-width: 800px;
+      margin: 2rem auto;
+    }
+
+    /* ===== Section Changelog ===== */
+    .changelog-section {
+      background: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      margin-bottom: 2rem;
+    }
+
+    .changelog-section h2 {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      color: var(--accent-color);
+    }
+
+    .changelog-list {
+      list-style: none;
+      padding-left: 0;
+    }
+
+    .changelog-list li {
+      padding: 0.75rem 1rem;
+      margin-bottom: 0.5rem;
+      background: var(--bg-color);
+      border: 1px solid var(--accent-color);
+      border-radius: 4px;
+      font-family: monospace;
+      white-space: pre-wrap;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      background: var(--card-bg);
+      color: var(--fg-color);
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 2rem;
+    }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 480px) {
+      .changelog-list li {
+        font-size: 0.9rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <header>
-    <h1>Changelog</h1>
-    <nav>
+  <!-- ===== Header (identique à index.html) ===== -->
+  <header id="site-header">
+    <div class="header-container">
+      <h1>L1K1℠</h1>
+      <nav class="desktop-nav">
+        <ul>
+          <li><a href="/">Accueil</a></li>
+          <li><a href="/commands/">Commandes</a></li>
+          <li><a href="/app-maker/">App maker</a></li>
+          <li><a href="/chat.html">Chat</a></li>
+          <li><a href="/support/">Support</a></li>
+          <li><a href="/about/">À propos</a></li>
+          <li><a href="/changelog/" class="active">Changelog</a></li>
+        </ul>
+      </nav>
+      <button class="hamburger" id="menu-btn" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav">
       <ul>
         <li><a href="/">Accueil</a></li>
-        <li><a href="/commands">Commandes</a></li>
-        <li><a href="/support">Support</a></li>
-        <li><a href="/about">À propos</a></li>
-        <li><a href="/changelog">Changelog</a></li>
+        <li><a href="/commands/">Commandes</a></li>
+        <li><a href="/app-maker/">App maker</a></li>
+        <li><a href="/chat.html">Chat</a></li>
+        <li><a href="/support/">Support</a></li>
+        <li><a href="/about/">À propos</a></li>
+        <li><a href="/changelog/" class="active">Changelog</a></li>
       </ul>
     </nav>
   </header>
-  <div class="container">
-    <section>
+
+  <script>
+    const menuBtn = document.getElementById('menu-btn');
+    menuBtn.addEventListener('click', () => {
+      const header = document.getElementById('site-header');
+      const isOpen = header.classList.toggle('show-menu');
+      menuBtn.setAttribute('aria-expanded', isOpen);
+    });
+
+    document.addEventListener('click', (event) => {
+      const header = document.getElementById('site-header');
+      if (!header.contains(event.target) && header.classList.contains('show-menu')) {
+        header.classList.remove('show-menu');
+        menuBtn.setAttribute('aria-expanded', false);
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (window.innerWidth >= 600) {
+        const header = document.getElementById('site-header');
+        header.classList.remove('show-menu');
+        menuBtn.setAttribute('aria-expanded', false);
+      }
+    });
+  </script>
+
+  <main class="container">
+    <div class="changelog-section">
       <h2>Historique des versions</h2>
-      <ul>
-        <li>v1.0.0 - Sortie initiale</li>
-        <!-- Ajoute ici tes versions -->
+      <ul class="changelog-list" id="changelogList">
+        <!-- Les <li> seront ajoutés dynamiquement -->
       </ul>
-    </section>
-  </div>
+    </div>
+  </main>
+
   <footer>
-    <p>&copy; 2025 L1K1℠.</p>
+    &copy; 2025 L1K1℠. Tous droits réservés.
   </footer>
+
+  <script>
+    /**
+     * Ce script tente de récupérer la liste des fichiers .log dans le dossier "logs/"
+     * (en s'appuyant sur un index HTML généré côté serveur, ou sur la configuration d’un listing de répertoire),
+     * puis pour chaque fichier .log trouvé, récupère son contenu et l’insère dans un <li>.
+     */
+    (function () {
+      const listElement = document.getElementById('changelogList');
+
+      // Tenter de récupérer la liste des fichiers dans logs/
+      fetch('logs/')
+        .then(response => response.text())
+        .then(html => {
+          // Parser en DOM pour extraire les liens vers .log
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          // On cherche tous les <a href="…"> qui se terminent par .log
+          const links = Array.from(doc.querySelectorAll('a'))
+            .filter(a => a.getAttribute('href').toLowerCase().endsWith('.log'));
+
+          if (links.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = 'Aucun fichier .log trouvé dans le dossier "logs/".';
+            listElement.appendChild(li);
+            return;
+          }
+
+          // Pour chaque lien vers un .log, on le fetch et on ajoute son contenu
+          links.forEach(a => {
+            const logUrl = 'logs/' + a.getAttribute('href');
+            fetch(logUrl)
+              .then(resp => {
+                if (!resp.ok) throw new Error(`Impossible de charger ${logUrl}`);
+                return resp.text();
+              })
+              .then(text => {
+                const li = document.createElement('li');
+                // Affiche le nom du fichier suivi du contenu
+                li.textContent = `${a.getAttribute('href')} :\n${text}`;
+                listElement.appendChild(li);
+              })
+              .catch(err => {
+                const li = document.createElement('li');
+                li.textContent = `Erreur lors de la lecture de ${a.getAttribute('href')}`;
+                listElement.appendChild(li);
+              });
+          });
+        })
+        .catch(err => {
+          const li = document.createElement('li');
+          li.textContent = 'Impossible de lister le dossier "logs/".';
+          listElement.appendChild(li);
+        });
+    })();
+
+    // === Forcer le rafraîchissement en mode standalone (WebClip) ===
+    (function () {
+      const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+      if (isStandalone) {
+        const url = new URL(window.location.href);
+        if (!url.searchParams.has('refreshed')) {
+          url.searchParams.set('refreshed', Date.now());
+          window.location.replace(url.toString());
+        }
+      }
+    })();
+  </script>
 </body>
+
 </html>
