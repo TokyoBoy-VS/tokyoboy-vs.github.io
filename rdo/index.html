@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>RDO • Progression Animaux Légendaires</title>
 <style>
-  /* ==================== THEME SYSTEM ==================== */
+  /* ============ THEME ============ */
   :root{
     --radius-card:16px; --radius-input:12px; --radius-tick:12px;
     --fs-base:16px; --gap-page:16px; --gap-card:10px; --gap-grid:24px;
@@ -28,7 +28,7 @@
     --cat-ink:#334155;
   }
 
-  /* ==================== BASE ==================== */
+  /* ============ BASE ============ */
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
@@ -36,7 +36,6 @@
     font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
     font-size:var(--fs-base); -webkit-tap-highlight-color:transparent;
   }
-
   header{
     position:sticky; top:0; z-index:50;
     background:color-mix(in srgb, var(--bg) 92%, transparent);
@@ -47,7 +46,7 @@
   h1{margin:0 0 6px;font-size:clamp(18px,4.5vw,24px)}
   .sub{color:var(--muted);font-size:13px}
 
-  /* ==================== HEADER COMPACT ==================== */
+  /* ============ HEADER COMPACT ============ */
   .controls{display:grid;gap:8px;margin-top:12px}
   .controls--compact{grid-template-columns:1fr auto auto}
   .input, select, button{
@@ -71,7 +70,7 @@
   .pct{min-width:46px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
   .small{color:var(--muted);font-size:12px;margin-left:auto}
 
-  /* ==================== PANEL REPLIABLE ==================== */
+  /* ============ PANEL REPLIABLE ============ */
   #filtersPanel{
     margin-top:10px; border:1px solid var(--line); border-radius:var(--radius-card); padding:8px 10px;
     background:var(--card);
@@ -80,13 +79,11 @@
     cursor:pointer; list-style:none; font-weight:600; color:var(--ink);
     display:flex; align-items:center; gap:8px;
   }
-  #filtersPanel > summary::after{
-    content:"▾"; opacity:.75; font-size:12px;
-  }
+  #filtersPanel > summary::after{ content:"▾"; opacity:.75; font-size:12px; }
   #filtersPanel[open] > summary{ margin-bottom:10px; }
   #filtersPanel > summary::-webkit-details-marker{ display:none; }
   .grid-filters{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
-  @media (min-width:780px){ .grid-filters{ grid-template-columns:180px 180px auto auto auto; } }
+  @media (min-width:780px){ .grid-filters{ grid-template-columns:180px 180px auto auto auto auto; } }
 
   .legend{ display:flex; flex-wrap:wrap; gap:8px; }
   .chip{
@@ -96,24 +93,40 @@
   .chip:active{ transform:scale(.98); }
   .hint{ color:var(--muted); font-size:12px; margin-top:8px }
 
-  /* ==================== GRID & CATEGORY ==================== */
+  /* ============ GRID & SECTION CARDS ============ */
   main{padding:var(--gap-page);max-width:980px;margin:0 auto}
   .grid{ display:grid; gap:var(--gap-grid); }
-  .cat{
-    margin: 6px 2px -6px 2px;
-    color: var(--cat-ink);
-    font-weight: 800;
-    letter-spacing:.2px;
-    display:flex; align-items:center; gap:8px;
+
+  .section-card{
+    border:1px solid var(--line); border-radius:calc(var(--radius-card) + 2px);
+    background:var(--card); overflow:hidden;
   }
-  .cat::before{
-    content:""; display:inline-block; width:8px; height:8px; border-radius:999px; background:var(--prog-start);
+  .section-card > summary{
+    display:flex; align-items:center; gap:10px;
+    cursor:pointer; padding:14px 14px; list-style:none; user-select:none;
+    font-weight:800; color:var(--cat-ink);
+  }
+  .section-card > summary::-webkit-details-marker{ display:none; }
+  .section-card > summary .cat-dot{
+    width:10px;height:10px;border-radius:999px;background:var(--prog-start);display:inline-block;
+  }
+  .section-card > .section-body{
+    padding: 12px 14px 16px;
+    border-top:1px solid var(--line);
+  }
+  .section-card[open] > summary{ border-bottom:1px solid var(--line); }
+
+  .section-body .cards-grid{
+    display:grid; gap:var(--gap-grid);
+  }
+  @media (min-width:640px){
+    .section-body .cards-grid{ grid-template-columns:repeat(auto-fit,minmax(350px,1fr)) }
   }
 
-  /* ==================== CARD ==================== */
+  /* ============ ANIMAL CARD ============ */
   .card{
     display:grid; gap:var(--gap-card);
-    background:var(--card); border:1px solid var(--line); border-radius:calc(var(--radius-card) + 2px);
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius-card);
     padding:14px;
   }
   .name{font-weight:800;font-size:18px;line-height:1.2}
@@ -133,11 +146,6 @@
   .tick[data-on="true"]{box-shadow:0 0 0 3px var(--tick-on-ring) inset, 0 0 0 1px var(--tick-on-line)}
   .tick:active{transform:scale(.98)}
   .count{color:var(--muted);font-size:12px;margin-left:auto}
-
-  /* ==================== RESPONSIVE ==================== */
-  @media (min-width:640px){
-    .grid{ grid-template-columns:repeat(auto-fit,minmax(350px,1fr)) }
-  }
 </style>
 </head>
 <body>
@@ -187,6 +195,7 @@
         <button id="checkAll">Cocher visibles</button>
         <button id="uncheckAll">Décocher visibles</button>
         <button id="resetAll">Réinitialiser</button>
+        <button id="clearLS" title="Effacer le stockage local">🗑️ Effacer stockage</button>
       </div>
 
       <div class="legend">
@@ -208,7 +217,16 @@
 </main>
 
 <script>
-/* ==================== DATA ==================== */
+/* ============ CONFIG KEYS (PREFIX) ============ */
+const PREFIX = "TBVS_RDO_";
+const KEYS = {
+  theme: PREFIX + "theme",
+  filtersOpen: PREFIX + "filters_open",
+  sectionOpen: (cat) => PREFIX + "section_open_" + cat,
+  action: (idx, key) => PREFIX + idx + ":" + key
+};
+
+/* ============ DATA ============ */
 const ACTIONS = [
   { key:"piste", icon:"🐾" },
   { key:"tue", icon:"🪦" },
@@ -219,7 +237,6 @@ const ACTIONS = [
   { key:"photo", icon:"📸" }
 ];
 
-// Liste d’animaux (de ton tableau) — on garde les champs FR
 const RAW_ANIMALS = [
   { name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
   { name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
@@ -265,8 +282,7 @@ const RAW_ANIMALS = [
   { name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
 ];
 
-/* ==================== CATEGORIES ==================== */
-/* Slugs et titres FR/EN */
+/* ============ CATEGORIES ============ */
 const CATS = {
   dark:  { fr:"Animaux légendaires : Foncés", en:"Legendary Animals : Dark" },
   light: { fr:"Animal légendaire : Clair",     en:"Legendary Animal : Light" },
@@ -274,8 +290,6 @@ const CATS = {
   patterned:{ fr:"Animaux légendaires : À motifs", en:"Legendary Animals : Patterned" }
 };
 
-/* Override manuel (si tu veux forcer un animal dans une catégorie précise) :
-   Clé = nom FR exact, Valeur = 'dark' | 'light' | 'redblond' | 'patterned' */
 const CATEGORY_OVERRIDE = {
   "Coyote d’ébène": "dark",
   "Loup d’onyx": "dark",
@@ -289,44 +303,32 @@ const CATEGORY_OVERRIDE = {
   "Renard croisé": "patterned"
 };
 
-/* Heuristiques mots-clés (fallback si pas d’override) */
 function inferCategoryByName(n){
   const s = n.toLowerCase();
-  // DARK
   if (/(ébène|ebene|onyx|noctivague|fant[oô]me|sombre|ombre)/.test(s)) return 'dark';
-  // LIGHT
   if (/(flocon|neige|neigeux|laiteux|clair|chevalier)/.test(s)) return 'light';
-  // RED & BLOND
   if (/(dor[ée]|or|roux|blond)/.test(s)) return 'redblond';
-  // PATTERNED
   if (/(marbr[ée]|bandes?|crois[ée]|tachet|rayures?)/.test(s)) return 'patterned';
-  // Sinon: par défaut, 'patterned' pour varier (change si tu veux)
   return 'patterned';
 }
 
-/* Construit la liste finale avec nom “Légendaire” et catégorie */
 const ANIMALS = RAW_ANIMALS.map(a=>{
   const cat = CATEGORY_OVERRIDE[a.name] || inferCategoryByName(a.name);
-  return {
-    ...a,
-    displayName: `${a.name} légendaire`,
-    category: cat
-  };
+  return { ...a, displayName: `${a.name} légendaire`, category: cat };
 });
 
-/* ==================== THEME ==================== */
-const THEME_KEY = "rdo_theme";
-function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY,t); }
+/* ============ THEME ============ */
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(KEYS.theme,t); }
 (function initTheme(){
-  const saved = localStorage.getItem(THEME_KEY);
-  applyTheme(saved || "dark"); // défaut sombre
+  const saved = localStorage.getItem(KEYS.theme);
+  applyTheme(saved || "dark");
 })();
 document.getElementById("themeBtn").addEventListener("click", ()=>{
   const cur = document.documentElement.getAttribute("data-theme");
   applyTheme(cur === "dark" ? "light" : "dark");
 });
 
-/* ==================== HELPERS ==================== */
+/* ============ HELPERS ============ */
 const groupsEl = document.getElementById('groups');
 const gFill = document.getElementById('gFill');
 const gPct  = document.getElementById('gPct');
@@ -339,7 +341,7 @@ const filtersToggleBtn = document.getElementById('filtersToggle');
 
 const isOn = key => localStorage.getItem(key)==="true";
 const setOn = (key,val)=> localStorage.setItem(key, val ? "true" : "false");
-const rowCount = i => ACTIONS.reduce((n,a)=> n + (isOn(`${i}:${a.key}`)?1:0), 0);
+const rowCount = i => ACTIONS.reduce((n,a)=> n + (isOn(KEYS.action(i,a.key))?1:0), 0);
 const missionFlag = cond => /mission/i.test(cond) ? 'mission' : 'libre';
 function tagSet(cond){
   const s = cond.toLowerCase();
@@ -355,23 +357,21 @@ function tagSet(cond){
   };
 }
 
-/* ==================== PANEL STATE ==================== */
-const PANEL_KEY = "rdo_filters_open";
+/* ============ PANEL STATE (Filtres) ============ */
 const isDesktop = () => window.matchMedia("(min-width: 780px)").matches;
-const savedOpen = localStorage.getItem(PANEL_KEY);
+const savedOpen = localStorage.getItem(KEYS.filtersOpen);
 filtersPanel.open = savedOpen ? savedOpen === "true" : isDesktop();
-filtersPanel.addEventListener('toggle', ()=> localStorage.setItem(PANEL_KEY, String(filtersPanel.open)) );
+filtersPanel.addEventListener('toggle', ()=> localStorage.setItem(KEYS.filtersOpen, String(filtersPanel.open)) );
 filtersToggleBtn.addEventListener('click', ()=>{
   filtersPanel.open = !filtersPanel.open;
-  localStorage.setItem(PANEL_KEY, String(filtersPanel.open));
+  localStorage.setItem(KEYS.filtersOpen, String(filtersPanel.open));
 });
 
-/* ==================== RENDER (GROUPS + CARDS) ==================== */
+/* ============ RENDER (Sections + Cards) ============ */
 function render(){
   groupsEl.innerHTML = "";
-
-  // Grouper par catégorie, dans l’ordre que tu veux afficher
   const order = ['dark','light','redblond','patterned'];
+
   order.forEach(cat=>{
     const items = ANIMALS
       .map((a,idx)=> ({...a, idx, mission: missionFlag(a.condition), tags: tagSet(a.condition)}))
@@ -379,69 +379,74 @@ function render(){
 
     if (!items.length) return;
 
-    const group = document.createElement('section');
-    group.dataset.cat = cat;
+    // SECTION CARD (foldable)
+    const section = document.createElement('details');
+    section.className = "section-card";
+    section.dataset.cat = cat;
 
-    // Titre de catégorie
-    const h = document.createElement('h2');
-    h.className = "cat";
-    h.textContent = CATS[cat].fr; // titre FR
-    group.appendChild(h);
+    const secKey = KEYS.sectionOpen(cat);
+    const saved = localStorage.getItem(secKey);
+    section.open = saved ? saved === "true" : true;
 
-    // Conteneur cartes (grid interne pour aligner proprement si besoin)
-    const list = document.createElement('div');
-    list.className = "grid";
-    group.appendChild(list);
+    const summary = document.createElement('summary');
+    summary.innerHTML = `<span class="cat-dot"></span> ${CATS[cat].fr}`;
+    section.appendChild(summary);
 
-    // Cartes
+    const body = document.createElement('div');
+    body.className = "section-body";
+    const cardsGrid = document.createElement('div');
+    cardsGrid.className = "cards-grid";
+    body.appendChild(cardsGrid);
+    section.appendChild(body);
+
     items.forEach(a=>{
       const card = document.createElement('article');
       card.className = "card";
       card.dataset.index = a.idx;
       card.dataset.mission = a.mission;
       card.dataset.tags = JSON.stringify(a.tags);
-
       card.innerHTML = `
         <div class="name">${a.displayName}</div>
         <div class="loc">📍 ${a.location}</div>
         <div class="cond">🧭 ${a.condition}</div>
-
         <div class="rowbar">
           <div class="pct" data-pct>0%</div>
           <div class="bar" style="flex:1"><div class="fill warn" data-fill style="width:0%"></div></div>
           <div class="count" data-count>0/${ACTIONS.length}</div>
         </div>
-
         <div class="checklist" role="group" aria-label="Checklist ${a.displayName}">
           ${ACTIONS.map(ac=>{
-            const key=`${a.idx}:${ac.key}`, on=isOn(key);
+            const key=KEYS.action(a.idx,ac.key), on=isOn(key);
             return `<button class="tick" data-key="${key}" data-on="${on}" title="${ac.key}">${ac.icon}</button>`;
           }).join('')}
         </div>
       `;
-      list.appendChild(card);
+      cardsGrid.appendChild(card);
       updateRow(a.idx, card);
     });
 
-    groupsEl.appendChild(group);
+    section.addEventListener('toggle', ()=>{
+      localStorage.setItem(secKey, String(section.open));
+    });
+
+    groupsEl.appendChild(section);
   });
 
-  // Bind ticks
   groupsEl.querySelectorAll('.tick').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const key = btn.dataset.key;
       const now = btn.getAttribute('data-on') !== "true";
       btn.setAttribute('data-on', String(now));
       setOn(key, now);
-      const idx = key.split(':')[0];
+      const idx = key.replace(PREFIX,"").split(':')[0]; // extract index after prefix
       const card = groupsEl.querySelector(`.card[data-index="${idx}"]`);
       updateRow(idx, card);
       updateGlobal();
     }, {passive:true});
   });
 
-  applyFilters();   // masque cartes & titres vides selon filtres
-  updateGlobal();   // met à jour la barre globale
+  applyFilters();
+  updateGlobal();
 }
 
 function updateRow(i, cardEl){
@@ -469,13 +474,12 @@ function updateGlobal(){
   gCount.textContent = `${checked} / ${total} actions`;
 }
 
-/* ==================== FILTERS ==================== */
+/* ============ FILTERS ============ */
 function applyFilters(){
   const text = q.value.trim().toLowerCase();
   const missionVal = fMission ? fMission.value : "";
   const tagVal = fTag ? fTag.value : "";
 
-  // Pour chaque carte, on décide si visible
   groupsEl.querySelectorAll('.card').forEach(card=>{
     const i = +card.dataset.index;
     const a = ANIMALS[i];
@@ -493,10 +497,8 @@ function applyFilters(){
     card.style.display = visible ? "" : "none";
   });
 
-  // Masquer le titre de catégorie si toutes ses cartes sont masquées
-  groupsEl.querySelectorAll('section[data-cat]').forEach(sec=>{
-    const cards = sec.querySelectorAll('.card');
-    const anyVisible = Array.from(cards).some(c => c.style.display !== 'none');
+  groupsEl.querySelectorAll('.section-card').forEach(sec=>{
+    const anyVisible = Array.from(sec.querySelectorAll('.card')).some(c => c.style.display !== 'none');
     sec.style.display = anyVisible ? "" : "none";
   });
 }
@@ -505,13 +507,13 @@ q.addEventListener('input', applyFilters, {passive:true});
 if (fMission) fMission.addEventListener('change', applyFilters);
 if (fTag) fTag.addEventListener('change', applyFilters);
 
-/* ==================== BULK & CHIPS ==================== */
+/* ============ BULK & CHIPS ============ */
 document.getElementById('checkAll').addEventListener('click', ()=>{
   groupsEl.querySelectorAll('.card').forEach(card=>{
     if(card.style.display==="none") return;
     const idx = card.dataset.index;
     ACTIONS.forEach(a=>{
-      const k = `${idx}:${a.key}`;
+      const k = KEYS.action(idx,a.key);
       if(!isOn(k)) setOn(k,true);
       const b = card.querySelector(`.tick[data-key="${k}"]`);
       if(b) b.setAttribute('data-on','true');
@@ -520,13 +522,12 @@ document.getElementById('checkAll').addEventListener('click', ()=>{
   });
   updateGlobal();
 });
-
 document.getElementById('uncheckAll').addEventListener('click', ()=>{
   groupsEl.querySelectorAll('.card').forEach(card=>{
     if(card.style.display==="none") return;
     const idx = card.dataset.index;
     ACTIONS.forEach(a=>{
-      const k = `${idx}:${a.key}`;
+      const k = KEYS.action(idx,a.key);
       if(isOn(k)) setOn(k,false);
       const b = card.querySelector(`.tick[data-key="${k}"]`);
       if(b) b.setAttribute('data-on','false');
@@ -535,26 +536,25 @@ document.getElementById('uncheckAll').addEventListener('click', ()=>{
   });
   updateGlobal();
 });
-
 document.getElementById('resetAll').addEventListener('click', ()=>{
-  ANIMALS.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(`${i}:${a.key}`)));
+  ANIMALS.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(KEYS.action(i,a.key))));
   render();
 });
 
-// Chips d’action globale (sur visibles)
+// Chips : toggle action sur cartes visibles
 document.querySelectorAll('[data-action-chip]').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const actionKey = chip.getAttribute('data-action-chip');
-    let visibleCards = Array.from(groupsEl.querySelectorAll('.card')).filter(c=> c.style.display !== "none");
+    const visibleCards = Array.from(groupsEl.querySelectorAll('.card')).filter(c=> c.style.display !== "none");
     let onCount = 0;
     visibleCards.forEach(card=>{
       const idx = card.dataset.index;
-      if (localStorage.getItem(`${idx}:${actionKey}`) === "true") onCount++;
+      if (localStorage.getItem(KEYS.action(idx,actionKey)) === "true") onCount++;
     });
     const turnOn = onCount / Math.max(visibleCards.length,1) < 0.5;
     visibleCards.forEach(card=>{
       const idx = card.dataset.index;
-      const key = `${idx}:${actionKey}`;
+      const key = KEYS.action(idx,actionKey);
       localStorage.setItem(key, String(turnOn));
       const btn = card.querySelector(`.tick[data-key="${key}"]`);
       if (btn) btn.setAttribute('data-on', String(turnOn));
@@ -564,7 +564,17 @@ document.querySelectorAll('[data-action-chip]').forEach(chip=>{
   }, {passive:true});
 });
 
-/* ==================== INIT ==================== */
+/* ============ CLEAR STORAGE (prefix only) ============ */
+document.getElementById('clearLS').addEventListener('click', ()=>{
+  if (confirm("Effacer TOUTES les données TBVS_RDO_ (thème, progression, filtres, sections) ?")) {
+    Object.keys(localStorage).forEach(k=>{
+      if (k.startsWith(PREFIX)) localStorage.removeItem(k);
+    });
+    location.reload();
+  }
+});
+
+/* ============ INIT ============ */
 render();
 </script>
 </body>
