@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>RDO • Progression Animaux Légendaires</title>
 <style>
-  /* ============ THEME ============ */
+  /* THEME */
   :root{
     --radius-card:16px; --radius-input:12px; --radius-tick:12px;
     --fs-base:16px; --gap-page:16px; --gap-card:10px; --gap-grid:24px;
@@ -28,7 +28,7 @@
     --cat-ink:#334155;
   }
 
-  /* ============ BASE ============ */
+  /* BASE */
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
@@ -46,7 +46,7 @@
   h1{margin:0 0 6px;font-size:clamp(18px,4.5vw,24px)}
   .sub{color:var(--muted);font-size:13px}
 
-  /* ============ HEADER COMPACT ============ */
+  /* HEADER COMPACT */
   .controls{display:grid;gap:8px;margin-top:12px}
   .controls--compact{grid-template-columns:1fr auto auto}
   .input, select, button{
@@ -70,7 +70,7 @@
   .pct{min-width:46px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
   .small{color:var(--muted);font-size:12px;margin-left:auto}
 
-  /* ============ PANEL REPLIABLE ============ */
+  /* PANEL REPLIABLE */
   #filtersPanel{
     margin-top:10px; border:1px solid var(--line); border-radius:var(--radius-card); padding:8px 10px;
     background:var(--card);
@@ -93,7 +93,7 @@
   .chip:active{ transform:scale(.98); }
   .hint{ color:var(--muted); font-size:12px; margin-top:8px }
 
-  /* ============ GRID & SECTION CARDS ============ */
+  /* GRID & SECTION CARDS */
   main{padding:var(--gap-page);max-width:980px;margin:0 auto}
   .grid{ display:grid; gap:var(--gap-grid); }
 
@@ -102,7 +102,7 @@
     background:var(--card); overflow:hidden;
   }
   .section-card > summary{
-    display:flex; align-items:center; gap:10px;
+    display:flex; align-items:center; gap:12px;
     cursor:pointer; padding:14px 14px; list-style:none; user-select:none;
     font-weight:800; color:var(--cat-ink);
   }
@@ -110,6 +110,16 @@
   .section-card > summary .cat-dot{
     width:10px;height:10px;border-radius:999px;background:var(--prog-start);display:inline-block;
   }
+  /* Meta bloc in summary: percent + tiny bar */
+  .cat-meta{
+    display:flex; align-items:center; gap:8px; margin-left:auto; min-width:140px;
+  }
+  .cat-pct{ color:var(--muted); font-size:13px; width:44px; text-align:right; font-variant-numeric:tabular-nums; }
+  .cat-bar{ flex:1; height:6px; border-radius:999px; border:1px solid var(--line); background:color-mix(in srgb, var(--bg) 75%, #000 0%); overflow:hidden }
+  .cat-fill{ height:100%; width:0 }
+  .cat-fill.ok{ background:linear-gradient(90deg,var(--prog-start),var(--prog-end)) }
+  .cat-fill.warn{ background:linear-gradient(90deg,#f43f5e,#f59e0b) }
+
   .section-card > .section-body{
     padding: 12px 14px 16px;
     border-top:1px solid var(--line);
@@ -123,7 +133,7 @@
     .section-body .cards-grid{ grid-template-columns:repeat(auto-fit,minmax(350px,1fr)) }
   }
 
-  /* ============ ANIMAL CARD ============ */
+  /* ANIMAL CARD */
   .card{
     display:grid; gap:var(--gap-card);
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius-card);
@@ -161,7 +171,7 @@
       <button id="themeBtn" title="Basculer clair/sombre">🌓</button>
     </div>
 
-    <!-- Barre de progression globale FINE (reste visible) -->
+    <!-- Barre de progression globale FINE -->
     <div class="bar bar--thin" aria-label="Progression globale">
       <div class="fill warn" id="gFill"></div>
     </div>
@@ -217,7 +227,7 @@
 </main>
 
 <script>
-/* ============ CONFIG KEYS (PREFIX) ============ */
+/* ===== Keys prefix ===== */
 const PREFIX = "TBVS_RDO_";
 const KEYS = {
   theme: PREFIX + "theme",
@@ -226,7 +236,7 @@ const KEYS = {
   action: (idx, key) => PREFIX + idx + ":" + key
 };
 
-/* ============ DATA ============ */
+/* ===== Actions ===== */
 const ACTIONS = [
   { key:"piste", icon:"🐾" },
   { key:"tue", icon:"🪦" },
@@ -237,106 +247,143 @@ const ACTIONS = [
   { key:"photo", icon:"📸" }
 ];
 
-const RAW_ANIMALS = [
-  { name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
-  { name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
-  { name:"Ours esprit côtier", location:"Rivière Little Creek", condition:"En journée" },
-  { name:"Castor tenebreux", location:"Roanoke Ridge", condition:"Mission" },
-  { name:"Castor Zizi", location:"Ownjila", condition:"À l’aube ou au crépuscule" },
-  { name:"Castor lunaire", location:"Sud de Elysian Pool, à l’est de Van Horn", condition:"À l’aube ou au crépuscule sous la pluie" },
-  { name:"Bison Tatanka", location:"Champs pétrolifères de Heartland", condition:"Sous la pluie en journée" },
-  { name:"Bison Winyan", location:"Nord du lac Isabella", condition:"De nuit par temps clair" },
-  { name:"Bison Payta", location:"Little Creek", condition:"Mission" },
-  { name:"Sanglier Cogi", location:"Marais Bluewater", condition:"À l’aube par temps clair" },
-  { name:"Sanglier Wakpa", location:"Marais Stillwater", condition:"Sous la pluie en journée" },
-  { name:"Sanglier Icahi", location:"Est de New Austin", condition:"Mission" },
-  { name:"Cerf pataugeur", location:"Lac Flat Iron", condition:"En journée par temps clair" },
-  { name:"Cerf des neiges", location:"Bassin Aurora", condition:"À l’aube par temps clair" },
-  { name:"Cerf ombré", location:"Annesburg", condition:"Mission" },
-  { name:"Couguar Iguga", location:"Sud-est des Grandes Plaines (au sud de Blackwater)", condition:"Au crépuscule par temps orageux" },
-  { name:"Couguar Maza", location:"Mer de Coronado", condition:"À l’aube par temps clair" },
-  { name:"Couguar Sapa", location:"Nord-est de New Austin", condition:"Mission" },
-  { name:"Coyote rubigineux", location:"Pike’s Basin", condition:"Au crépuscule" },
-  { name:"Coyote d’ébène", location:"Sud-est de Strawberry", condition:"À l’aube et en journée par temps clair" },
-  { name:"Coyote laiteux", location:"Blackwater", condition:"Mission" },
-  { name:"Wapiti Katata", location:"Forêt de Cumberland", condition:"En journée dans le brouillard" },
-  { name:"Wapiti Ozula", location:"Cholla Springs", condition:"Au crépuscule et de nuit dans le brouillard" },
-  { name:"Wapiti Inahme", location:"Gorge de l’Araignée", condition:"Mission" },
-  { name:"Renard croisé", location:"Bayou Nwa", condition:"Mission" },
-  { name:"Renard marbré", location:"Colter", condition:"À l’aube ou au crépuscule par temps clair" },
-  { name:"Renard Ota", location:"Ouest de Rhodes", condition:"À l’aube ou au crépuscule par temps clair" },
-  { name:"Alligator doré", location:"Marais de Lagras (au nord de Saint Denis)", condition:"À l’aube dans le brouillard" },
-  { name:"Alligator Teca", location:"Rivière Lannahechee (au sud de Saint Denis)", condition:"De nuit par temps orageux" },
-  { name:"Alligator à bandes", location:"Saint Denis", condition:"Mission" },
-  { name:"Orignal flocon de neige", location:"Lagune Barrow", condition:"De nuit sous la pluie" },
-  { name:"Orignal roux", location:"Tall Trees", condition:"Mission" },
-  { name:"Orignal chevalier", location:"Nord de la rivière Kamassa", condition:"En journée" },
-  { name:"Panthère noctivague", location:"Bolger Glade", condition:"Au crépuscule dans le brouillard" },
-  { name:"Panthère fantôme", location:"Merkins Waller et Macomb’s", condition:"De nuit sous la pluie" },
-  { name:"Panthère Iwakta", location:"Près du manoir Braithwaite", condition:"Mission" },
-  { name:"Mouflon corne craie", location:"Sud de Cottora Springs", condition:"En journée par temps clair" },
-  { name:"Mouflon corne gabbro", location:"Rio Bravo", condition:"À l’aube et en journée par temps clair" },
-  { name:"Mouflon corne rutile", location:"Rio Bravo et Cholla Springs", condition:"Mission" },
-  { name:"Loup émeraude", location:"O’Creagh’s Run", condition:"De nuit" },
-  { name:"Loup d’onyx", location:"Sud du ravin Calumet et Cottora Springs", condition:"De nuit par temps clair" },
-  { name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
+/* ===== Base data (ordre original pour index) ===== */
+const BASE = [
+  { id:"ours_esprit_dore", name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
+  { id:"ours_owiza", name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
+  { id:"ours_esprit_cotier", name:"Ours esprit côtier", location:"Rivière Little Creek", condition:"En journée" },
+  { id:"castor_tenebreux", name:"Castor tenebreux", location:"Roanoke Ridge", condition:"Mission" },
+  { id:"castor_zizi", name:"Castor Zizi", location:"Ownjila", condition:"À l’aube ou au crépuscule" },
+  { id:"castor_lunaire", name:"Castor lunaire", location:"Sud de Elysian Pool, à l’est de Van Horn", condition:"À l’aube ou au crépuscule sous la pluie" },
+  { id:"bison_tatanka", name:"Bison Tatanka", location:"Champs pétrolifères de Heartland", condition:"Sous la pluie en journée" },
+  { id:"bison_winyan", name:"Bison Winyan", location:"Nord du lac Isabella", condition:"De nuit par temps clair" },
+  { id:"bison_payta", name:"Bison Payta", location:"Little Creek", condition:"Mission" },
+  { id:"sanglier_cogi", name:"Sanglier Cogi", location:"Marais Bluewater", condition:"À l’aube par temps clair" },
+  { id:"sanglier_wakpa", name:"Sanglier Wakpa", location:"Marais Stillwater", condition:"Sous la pluie en journée" },
+  { id:"sanglier_icahi", name:"Sanglier Icahi", location:"Est de New Austin", condition:"Mission" },
+  { id:"cerf_pataugeur", name:"Cerf pataugeur", location:"Lac Flat Iron", condition:"En journée par temps clair" },
+  { id:"cerf_des_neiges", name:"Cerf des neiges", location:"Bassin Aurora", condition:"À l’aube par temps clair" },
+  { id:"cerf_ombre", name:"Cerf ombré", location:"Annesburg", condition:"Mission" },
+  { id:"couguar_iguga", name:"Couguar Iguga", location:"Sud-est des Grandes Plaines (au sud de Blackwater)", condition:"Au crépuscule par temps orageux" },
+  { id:"couguar_maza", name:"Couguar Maza", location:"Mer de Coronado", condition:"À l’aube par temps clair" },
+  { id:"couguar_sapa", name:"Couguar Sapa", location:"Nord-est de New Austin", condition:"Mission" },
+  { id:"coyote_rubigineux", name:"Coyote rubigineux", location:"Pike’s Basin", condition:"Au crépuscule" },
+  { id:"coyote_ebene", name:"Coyote d’ébène", location:"Sud-est de Strawberry", condition:"À l’aube et en journée par temps clair" },
+  { id:"coyote_laiteux", name:"Coyote laiteux", location:"Blackwater", condition:"Mission" },
+  { id:"wapiti_katata", name:"Wapiti Katata", location:"Forêt de Cumberland", condition:"En journée dans le brouillard" },
+  { id:"wapiti_ozula", name:"Wapiti Ozula", location:"Cholla Springs", condition:"Au crépuscule et de nuit dans le brouillard" },
+  { id:"wapiti_inahme", name:"Wapiti Inahme", location:"Gorge de l’Araignée", condition:"Mission" },
+  { id:"renard_croise", name:"Renard croisé", location:"Bayou Nwa", condition:"Mission" },
+  { id:"renard_marbre", name:"Renard marbré", location:"Colter", condition:"À l’aube ou au crépuscule par temps clair" },
+  { id:"renard_ota", name:"Renard Ota", location:"Ouest de Rhodes", condition:"À l’aube ou au crépuscule par temps clair" },
+  { id:"alligator_dore", name:"Alligator doré", location:"Marais de Lagras (au nord de Saint Denis)", condition:"À l’aube dans le brouillard" },
+  { id:"alligator_teca", name:"Alligator Teca", location:"Rivière Lannahechee (au sud de Saint Denis)", condition:"De nuit par temps orageux" },
+  { id:"alligator_bandes", name:"Alligator à bandes", location:"Saint Denis", condition:"Mission" },
+  { id:"orignal_flocon", name:"Orignal flocon de neige", location:"Lagune Barrow", condition:"De nuit sous la pluie" },
+  { id:"orignal_roux", name:"Orignal roux", location:"Tall Trees", condition:"Mission" },
+  { id:"orignal_chevalier", name:"Orignal chevalier", location:"Nord de la rivière Kamassa", condition:"En journée" },
+  { id:"panthere_noctivague", name:"Panthère noctivague", location:"Bolger Glade", condition:"Au crépuscule dans le brouillard" },
+  { id:"panthere_fantome", name:"Panthère fantôme", location:"Merkins Waller et Macomb’s", condition:"De nuit sous la pluie" },
+  { id:"panthere_iwakta", name:"Panthère Iwakta", location:"Près du manoir Braithwaite", condition:"Mission" },
+  { id:"mouflon_craie", name:"Mouflon corne craie", location:"Sud de Cottora Springs", condition:"En journée par temps clair" },
+  { id:"mouflon_gabbro", name:"Mouflon corne gabbro", location:"Rio Bravo", condition:"À l’aube et en journée par temps clair" },
+  { id:"mouflon_rutile", name:"Mouflon corne rutile", location:"Rio Bravo et Cholla Springs", condition:"Mission" },
+  { id:"loup_emeraude", name:"Loup émeraude", location:"O’Creagh’s Run", condition:"De nuit" },
+  { id:"loup_onyx", name:"Loup d’onyx", location:"Sud du ravin Calumet et Cottora Springs", condition:"De nuit par temps clair" },
+  { id:"loup_pierre_de_lune", name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
 ];
 
-/* ============ CATEGORIES (OFFICIELLES) ============ */
-const CATS = {
-  dark:  { fr:"Animaux légendaires : Foncés", en:"Legendary Animals : Dark" },
-  light: { fr:"Animal légendaire : Clair",     en:"Legendary Animal : Light" },
-  redblond: { fr:"Animaux légendaires : Rouges & Blonds", en:"Legendary Animals : Red & Blond" },
-  patterned:{ fr:"Animaux légendaires : À motifs", en:"Legendary Animals : Patterned" }
+/* ===== Overrides d’affichage (noms exacts demandés) ===== */
+const NAME_OVERRIDE = {
+  /* Sombres */
+  alligator_teca:"Alligator Teca légendaire",
+  castor_tenebreux:"Castor ténébreux légendaire",
+  bison_tatanka:"Bison Tatanka légendaire",
+  cerf_ombre:"Cerf ombré légendaire",
+  couguar_sapa:"Couguar Sapa légendaire",
+  coyote_ebene:"Coyote d'ébène légendaire",
+  wapiti_katata:"Wapiti Katata légendaire",
+  loup_onyx:"Loup d'onyx légendaire",
+  panthere_noctivague:"Panthère noctivague légendaire",
+  mouflon_rutile:"Mouflon à cornes de rutile légendaire",
+  orignal_chevalier:"Orignal chevalier légendaire",
+  /* Clairs */
+  castor_lunaire:"Castor sélène légendaire",
+  bison_winyan:"Bison Winyan légendaire",
+  cerf_des_neiges:"Cerf des neiges légendaire",
+  couguar_iguga:"Couguar Iguga légendaire",
+  coyote_laiteux:"Coyote laiteux légendaire",
+  wapiti_inahme:"Wapiti Inahme légendaire",
+  loup_pierre_de_lune:"Loup de pierre de lune légendaire",
+  panthere_fantome:"Panthère fantôme légendaire",
+  mouflon_gabbro:"Mouflon à cornes de gabbro légendaire",
+  orignal_flocon:"Orignal neigeux légendaire",
+  /* Roux ou sable */
+  alligator_dore:"Alligator doré légendaire",
+  alligator_bandes:"Alligator à bandes légendaire",
+  bison_payta:"Bison Payta légendaire",
+  sanglier_wakpa:"Sanglier Wakpa légendaire",
+  coyote_rubigineux:"Coyote rubigineux légendaire",
+  wapiti_ozula:"Wapiti Ozula légendaire",
+  loup_emeraude:"Loup d'émeraude légendaire",
+  ours_esprit_cotier:"Ours esprit à rayure dorsale légendaire",
+  ours_esprit_dore:"Ours esprit doré légendaire",
+  castor_zizi:"Castor solaire légendaire",
+  sanglier_cogi:"Sanglier Cogi légendaire",
+  orignal_roux:"Orignal à bois rougeâtres légendaire",
+  /* Tachetés/Rayés */
+  ours_owiza:"Ours Owiza légendaire",
+  sanglier_icahi:"Sanglier Icahi légendaire",
+  cerf_pataugeur:"Cerf pataugeur légendaire",
+  couguar_maza:"Couguar Maza légendaire",
+  renard_ota:"Renard Ota légendaire",
+  renard_marbre:"Renard marbré légendaire",
+  renard_croise:"Renard croisé légendaire",
+  panthere_iwakta:"Panthère Iwakta légendaire",
+  mouflon_craie:"Mouflon à cornes de craie légendaire"
 };
 
-/* Mapping FR -> catégorie exacte */
-const CATEGORY_MAP = {
-  "Ours esprit doré":"redblond",
-  "Ours Owiza":"patterned",
-  "Ours esprit côtier":"redblond",
-  "Castor tenebreux":"dark",
-  "Castor Zizi":"redblond",
-  "Castor lunaire":"light",
-  "Bison Tatanka":"dark",
-  "Bison Winyan":"light",
-  "Bison Payta":"redblond",
-  "Sanglier Cogi":"redblond",
-  "Sanglier Wakpa":"redblond",
-  "Sanglier Icahi":"patterned",
-  "Cerf pataugeur":"patterned",
-  "Cerf des neiges":"light",
-  "Cerf ombré":"dark",
-  "Couguar Iguga":"light",
-  "Couguar Maza":"patterned",
-  "Couguar Sapa":"dark",
-  "Coyote rubigineux":"redblond",
-  "Coyote d’ébène":"dark",
-  "Coyote laiteux":"light",
-  "Wapiti Katata":"dark",
-  "Wapiti Ozula":"redblond",
-  "Wapiti Inahme":"dark",
-  "Renard croisé":"patterned",
-  "Renard marbré":"patterned",
-  "Renard Ota":"patterned",
-  "Alligator doré":"redblond",
-  "Alligator Teca":"dark",
-  "Alligator à bandes":"redblond",
-  "Orignal flocon de neige":"light",
-  "Orignal roux":"redblond",
-  "Orignal chevalier":"dark",
-  "Panthère noctivague":"dark",
-  "Panthère fantôme":"light",
-  "Panthère Iwakta":"patterned",
-  "Mouflon corne craie":"patterned",
-  "Mouflon corne gabbro":"patterned",
-  "Mouflon corne rutile":"dark",
-  "Loup émeraude":"redblond",
-  "Loup d’onyx":"dark",
-  "Loup pierre de lune":"light"
-};
+/* ===== Catégories EXACTES & ORDRE ===== */
+const CATEGORIES = [
+  {
+    key: "dark",
+    title: "Sombres",
+    items: [
+      "alligator_teca","castor_tenebreux","bison_tatanka","cerf_ombre",
+      "couguar_sapa","coyote_ebene","wapiti_katata","loup_onyx",
+      "panthere_noctivague","mouflon_rutile","orignal_chevalier"
+    ]
+  },
+  {
+    key: "light",
+    title: "Clairs",
+    items: [
+      "castor_lunaire","bison_winyan","cerf_des_neiges","couguar_iguga",
+      "coyote_laiteux","wapiti_inahme","loup_pierre_de_lune","panthere_fantome",
+      "mouflon_gabbro","orignal_flocon"
+    ]
+  },
+  {
+    key: "redblond",
+    title: "Roux ou sable",
+    items: [
+      "alligator_dore","alligator_bandes","bison_payta","sanglier_wakpa",
+      "coyote_rubigineux","wapiti_ozula","loup_emeraude","ours_esprit_cotier",
+      "ours_esprit_dore","castor_zizi","sanglier_cogi","orignal_roux"
+    ]
+  },
+  {
+    key: "patterned",
+    title: "Tachetés/rayés",
+    items: [
+      "ours_owiza","sanglier_icahi","cerf_pataugeur","couguar_maza",
+      "renard_ota","renard_marbre","renard_croise","panthere_iwakta",
+      "mouflon_craie"
+    ]
+  }
+];
 
-/* ============ THEME ============ */
+/* ===== Theme ===== */
 function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(KEYS.theme,t); }
 (function initTheme(){
   const saved = localStorage.getItem(KEYS.theme);
@@ -347,7 +394,7 @@ document.getElementById("themeBtn").addEventListener("click", ()=>{
   applyTheme(cur === "dark" ? "light" : "dark");
 });
 
-/* ============ HELPERS ============ */
+/* ===== Helpers ===== */
 const groupsEl = document.getElementById('groups');
 const gFill = document.getElementById('gFill');
 const gPct  = document.getElementById('gPct');
@@ -358,25 +405,23 @@ const fTag = document.getElementById('fTag');
 const filtersPanel = document.getElementById('filtersPanel');
 const filtersToggleBtn = document.getElementById('filtersToggle');
 
+const baseById = Object.fromEntries(BASE.map((a,i)=>[a.id,{...a, idx:i}]));
 const isOn = key => localStorage.getItem(key)==="true";
 const setOn = (key,val)=> localStorage.setItem(key, val ? "true" : "false");
 const rowCount = i => ACTIONS.reduce((n,a)=> n + (isOn(KEYS.action(i,a.key))?1:0), 0);
 const missionFlag = cond => /mission/i.test(cond) ? 'mission' : 'libre';
 function tagSet(cond){
   const s = cond.toLowerCase();
-  return {
-    aube:/aube/.test(s),
-    crepuscule:/crépuscule|crepuscule/.test(s),
-    nuit:/nuit/.test(s),
-    journee:/journée|journee/.test(s),
-    pluie:/pluie/.test(s),
-    brouillard:/brouillard/.test(s),
-    orage:/orage/.test(s),
-    clair:/clair/.test(s)
-  };
+  return { aube:/aube/.test(s), crepuscule:/crépuscule|crepuscule/.test(s), nuit:/nuit/.test(s),
+    journee:/journée|journee/.test(s), pluie:/pluie/.test(s), brouillard:/brouillard/.test(s),
+    orage:/orage/.test(s), clair:/clair/.test(s) };
 }
+const ANIMALS_BY_IDX = BASE.map((b)=>{
+  const display = NAME_OVERRIDE[b.id] || (b.name + " légendaire");
+  return { ...b, displayName: display, mission: missionFlag(b.condition), tags: tagSet(b.condition) };
+});
 
-/* ============ PANEL STATE (Filtres) ============ */
+/* ===== Filtres panel state ===== */
 const isDesktop = () => window.matchMedia("(min-width: 780px)").matches;
 const savedOpen = localStorage.getItem(KEYS.filtersOpen);
 filtersPanel.open = savedOpen ? savedOpen === "true" : isDesktop();
@@ -386,34 +431,27 @@ filtersToggleBtn.addEventListener('click', ()=>{
   localStorage.setItem(KEYS.filtersOpen, String(filtersPanel.open));
 });
 
-/* ============ RENDER (Sections + Cards) ============ */
-const ANIMALS = RAW_ANIMALS.map((a,idx)=>({
-  ...a,
-  displayName: `${a.name} légendaire`,
-  category: CATEGORY_MAP[a.name] || 'patterned', // fallback de sécu
-  idx,
-  mission: missionFlag(a.condition),
-  tags: tagSet(a.condition)
-}));
-
+/* ===== Render ===== */
 function render(){
   groupsEl.innerHTML = "";
-  const order = ['dark','light','redblond','patterned'];
 
-  order.forEach(cat=>{
-    const items = ANIMALS.filter(a=> a.category === cat);
-    if (!items.length) return;
-
-    // SECTION CARD (foldable)
+  CATEGORIES.forEach(cat=>{
+    // SECTION card
     const section = document.createElement('details');
     section.className = "section-card";
-    section.dataset.cat = cat;
+    section.dataset.cat = cat.key;
 
-    const secKey = localStorage.getItem(KEYS.sectionOpen(cat));
-    section.open = secKey ? secKey === "true" : true;
+    const secOpenKey = KEYS.sectionOpen(cat.key);
+    const secSaved = localStorage.getItem(secOpenKey);
+    section.open = secSaved ? secSaved === "true" : true;
 
     const summary = document.createElement('summary');
-    summary.innerHTML = `<span class="cat-dot"></span> ${CATS[cat].fr}`;
+    summary.innerHTML = `
+      <span class="cat-dot"></span> ${cat.title}
+      <div class="cat-meta">
+        <span class="cat-pct" data-cat-pct="${cat.key}">0%</span>
+        <div class="cat-bar"><div class="cat-fill warn" data-cat-fill="${cat.key}"></div></div>
+      </div>`;
     section.appendChild(summary);
 
     const body = document.createElement('div');
@@ -423,14 +461,19 @@ function render(){
     body.appendChild(cardsGrid);
     section.appendChild(body);
 
-    items.forEach(a=>{
+    // cards in the exact order provided
+    cat.items.forEach(id=>{
+      const b = baseById[id]; if(!b) return;
+      const a = ANIMALS_BY_IDX[b.idx];
+      const display = NAME_OVERRIDE[id] || a.displayName;
+
       const card = document.createElement('article');
       card.className = "card";
-      card.dataset.index = a.idx;
+      card.dataset.index = b.idx;
       card.dataset.mission = a.mission;
       card.dataset.tags = JSON.stringify(a.tags);
       card.innerHTML = `
-        <div class="name">${a.displayName}</div>
+        <div class="name">${display}</div>
         <div class="loc">📍 ${a.location}</div>
         <div class="cond">🧭 ${a.condition}</div>
         <div class="rowbar">
@@ -438,24 +481,25 @@ function render(){
           <div class="bar" style="flex:1"><div class="fill warn" data-fill style="width:0%"></div></div>
           <div class="count" data-count>0/${ACTIONS.length}</div>
         </div>
-        <div class="checklist" role="group" aria-label="Checklist ${a.displayName}">
+        <div class="checklist" role="group" aria-label="Checklist ${display}">
           ${ACTIONS.map(ac=>{
-            const key=KEYS.action(a.idx,ac.key), on=isOn(key);
+            const key=KEYS.action(b.idx,ac.key), on=isOn(key);
             return `<button class="tick" data-key="${key}" data-on="${on}" title="${ac.key}">${ac.icon}</button>`;
           }).join('')}
         </div>
       `;
       cardsGrid.appendChild(card);
-      updateRow(a.idx, card);
+      updateRow(b.idx, card);
     });
 
     section.addEventListener('toggle', ()=>{
-      localStorage.setItem(KEYS.sectionOpen(cat), String(section.open));
+      localStorage.setItem(secOpenKey, String(section.open));
     });
 
     groupsEl.appendChild(section);
   });
 
+  // bind ticks
   groupsEl.querySelectorAll('.tick').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const key = btn.dataset.key;
@@ -466,11 +510,13 @@ function render(){
       const card = groupsEl.querySelector(`.card[data-index="${idx}"]`);
       updateRow(idx, card);
       updateGlobal();
+      updateAllCategories();  // <— MAJ pourcentages de catégories
     }, {passive:true});
   });
 
   applyFilters();
   updateGlobal();
+  updateAllCategories();      // <— initial
 }
 
 function updateRow(i, cardEl){
@@ -487,9 +533,9 @@ function updateRow(i, cardEl){
 }
 
 function updateGlobal(){
-  const total = ANIMALS.length * ACTIONS.length;
+  const total = ANIMALS_BY_IDX.length * ACTIONS.length;
   let checked = 0;
-  ANIMALS.forEach((_,i)=> checked += rowCount(i));
+  ANIMALS_BY_IDX.forEach((_,i)=> checked += rowCount(i));
   const pct = total ? Math.round(checked/total*100) : 0;
   gFill.style.width = pct + "%";
   gFill.classList.toggle('ok', pct>=50);
@@ -498,7 +544,33 @@ function updateGlobal(){
   gCount.textContent = `${checked} / ${total} actions`;
 }
 
-/* ============ FILTERS ============ */
+/* ---- Category progress (title line) ---- */
+function categoryIndices(catKey){
+  const cat = CATEGORIES.find(c => c.key === catKey);
+  if(!cat) return [];
+  return cat.items.map(id => baseById[id]?.idx).filter(i => Number.isInteger(i));
+}
+function updateCategory(catKey){
+  const idxs = categoryIndices(catKey);
+  const total = idxs.length * ACTIONS.length;
+  let checked = 0;
+  idxs.forEach(i => checked += rowCount(i));
+  const pct = total ? Math.round(checked/total*100) : 0;
+
+  const pctEl = document.querySelector(`[data-cat-pct="${catKey}"]`);
+  const fillEl = document.querySelector(`[data-cat-fill="${catKey}"]`);
+  if(pctEl){ pctEl.textContent = pct + "%"; }
+  if(fillEl){
+    fillEl.style.width = pct + "%";
+    fillEl.classList.toggle('ok', pct>=50);
+    fillEl.classList.toggle('warn', pct<50);
+  }
+}
+function updateAllCategories(){
+  CATEGORIES.forEach(c => updateCategory(c.key));
+}
+
+/* ===== Filtres & recherche ===== */
 function applyFilters(){
   const text = q.value.trim().toLowerCase();
   const missionVal = fMission ? fMission.value : "";
@@ -506,7 +578,7 @@ function applyFilters(){
 
   groupsEl.querySelectorAll('.card').forEach(card=>{
     const i = +card.dataset.index;
-    const a = ANIMALS[i];
+    const a = ANIMALS_BY_IDX[i];
     let visible = true;
 
     if (text){
@@ -521,6 +593,7 @@ function applyFilters(){
     card.style.display = visible ? "" : "none";
   });
 
+  // hide section if empty after filters
   groupsEl.querySelectorAll('.section-card').forEach(sec=>{
     const anyVisible = Array.from(sec.querySelectorAll('.card')).some(c => c.style.display !== 'none');
     sec.style.display = anyVisible ? "" : "none";
@@ -531,7 +604,7 @@ q.addEventListener('input', applyFilters, {passive:true});
 if (fMission) fMission.addEventListener('change', applyFilters);
 if (fTag) fTag.addEventListener('change', applyFilters);
 
-/* ============ BULK & CHIPS ============ */
+/* ===== Bulk & chips ===== */
 document.getElementById('checkAll').addEventListener('click', ()=>{
   groupsEl.querySelectorAll('.card').forEach(card=>{
     if(card.style.display==="none") return;
@@ -545,6 +618,7 @@ document.getElementById('checkAll').addEventListener('click', ()=>{
     updateRow(idx, card);
   });
   updateGlobal();
+  updateAllCategories();
 });
 document.getElementById('uncheckAll').addEventListener('click', ()=>{
   groupsEl.querySelectorAll('.card').forEach(card=>{
@@ -559,13 +633,14 @@ document.getElementById('uncheckAll').addEventListener('click', ()=>{
     updateRow(idx, card);
   });
   updateGlobal();
+  updateAllCategories();
 });
 document.getElementById('resetAll').addEventListener('click', ()=>{
-  ANIMALS.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(KEYS.action(i,a.key))));
+  ANIMALS_BY_IDX.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(KEYS.action(i,a.key))));
   render();
 });
 
-// Chips : toggle action sur cartes visibles
+// Chips = toggle action pour cartes visibles
 document.querySelectorAll('[data-action-chip]').forEach(chip=>{
   chip.addEventListener('click', ()=>{
     const actionKey = chip.getAttribute('data-action-chip');
@@ -585,10 +660,11 @@ document.querySelectorAll('[data-action-chip]').forEach(chip=>{
       updateRow(idx, card);
     });
     updateGlobal();
+    updateAllCategories();
   }, {passive:true});
 });
 
-/* ============ CLEAR STORAGE (prefix only) ============ */
+/* ===== Clear storage (prefix only) ===== */
 document.getElementById('clearLS').addEventListener('click', ()=>{
   if (confirm("Effacer TOUTES les données TBVS_RDO_ (thème, progression, filtres, sections) ?")) {
     Object.keys(localStorage).forEach(k=>{
@@ -598,7 +674,7 @@ document.getElementById('clearLS').addEventListener('click', ()=>{
   }
 });
 
-/* ============ INIT ============ */
+/* ===== Init ===== */
 render();
 </script>
 </body>
