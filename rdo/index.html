@@ -23,4 +23,549 @@
     --bg:#f5f7fb; --card:#ffffff; --ink:#0e0f12; --muted:#606b7a; --line:#dbe1ea;
     --chip:#eef2f8; --chipLine:#d5dde8;
     --btn:#f3f6fb; --btn-line:#cfd7e5; --btn-ink:#0e0f12; --btn-active:#e8eef8;
-    --prog-start:#06b6d4;
+    --prog-start:#06b6d4; --prog-end:#8b5cf6;
+    --tick-bg:#eef8f1; --tick-line:#b9e3c6; --tick-on-ring:rgba(22,163,74,.25); --tick-on-line:#16a34a;
+    --cat-ink:#334155;
+  }
+
+  /* ==================== BASE ==================== */
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
+    font-size:var(--fs-base); -webkit-tap-highlight-color:transparent;
+  }
+
+  header{
+    position:sticky; top:0; z-index:50;
+    background:color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .wrap{max-width:980px;margin:0 auto;padding:14px}
+  h1{margin:0 0 6px;font-size:clamp(18px,4.5vw,24px)}
+  .sub{color:var(--muted);font-size:13px}
+
+  /* ==================== HEADER COMPACT ==================== */
+  .controls{display:grid;gap:8px;margin-top:12px}
+  .controls--compact{grid-template-columns:1fr auto auto}
+  .input, select, button{
+    height:var(--touch); border-radius:var(--radius-input);
+    border:1px solid var(--line); background:var(--btn); color:var(--btn-ink);
+  }
+  .input, select{padding:0 12px}
+  button{padding:0 12px; cursor:pointer}
+  button:active{transform:scale(.98)}
+  .btn-outline{
+    background:transparent; color:var(--btn-ink);
+    border:1px solid var(--btn-line); border-radius:var(--radius-input);
+  }
+  .bar{height:10px;border-radius:999px;background:color-mix(in srgb, var(--bg) 75%, #000 0%);border:1px solid var(--line);overflow:hidden}
+  .bar--thin{ height:8px; border-radius:999px; margin:10px 0 4px; }
+  .fill{height:100%;width:0}
+  .ok{background:linear-gradient(90deg,var(--prog-start),var(--prog-end))}
+  .warn{background:linear-gradient(90deg,#f43f5e,#f59e0b)}
+  .stats{display:flex;gap:10px;align-items:center}
+  .stats--mini .small{ margin-left:0; }
+  .pct{min-width:46px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+  .small{color:var(--muted);font-size:12px;margin-left:auto}
+
+  /* ==================== PANEL REPLIABLE ==================== */
+  #filtersPanel{
+    margin-top:10px; border:1px solid var(--line); border-radius:var(--radius-card); padding:8px 10px;
+    background:var(--card);
+  }
+  #filtersPanel > summary{
+    cursor:pointer; list-style:none; font-weight:600; color:var(--ink);
+    display:flex; align-items:center; gap:8px;
+  }
+  #filtersPanel > summary::after{
+    content:"▾"; opacity:.75; font-size:12px;
+  }
+  #filtersPanel[open] > summary{ margin-bottom:10px; }
+  #filtersPanel > summary::-webkit-details-marker{ display:none; }
+  .grid-filters{ display:grid; grid-template-columns:1fr 1fr; gap:8px; margin:10px 0; }
+  @media (min-width:780px){ .grid-filters{ grid-template-columns:180px 180px auto auto auto; } }
+
+  .legend{ display:flex; flex-wrap:wrap; gap:8px; }
+  .chip{
+    padding:8px 10px; border:1px solid var(--chipLine); border-radius:999px;
+    background:var(--chip); color:var(--muted);
+  }
+  .chip:active{ transform:scale(.98); }
+  .hint{ color:var(--muted); font-size:12px; margin-top:8px }
+
+  /* ==================== GRID & CATEGORY ==================== */
+  main{padding:var(--gap-page);max-width:980px;margin:0 auto}
+  .grid{ display:grid; gap:var(--gap-grid); }
+  .cat{
+    margin: 6px 2px -6px 2px;
+    color: var(--cat-ink);
+    font-weight: 800;
+    letter-spacing:.2px;
+    display:flex; align-items:center; gap:8px;
+  }
+  .cat::before{
+    content:""; display:inline-block; width:8px; height:8px; border-radius:999px; background:var(--prog-start);
+  }
+
+  /* ==================== CARD ==================== */
+  .card{
+    display:grid; gap:var(--gap-card);
+    background:var(--card); border:1px solid var(--line); border-radius:calc(var(--radius-card) + 2px);
+    padding:14px;
+  }
+  .name{font-weight:800;font-size:18px;line-height:1.2}
+  .loc{color:var(--ink);opacity:.9}
+  .cond{color:var(--muted);font-style:italic}
+  .rowbar{display:flex;align-items:center;gap:10px;margin-top:2px}
+  .checklist{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
+  .tick{
+    width:var(--touch); height:var(--touch);
+    border-radius:var(--radius-tick);
+    border:1px solid var(--tick-line); background:var(--tick-bg);
+    display:inline-flex; align-items:center; justify-content:center;
+    font-size:20px; cursor:pointer; user-select:none;
+    box-shadow:0 1px 0 rgba(0,0,0,.25) inset; transition:transform .06s ease, box-shadow .15s ease;
+    min-width:44px; min-height:44px;
+  }
+  .tick[data-on="true"]{box-shadow:0 0 0 3px var(--tick-on-ring) inset, 0 0 0 1px var(--tick-on-line)}
+  .tick:active{transform:scale(.98)}
+  .count{color:var(--muted);font-size:12px;margin-left:auto}
+
+  /* ==================== RESPONSIVE ==================== */
+  @media (min-width:640px){
+    .grid{ grid-template-columns:repeat(auto-fit,minmax(350px,1fr)) }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>📜 Progression Animaux Légendaires RDO</h1>
+    <div class="sub">Cartes optimisées iPhone • Sauvegarde locale • Thème clair/sombre</div>
+
+    <!-- Barre sticky compacte -->
+    <div class="controls controls--compact">
+      <input id="q" class="input" type="search" placeholder="Rechercher (animal, lieu, condition)…" inputmode="search"/>
+      <button id="filtersToggle" class="btn-outline" aria-controls="filtersPanel">🔎 Filtres</button>
+      <button id="themeBtn" title="Basculer clair/sombre">🌓</button>
+    </div>
+
+    <!-- Barre de progression globale FINE (reste visible) -->
+    <div class="bar bar--thin" aria-label="Progression globale">
+      <div class="fill warn" id="gFill"></div>
+    </div>
+    <div class="stats stats--mini">
+      <strong>Global</strong>
+      <div class="pct" id="gPct">0%</div>
+      <div class="small" id="gCount">0 / 0 actions</div>
+    </div>
+
+    <!-- Panneau repliable : filtres + outils + légende -->
+    <details id="filtersPanel">
+      <summary>Filtres & Outils</summary>
+
+      <div class="grid-filters">
+        <select id="fMission" title="Filtre mission">
+          <option value="">Mission — Tous</option>
+          <option value="mission">Mission uniquement</option>
+          <option value="libre">Hors mission</option>
+        </select>
+        <select id="fTag" title="Filtre condition">
+          <option value="">Condition — Toutes</option>
+          <option value="aube">Aube</option>
+          <option value="crepuscule">Crépuscule</option>
+          <option value="nuit">Nuit</option>
+          <option value="journee">Journée</option>
+          <option value="pluie">Pluie</option>
+          <option value="brouillard">Brouillard</option>
+          <option value="orage">Orage</option>
+          <option value="clair">Temps clair</option>
+        </select>
+        <button id="checkAll">Cocher visibles</button>
+        <button id="uncheckAll">Décocher visibles</button>
+        <button id="resetAll">Réinitialiser</button>
+      </div>
+
+      <div class="legend">
+        <button class="chip" data-action-chip="piste">🐾 Pisté</button>
+        <button class="chip" data-action-chip="tue">🪦 Tués</button>
+        <button class="chip" data-action-chip="depece">🔪 Dépecés</button>
+        <button class="chip" data-action-chip="etudie">🔎 Étudié</button>
+        <button class="chip" data-action-chip="anesthesie">💉 Anesthésié</button>
+        <button class="chip" data-action-chip="echantillon">🧬 Échantillon</button>
+        <button class="chip" data-action-chip="photo">📸 Photo</button>
+      </div>
+      <div class="hint">Astuce : tap sur un chip = (dé)cocher cette action pour toutes les cartes visibles.</div>
+    </details>
+  </div>
+</header>
+
+<main>
+  <section id="groups" class="grid"></section>
+</main>
+
+<script>
+/* ==================== DATA ==================== */
+const ACTIONS = [
+  { key:"piste", icon:"🐾" },
+  { key:"tue", icon:"🪦" },
+  { key:"depece", icon:"🔪" },
+  { key:"etudie", icon:"🔎" },
+  { key:"anesthesie", icon:"💉" },
+  { key:"echantillon", icon:"🧬" },
+  { key:"photo", icon:"📸" }
+];
+
+// Liste d’animaux (de ton tableau) — on garde les champs FR
+const RAW_ANIMALS = [
+  { name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
+  { name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
+  { name:"Ours esprit côtier", location:"Rivière Little Creek", condition:"En journée" },
+  { name:"Castor tenebreux", location:"Roanoke Ridge", condition:"Mission" },
+  { name:"Castor Zizi", location:"Ownjila", condition:"À l’aube ou au crépuscule" },
+  { name:"Castor lunaire", location:"Sud de Elysian Pool, à l’est de Van Horn", condition:"À l’aube ou au crépuscule sous la pluie" },
+  { name:"Bison Tatanka", location:"Champs pétrolifères de Heartland", condition:"Sous la pluie en journée" },
+  { name:"Bison Winyan", location:"Nord du lac Isabella", condition:"De nuit par temps clair" },
+  { name:"Bison Payta", location:"Little Creek", condition:"Mission" },
+  { name:"Sanglier Cogi", location:"Marais Bluewater", condition:"À l’aube par temps clair" },
+  { name:"Sanglier Wakpa", location:"Marais Stillwater", condition:"Sous la pluie en journée" },
+  { name:"Sanglier Icahi", location:"Est de New Austin", condition:"Mission" },
+  { name:"Cerf pataugeur", location:"Lac Flat Iron", condition:"En journée par temps clair" },
+  { name:"Cerf des neiges", location:"Bassin Aurora", condition:"À l’aube par temps clair" },
+  { name:"Cerf ombré", location:"Annesburg", condition:"Mission" },
+  { name:"Couguar Iguga", location:"Sud-est des Grandes Plaines (au sud de Blackwater)", condition:"Au crépuscule par temps orageux" },
+  { name:"Couguar Maza", location:"Mer de Coronado", condition:"À l’aube par temps clair" },
+  { name:"Couguar Sapa", location:"Nord-est de New Austin", condition:"Mission" },
+  { name:"Coyote rubigineux", location:"Pike’s Basin", condition:"Au crépuscule" },
+  { name:"Coyote d’ébène", location:"Sud-est de Strawberry", condition:"À l’aube et en journée par temps clair" },
+  { name:"Coyote laiteux", location:"Blackwater", condition:"Mission" },
+  { name:"Wapiti Katata", location:"Forêt de Cumberland", condition:"En journée dans le brouillard" },
+  { name:"Wapiti Ozula", location:"Cholla Springs", condition:"Au crépuscule et de nuit dans le brouillard" },
+  { name:"Wapiti Inahme", location:"Gorge de l’Araignée", condition:"Mission" },
+  { name:"Renard croisé", location:"Bayou Nwa", condition:"Mission" },
+  { name:"Renard marbré", location:"Colter", condition:"À l’aube ou au crépuscule par temps clair" },
+  { name:"Renard Ota", location:"Ouest de Rhodes", condition:"À l’aube ou au crépuscule par temps clair" },
+  { name:"Alligator doré", location:"Marais de Lagras (au nord de Saint Denis)", condition:"À l’aube dans le brouillard" },
+  { name:"Alligator Teca", location:"Rivière Lannahechee (au sud de Saint Denis)", condition:"De nuit par temps orageux" },
+  { name:"Alligator à bandes", location:"Saint Denis", condition:"Mission" },
+  { name:"Orignal flocon de neige", location:"Lagune Barrow", condition:"De nuit sous la pluie" },
+  { name:"Orignal roux", location:"Tall Trees", condition:"Mission" },
+  { name:"Orignal chevalier", location:"Nord de la rivière Kamassa", condition:"En journée" },
+  { name:"Panthère noctivague", location:"Bolger Glade", condition:"Au crépuscule dans le brouillard" },
+  { name:"Panthère fantôme", location:"Merkins Waller et Macomb’s", condition:"De nuit sous la pluie" },
+  { name:"Panthère Iwakta", location:"Près du manoir Braithwaite", condition:"Mission" },
+  { name:"Mouflon corne craie", location:"Sud de Cottora Springs", condition:"En journée par temps clair" },
+  { name:"Mouflon corne gabbro", location:"Rio Bravo", condition:"À l’aube et en journée par temps clair" },
+  { name:"Mouflon corne rutile", location:"Rio Bravo et Cholla Springs", condition:"Mission" },
+  { name:"Loup émeraude", location:"O’Creagh’s Run", condition:"De nuit" },
+  { name:"Loup d’onyx", location:"Sud du ravin Calumet et Cottora Springs", condition:"De nuit par temps clair" },
+  { name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
+];
+
+/* ==================== CATEGORIES ==================== */
+/* Slugs et titres FR/EN */
+const CATS = {
+  dark:  { fr:"Animaux légendaires : Foncés", en:"Legendary Animals : Dark" },
+  light: { fr:"Animal légendaire : Clair",     en:"Legendary Animal : Light" },
+  redblond: { fr:"Animaux légendaires : Rouges & Blonds", en:"Legendary Animals : Red & Blond" },
+  patterned:{ fr:"Animaux légendaires : À motifs", en:"Legendary Animals : Patterned" }
+};
+
+/* Override manuel (si tu veux forcer un animal dans une catégorie précise) :
+   Clé = nom FR exact, Valeur = 'dark' | 'light' | 'redblond' | 'patterned' */
+const CATEGORY_OVERRIDE = {
+  "Coyote d’ébène": "dark",
+  "Loup d’onyx": "dark",
+  "Panthère noctivague": "dark",
+  "Orignal flocon de neige": "light",
+  "Coyote laiteux": "light",
+  "Alligator doré": "redblond",
+  "Orignal roux": "redblond",
+  "Renard marbré": "patterned",
+  "Alligator à bandes": "patterned",
+  "Renard croisé": "patterned"
+};
+
+/* Heuristiques mots-clés (fallback si pas d’override) */
+function inferCategoryByName(n){
+  const s = n.toLowerCase();
+  // DARK
+  if (/(ébène|ebene|onyx|noctivague|fant[oô]me|sombre|ombre)/.test(s)) return 'dark';
+  // LIGHT
+  if (/(flocon|neige|neigeux|laiteux|clair|chevalier)/.test(s)) return 'light';
+  // RED & BLOND
+  if (/(dor[ée]|or|roux|blond)/.test(s)) return 'redblond';
+  // PATTERNED
+  if (/(marbr[ée]|bandes?|crois[ée]|tachet|rayures?)/.test(s)) return 'patterned';
+  // Sinon: par défaut, 'patterned' pour varier (change si tu veux)
+  return 'patterned';
+}
+
+/* Construit la liste finale avec nom “Légendaire” et catégorie */
+const ANIMALS = RAW_ANIMALS.map(a=>{
+  const cat = CATEGORY_OVERRIDE[a.name] || inferCategoryByName(a.name);
+  return {
+    ...a,
+    displayName: `${a.name} légendaire`,
+    category: cat
+  };
+});
+
+/* ==================== THEME ==================== */
+const THEME_KEY = "rdo_theme";
+function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(THEME_KEY,t); }
+(function initTheme(){
+  const saved = localStorage.getItem(THEME_KEY);
+  applyTheme(saved || "dark"); // défaut sombre
+})();
+document.getElementById("themeBtn").addEventListener("click", ()=>{
+  const cur = document.documentElement.getAttribute("data-theme");
+  applyTheme(cur === "dark" ? "light" : "dark");
+});
+
+/* ==================== HELPERS ==================== */
+const groupsEl = document.getElementById('groups');
+const gFill = document.getElementById('gFill');
+const gPct  = document.getElementById('gPct');
+const gCount= document.getElementById('gCount');
+const q = document.getElementById('q');
+const fMission = document.getElementById('fMission');
+const fTag = document.getElementById('fTag');
+const filtersPanel = document.getElementById('filtersPanel');
+const filtersToggleBtn = document.getElementById('filtersToggle');
+
+const isOn = key => localStorage.getItem(key)==="true";
+const setOn = (key,val)=> localStorage.setItem(key, val ? "true" : "false");
+const rowCount = i => ACTIONS.reduce((n,a)=> n + (isOn(`${i}:${a.key}`)?1:0), 0);
+const missionFlag = cond => /mission/i.test(cond) ? 'mission' : 'libre';
+function tagSet(cond){
+  const s = cond.toLowerCase();
+  return {
+    aube:/aube/.test(s),
+    crepuscule:/crépuscule|crepuscule/.test(s),
+    nuit:/nuit/.test(s),
+    journee:/journée|journee/.test(s),
+    pluie:/pluie/.test(s),
+    brouillard:/brouillard/.test(s),
+    orage:/orage/.test(s),
+    clair:/clair/.test(s)
+  };
+}
+
+/* ==================== PANEL STATE ==================== */
+const PANEL_KEY = "rdo_filters_open";
+const isDesktop = () => window.matchMedia("(min-width: 780px)").matches;
+const savedOpen = localStorage.getItem(PANEL_KEY);
+filtersPanel.open = savedOpen ? savedOpen === "true" : isDesktop();
+filtersPanel.addEventListener('toggle', ()=> localStorage.setItem(PANEL_KEY, String(filtersPanel.open)) );
+filtersToggleBtn.addEventListener('click', ()=>{
+  filtersPanel.open = !filtersPanel.open;
+  localStorage.setItem(PANEL_KEY, String(filtersPanel.open));
+});
+
+/* ==================== RENDER (GROUPS + CARDS) ==================== */
+function render(){
+  groupsEl.innerHTML = "";
+
+  // Grouper par catégorie, dans l’ordre que tu veux afficher
+  const order = ['dark','light','redblond','patterned'];
+  order.forEach(cat=>{
+    const items = ANIMALS
+      .map((a,idx)=> ({...a, idx, mission: missionFlag(a.condition), tags: tagSet(a.condition)}))
+      .filter(a=> a.category === cat);
+
+    if (!items.length) return;
+
+    const group = document.createElement('section');
+    group.dataset.cat = cat;
+
+    // Titre de catégorie
+    const h = document.createElement('h2');
+    h.className = "cat";
+    h.textContent = CATS[cat].fr; // titre FR
+    group.appendChild(h);
+
+    // Conteneur cartes (grid interne pour aligner proprement si besoin)
+    const list = document.createElement('div');
+    list.className = "grid";
+    group.appendChild(list);
+
+    // Cartes
+    items.forEach(a=>{
+      const card = document.createElement('article');
+      card.className = "card";
+      card.dataset.index = a.idx;
+      card.dataset.mission = a.mission;
+      card.dataset.tags = JSON.stringify(a.tags);
+
+      card.innerHTML = `
+        <div class="name">${a.displayName}</div>
+        <div class="loc">📍 ${a.location}</div>
+        <div class="cond">🧭 ${a.condition}</div>
+
+        <div class="rowbar">
+          <div class="pct" data-pct>0%</div>
+          <div class="bar" style="flex:1"><div class="fill warn" data-fill style="width:0%"></div></div>
+          <div class="count" data-count>0/${ACTIONS.length}</div>
+        </div>
+
+        <div class="checklist" role="group" aria-label="Checklist ${a.displayName}">
+          ${ACTIONS.map(ac=>{
+            const key=`${a.idx}:${ac.key}`, on=isOn(key);
+            return `<button class="tick" data-key="${key}" data-on="${on}" title="${ac.key}">${ac.icon}</button>`;
+          }).join('')}
+        </div>
+      `;
+      list.appendChild(card);
+      updateRow(a.idx, card);
+    });
+
+    groupsEl.appendChild(group);
+  });
+
+  // Bind ticks
+  groupsEl.querySelectorAll('.tick').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.key;
+      const now = btn.getAttribute('data-on') !== "true";
+      btn.setAttribute('data-on', String(now));
+      setOn(key, now);
+      const idx = key.split(':')[0];
+      const card = groupsEl.querySelector(`.card[data-index="${idx}"]`);
+      updateRow(idx, card);
+      updateGlobal();
+    }, {passive:true});
+  });
+
+  applyFilters();   // masque cartes & titres vides selon filtres
+  updateGlobal();   // met à jour la barre globale
+}
+
+function updateRow(i, cardEl){
+  const card = cardEl || groupsEl.querySelector(`.card[data-index="${i}"]`);
+  if(!card) return;
+  const done = rowCount(i);
+  const pct  = Math.round(done / ACTIONS.length * 100);
+  const fill = card.querySelector('[data-fill]');
+  fill.style.width = pct + "%";
+  fill.classList.toggle('ok', pct>=50);
+  fill.classList.toggle('warn', pct<50);
+  card.querySelector('[data-pct]').textContent = pct + "%";
+  card.querySelector('[data-count]').textContent = `${done}/${ACTIONS.length}`;
+}
+
+function updateGlobal(){
+  const total = ANIMALS.length * ACTIONS.length;
+  let checked = 0;
+  ANIMALS.forEach((_,i)=> checked += rowCount(i));
+  const pct = total ? Math.round(checked/total*100) : 0;
+  gFill.style.width = pct + "%";
+  gFill.classList.toggle('ok', pct>=50);
+  gFill.classList.toggle('warn', pct<50);
+  gPct.textContent = pct + "%";
+  gCount.textContent = `${checked} / ${total} actions`;
+}
+
+/* ==================== FILTERS ==================== */
+function applyFilters(){
+  const text = q.value.trim().toLowerCase();
+  const missionVal = fMission ? fMission.value : "";
+  const tagVal = fTag ? fTag.value : "";
+
+  // Pour chaque carte, on décide si visible
+  groupsEl.querySelectorAll('.card').forEach(card=>{
+    const i = +card.dataset.index;
+    const a = ANIMALS[i];
+    let visible = true;
+
+    if (text){
+      const hay = `${a.displayName} ${a.location} ${a.condition}`.toLowerCase();
+      visible = hay.includes(text);
+    }
+    if (visible && missionVal) visible = card.dataset.mission === missionVal;
+    if (visible && tagVal){
+      const tags = JSON.parse(card.dataset.tags);
+      visible = !!tags[tagVal];
+    }
+    card.style.display = visible ? "" : "none";
+  });
+
+  // Masquer le titre de catégorie si toutes ses cartes sont masquées
+  groupsEl.querySelectorAll('section[data-cat]').forEach(sec=>{
+    const cards = sec.querySelectorAll('.card');
+    const anyVisible = Array.from(cards).some(c => c.style.display !== 'none');
+    sec.style.display = anyVisible ? "" : "none";
+  });
+}
+
+q.addEventListener('input', applyFilters, {passive:true});
+if (fMission) fMission.addEventListener('change', applyFilters);
+if (fTag) fTag.addEventListener('change', applyFilters);
+
+/* ==================== BULK & CHIPS ==================== */
+document.getElementById('checkAll').addEventListener('click', ()=>{
+  groupsEl.querySelectorAll('.card').forEach(card=>{
+    if(card.style.display==="none") return;
+    const idx = card.dataset.index;
+    ACTIONS.forEach(a=>{
+      const k = `${idx}:${a.key}`;
+      if(!isOn(k)) setOn(k,true);
+      const b = card.querySelector(`.tick[data-key="${k}"]`);
+      if(b) b.setAttribute('data-on','true');
+    });
+    updateRow(idx, card);
+  });
+  updateGlobal();
+});
+
+document.getElementById('uncheckAll').addEventListener('click', ()=>{
+  groupsEl.querySelectorAll('.card').forEach(card=>{
+    if(card.style.display==="none") return;
+    const idx = card.dataset.index;
+    ACTIONS.forEach(a=>{
+      const k = `${idx}:${a.key}`;
+      if(isOn(k)) setOn(k,false);
+      const b = card.querySelector(`.tick[data-key="${k}"]`);
+      if(b) b.setAttribute('data-on','false');
+    });
+    updateRow(idx, card);
+  });
+  updateGlobal();
+});
+
+document.getElementById('resetAll').addEventListener('click', ()=>{
+  ANIMALS.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(`${i}:${a.key}`)));
+  render();
+});
+
+// Chips d’action globale (sur visibles)
+document.querySelectorAll('[data-action-chip]').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    const actionKey = chip.getAttribute('data-action-chip');
+    let visibleCards = Array.from(groupsEl.querySelectorAll('.card')).filter(c=> c.style.display !== "none");
+    let onCount = 0;
+    visibleCards.forEach(card=>{
+      const idx = card.dataset.index;
+      if (localStorage.getItem(`${idx}:${actionKey}`) === "true") onCount++;
+    });
+    const turnOn = onCount / Math.max(visibleCards.length,1) < 0.5;
+    visibleCards.forEach(card=>{
+      const idx = card.dataset.index;
+      const key = `${idx}:${actionKey}`;
+      localStorage.setItem(key, String(turnOn));
+      const btn = card.querySelector(`.tick[data-key="${key}"]`);
+      if (btn) btn.setAttribute('data-on', String(turnOn));
+      updateRow(idx, card);
+    });
+    updateGlobal();
+  }, {passive:true});
+});
+
+/* ==================== INIT ==================== */
+render();
+</script>
+</body>
+</html>
