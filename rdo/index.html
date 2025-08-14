@@ -7,7 +7,7 @@
 <style>
   /* THEME */
   :root{
-    --radius-card:16px; --radius-input:12px; --radius-tick:12px;
+    --radius-card:16px; --radius-input:12px; --radius-tick:12px; --radius-thumb:12px;
     --fs-base:16px; --gap-page:16px; --gap-card:10px; --gap-grid:24px;
     --touch:48px;
   }
@@ -111,7 +111,6 @@
   .section-card > summary .cat-dot{
     width:10px;height:10px;border-radius:999px;background:var(--prog-start);display:inline-block;
   }
-  /* Meta bloc in summary: percent + tiny bar */
   .cat-meta{
     display:flex; align-items:center; gap:8px; margin-left:auto; min-width:140px;
   }
@@ -134,25 +133,26 @@
     .section-body .cards-grid{ grid-template-columns:repeat(auto-fit,minmax(350px,1fr)) }
   }
 
-  /* ANIMAL CARD */
+  /* ANIMAL CARD (layout v2: thumb left, info right, meta+checklist full width) */
   .card{
     display:grid; gap:var(--gap-card);
     background:var(--card); border:1px solid var(--line); border-radius:var(--radius-card);
     padding:14px;
   }
-  /* thumb image */
+  .top{ display:grid; grid-template-columns:84px 1fr; gap:12px; align-items:center; }
+  @media (min-width:640px){ .top{ grid-template-columns:110px 1fr; } }
   .thumb{
-    width:100%; aspect-ratio: 16 / 9;
-    border-radius:12px; overflow:hidden; border:1px solid var(--line);
-    background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.06));
+    width:84px; height:84px; border-radius:var(--radius-thumb);
+    border:1px solid var(--line); background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(0,0,0,.06));
+    overflow:hidden;
   }
-  .thumb img{
-    width:100%; height:100%; object-fit:contain; display:block;
-  }
+  @media (min-width:640px){ .thumb{ width:110px; height:110px; } }
+  .thumb img{ width:100%; height:100%; object-fit:contain; display:block; }
+  .info .name{font-weight:800;font-size:16px;line-height:1.2;margin-bottom:2px}
+  @media (min-width:640px){ .info .name{font-size:18px} }
+  .info .loc{color:var(--ink);opacity:.9}
+  .info .cond{color:var(--muted);font-style:italic}
 
-  .name{font-weight:800;font-size:18px;line-height:1.2}
-  .loc{color:var(--ink);opacity:.9}
-  .cond{color:var(--muted);font-style:italic}
   .rowbar{display:flex;align-items:center;gap:10px;margin-top:2px}
   .checklist{display:flex;flex-wrap:wrap;gap:10px;margin-top:6px}
   .tick{
@@ -166,6 +166,7 @@
   }
   .tick[data-on="true"]{box-shadow:0 0 0 3px var(--tick-on-ring) inset, 0 0 0 1px var(--tick-on-line)}
   .tick:active{transform:scale(.98)}
+  .pct{min-width:46px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
   .count{color:var(--muted);font-size:12px;margin-left:auto}
 </style>
 </head>
@@ -258,7 +259,7 @@ const ACTIONS = [
   { key:"photo", icon:"📸" }
 ];
 
-/* ===== Base data (ordre original pour index) ===== */
+/* ===== Base data ===== */
 const BASE = [
   { id:"ours_esprit_dore", name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
   { id:"ours_owiza", name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
@@ -304,57 +305,15 @@ const BASE = [
   { id:"loup_pierre_de_lune", name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
 ];
 
-/* ===== Noms FR affichés (comme validé) ===== */
+/* ===== Noms FR affichés ===== */
 const NAME_OVERRIDE = {
-  /* Sombres */
-  alligator_teca:"Alligator Teca légendaire",
-  castor_tenebreux:"Castor ténébreux légendaire",
-  bison_tatanka:"Bison Tatanka légendaire",
-  cerf_ombre:"Cerf ombré légendaire",
-  couguar_sapa:"Couguar Sapa légendaire",
-  coyote_ebene:"Coyote d'ébène légendaire",
-  wapiti_katata:"Wapiti Katata légendaire",
-  loup_onyx:"Loup d'onyx légendaire",
-  panthere_noctivague:"Panthère noctivague légendaire",
-  mouflon_rutile:"Mouflon à cornes de rutile légendaire",
-  orignal_chevalier:"Orignal chevalier légendaire",
-  /* Clairs */
-  castor_lunaire:"Castor sélène légendaire",
-  bison_winyan:"Bison Winyan légendaire",
-  cerf_des_neiges:"Cerf des neiges légendaire",
-  couguar_iguga:"Couguar Iguga légendaire",
-  coyote_laiteux:"Coyote laiteux légendaire",
-  wapiti_inahme:"Wapiti Inahme légendaire",
-  loup_pierre_de_lune:"Loup de pierre de lune légendaire",
-  panthere_fantome:"Panthère fantôme légendaire",
-  mouflon_gabbro:"Mouflon à cornes de gabbro légendaire",
-  orignal_flocon:"Orignal neigeux légendaire",
-  /* Roux ou sable */
-  alligator_dore:"Alligator doré légendaire",
-  alligator_bandes:"Alligator à bandes légendaire",
-  bison_payta:"Bison Payta légendaire",
-  sanglier_wakpa:"Sanglier Wakpa légendaire",
-  coyote_rubigineux:"Coyote rubigineux légendaire",
-  wapiti_ozula:"Wapiti Ozula légendaire",
-  loup_emeraude:"Loup d'émeraude légendaire",
-  ours_esprit_cotier:"Ours esprit à rayure dorsale légendaire",
-  ours_esprit_dore:"Ours esprit doré légendaire",
-  castor_zizi:"Castor solaire légendaire",
-  sanglier_cogi:"Sanglier Cogi légendaire",
-  orignal_roux:"Orignal à bois rougeâtres légendaire",
-  /* Tachetés/Rayés */
-  ours_owiza:"Ours Owiza légendaire",
-  sanglier_icahi:"Sanglier Icahi légendaire",
-  cerf_pataugeur:"Cerf pataugeur légendaire",
-  couguar_maza:"Couguar Maza légendaire",
-  renard_ota:"Renard Ota légendaire",
-  renard_marbre:"Renard marbré légendaire",
-  renard_croise:"Renard croisé légendaire",
-  panthere_iwakta:"Panthère Iwakta légendaire",
-  mouflon_craie:"Mouflon à cornes de craie légendaire"
+  /* Sombres */ alligator_teca:"Alligator Teca légendaire", castor_tenebreux:"Castor ténébreux légendaire", bison_tatanka:"Bison Tatanka légendaire", cerf_ombre:"Cerf ombré légendaire", couguar_sapa:"Couguar Sapa légendaire", coyote_ebene:"Coyote d'ébène légendaire", wapiti_katata:"Wapiti Katata légendaire", loup_onyx:"Loup d'onyx légendaire", panthere_noctivague:"Panthère noctivague légendaire", mouflon_rutile:"Mouflon à cornes de rutile légendaire", orignal_chevalier:"Orignal chevalier légendaire",
+  /* Clairs */ castor_lunaire:"Castor sélène légendaire", bison_winyan:"Bison Winyan légendaire", cerf_des_neiges:"Cerf des neiges légendaire", couguar_iguga:"Couguar Iguga légendaire", coyote_laiteux:"Coyote laiteux légendaire", wapiti_inahme:"Wapiti Inahme légendaire", loup_pierre_de_lune:"Loup de pierre de lune légendaire", panthere_fantome:"Panthère fantôme légendaire", mouflon_gabbro:"Mouflon à cornes de gabbro légendaire", orignal_flocon:"Orignal neigeux légendaire",
+  /* Roux ou sable */ alligator_dore:"Alligator doré légendaire", alligator_bandes:"Alligator à bandes légendaire", bison_payta:"Bison Payta légendaire", sanglier_wakpa:"Sanglier Wakpa légendaire", coyote_rubigineux:"Coyote rubigineux légendaire", wapiti_ozula:"Wapiti Ozula légendaire", loup_emeraude:"Loup d'émeraude légendaire", ours_esprit_cotier:"Ours esprit à rayure dorsale légendaire", ours_esprit_dore:"Ours esprit doré légendaire", castor_zizi:"Castor solaire légendaire", sanglier_cogi:"Sanglier Cogi légendaire", orignal_roux:"Orignal à bois rougeâtres légendaire",
+  /* Tachetés/Rayés */ ours_owiza:"Ours Owiza légendaire", sanglier_icahi:"Sanglier Icahi légendaire", cerf_pataugeur:"Cerf pataugeur légendaire", couguar_maza:"Couguar Maza légendaire", renard_ota:"Renard Ota légendaire", renard_marbre:"Renard marbré légendaire", renard_croise:"Renard croisé légendaire", panthere_iwakta:"Panthère Iwakta légendaire", mouflon_craie:"Mouflon à cornes de craie légendaire"
 };
 
-/* ===== Catégories EXACTES & ORDRE (clé = nom de dossier) ===== */
+/* ===== Catégories (clé = nom de dossier) ===== */
 const CATEGORIES = [
   { key: "dark",      title: "Sombres",        items: ["alligator_teca","castor_tenebreux","bison_tatanka","cerf_ombre","couguar_sapa","coyote_ebene","wapiti_katata","loup_onyx","panthere_noctivague","mouflon_rutile","orignal_chevalier"] },
   { key: "light",     title: "Clairs",         items: ["castor_lunaire","bison_winyan","cerf_des_neiges","couguar_iguga","coyote_laiteux","wapiti_inahme","loup_pierre_de_lune","panthere_fantome","mouflon_gabbro","orignal_flocon"] },
@@ -362,54 +321,12 @@ const CATEGORIES = [
   { key: "patterned", title: "Tachetés/rayés", items: ["ours_owiza","sanglier_icahi","cerf_pataugeur","couguar_maza","renard_ota","renard_marbre","renard_croise","panthere_iwakta","mouflon_craie"] }
 ];
 
-/* ===== Mapping ID -> nom de fichier image (dans dossier cat) ===== */
+/* ===== Mapping ID -> fichier image (dans dossier cat) ===== */
 const IMAGE_MAP = {
-  /* dark */
-  alligator_teca:"legendary_teca_gator.png",
-  castor_tenebreux:"legendary_night_beaver.png",
-  bison_tatanka:"legendary_tatanka_bison.png",
-  cerf_ombre:"legendary_shadow_buck.png",
-  couguar_sapa:"legendary_sapa_cougar.png",
-  coyote_ebene:"legendary_midnight_paw_coyote.png",
-  wapiti_katata:"legendary_katata_elk.png",
-  loup_onyx:"legendary_onyx_wolf.png",
-  panthere_noctivague:"legendary_nightwalker_panther.png",
-  mouflon_rutile:"legendary_rutile_horn_ram.png",
-  orignal_chevalier:"legendary_knight_moose.png",
-  /* light */
-  mouflon_gabbro:"legendary_gabbro_horn_ram.png",
-  panthere_fantome:"legendary_ghost_panther.png",
-  couguar_iguga:"legendary_iguga_cougar.png",
-  wapiti_inahme:"legendary_inahme_elk.png",
-  coyote_laiteux:"legendary_milk_coyote.png",
-  loup_pierre_de_lune:"legendary_moonstone_wolf.png",
-  castor_lunaire:"legendary_moon_beaver.png",
-  orignal_flocon:"legendary_snowflake_moose.png",
-  cerf_des_neiges:"legendary_snow_buck.png",
-  bison_winyan:"legendary_winyan_bison.png",
-  /* patterned */
-  mouflon_craie:"legendary_chalk_horn_ram.png",
-  renard_croise:"legendary_cross_fox.png",
-  sanglier_icahi:"legendary_icahi_boar.png",
-  panthere_iwakta:"legendary_iwakta_panther.png",
-  renard_marbre:"legendary_marble_fox.png",
-  couguar_maza:"legendary_maza_cougar.png",
-  cerf_pataugeur:"legendary_mud_runner_buck.png",
-  renard_ota:"legendary_ota_fox.png",
-  ours_owiza:"legendary_owiza_bear.png",
-  /* red_blond */
-  alligator_bandes:"legendary_banded_gator.png",
-  sanglier_cogi:"legendary_cogi_boar.png",
-  loup_emeraude:"legendary_emerald_wolf.png",
-  ours_esprit_dore:"legendary_golden_spirit_bear.png",
-  wapiti_ozula:"legendary_ozula_elk.png",
-  bison_payta:"legendary_payta_bison.png",
-  coyote_rubigineux:"legendary_red_streak_coyote.png",
-  ours_esprit_cotier:"legendary_ridgeback_spirit_bear.png",
-  orignal_roux:"legendary_ruddy_moose.png",
-  alligator_dore:"legendary_sun_gator.png",
-  sanglier_wakpa:"legendary_wapka_boar.png",
-  castor_zizi:"legendary_zizi_beaver.png"
+  /* dark */ alligator_teca:"legendary_teca_gator.png", castor_tenebreux:"legendary_night_beaver.png", bison_tatanka:"legendary_tatanka_bison.png", cerf_ombre:"legendary_shadow_buck.png", couguar_sapa:"legendary_sapa_cougar.png", coyote_ebene:"legendary_midnight_paw_coyote.png", wapiti_katata:"legendary_katata_elk.png", loup_onyx:"legendary_onyx_wolf.png", panthere_noctivague:"legendary_nightwalker_panther.png", mouflon_rutile:"legendary_rutile_horn_ram.png", orignal_chevalier:"legendary_knight_moose.png",
+  /* light */ mouflon_gabbro:"legendary_gabbro_horn_ram.png", panthere_fantome:"legendary_ghost_panther.png", couguar_iguga:"legendary_iguga_cougar.png", wapiti_inahme:"legendary_inahme_elk.png", coyote_laiteux:"legendary_milk_coyote.png", loup_pierre_de_lune:"legendary_moonstone_wolf.png", castor_lunaire:"legendary_moon_beaver.png", orignal_flocon:"legendary_snowflake_moose.png", cerf_des_neiges:"legendary_snow_buck.png", bison_winyan:"legendary_winyan_bison.png",
+  /* patterned */ mouflon_craie:"legendary_chalk_horn_ram.png", renard_croise:"legendary_cross_fox.png", sanglier_icahi:"legendary_icahi_boar.png", panthere_iwakta:"legendary_iwakta_panther.png", renard_marbre:"legendary_marble_fox.png", couguar_maza:"legendary_maza_cougar.png", cerf_pataugeur:"legendary_mud_runner_buck.png", renard_ota:"legendary_ota_fox.png", ours_owiza:"legendary_owiza_bear.png",
+  /* red_blond */ alligator_bandes:"legendary_banded_gator.png", sanglier_cogi:"legendary_cogi_boar.png", loup_emeraude:"legendary_emerald_wolf.png", ours_esprit_dore:"legendary_golden_spirit_bear.png", wapiti_ozula:"legendary_ozula_elk.png", bison_payta:"legendary_payta_bison.png", coyote_rubigineux:"legendary_red_streak_coyote.png", ours_esprit_cotier:"legendary_ridgeback_spirit_bear.png", orignal_roux:"legendary_ruddy_moose.png", alligator_dore:"legendary_sun_gator.png", sanglier_wakpa:"legendary_wapka_boar.png", castor_zizi:"legendary_zizi_beaver.png"
 };
 
 /* ===== Theme ===== */
@@ -496,7 +413,6 @@ function render(){
       const a = ANIMALS_BY_IDX[b.idx];
       const display = NAME_OVERRIDE[id] || a.displayName;
 
-      // Build image src from folder (cat.key) + map filename
       const imgFile = IMAGE_MAP[id];
       const imgSrc = imgFile ? `img/${cat.key}/${imgFile}` : "";
 
@@ -506,15 +422,21 @@ function render(){
       card.dataset.mission = a.mission;
       card.dataset.tags = JSON.stringify(a.tags);
       card.innerHTML = `
-        ${imgSrc ? `<div class="thumb"><img src="${imgSrc}" alt="${display}" loading="lazy" decoding="async"></div>` : ``}
-        <div class="name">${display}</div>
-        <div class="loc">📍 ${a.location}</div>
-        <div class="cond">🧭 ${a.condition}</div>
+        <div class="top">
+          ${imgSrc ? `<div class="thumb"><img src="${imgSrc}" alt="${display}" loading="lazy" decoding="async"></div>` : `<div class="thumb"></div>`}
+          <div class="info">
+            <div class="name">${display}</div>
+            <div class="loc">📍 ${a.location}</div>
+            <div class="cond">🧭 ${a.condition}</div>
+          </div>
+        </div>
+
         <div class="rowbar">
           <div class="pct" data-pct>0%</div>
           <div class="bar" style="flex:1"><div class="fill warn" data-fill style="width:0%"></div></div>
           <div class="count" data-count>0/${ACTIONS.length}</div>
         </div>
+
         <div class="checklist" role="group" aria-label="Checklist ${display}">
           ${ACTIONS.map(ac=>{
             const key=KEYS.action(b.idx,ac.key), on=isOn(key);
@@ -544,13 +466,13 @@ function render(){
       const card = groupsEl.querySelector(`.card[data-index="${idx}"]`);
       updateRow(idx, card);
       updateGlobal();
-      updateAllCategories();  // <— MAJ cat %
+      updateAllCategories();
     }, {passive:true});
   });
 
   applyFilters();
   updateGlobal();
-  updateAllCategories();      // <— initial
+  updateAllCategories();
 }
 
 function updateRow(i, cardEl){
