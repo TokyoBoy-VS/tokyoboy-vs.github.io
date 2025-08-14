@@ -1,56 +1,102 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Progression Animaux Légendaires RDO</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>RDO • Progression Animaux Légendaires</title>
 <style>
-  :root { --bg:#0f1115; --panel:#161a22; --muted:#9aa4b2; --ink:#e5e7eb; --line:#273043; --accent:#67e8f9; --accent2:#a78bfa; --ok:#22c55e; --warn:#f59e0b; }
+  :root{
+    --bg:#0f1115; --panel:#141925; --ink:#f2f4f7; --muted:#9aa4b2; --line:#253043;
+    --red:#ef4444; --pink:#f472b6; --blue:#7c3aed; --green:#22c55e;
+    --chip:#0f1625; --chipLine:#2a3750;
+  }
   *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(180deg,#0c0e13, #11131a);color:var(--ink);font-family:Inter,system-ui,Segoe UI,Arial,sans-serif}
-  header{position:sticky;top:0;background:rgba(15,17,21,.9);backdrop-filter:blur(6px);border-bottom:1px solid var(--line);z-index:5}
-  .wrap{max-width:1200px;margin:0 auto;padding:18px 16px}
-  h1{margin:0 0 8px;font-size:clamp(20px,2.3vw,28px)}
-  .sub{color:var(--muted);font-size:14px}
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
-  .grid{display:grid;gap:14px}
-  .stats{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-  .chip{padding:6px 10px;border:1px solid var(--line);border-radius:999px;background:#12151c;font-variant-numeric:tabular-nums}
-  .bar{height:10px;border-radius:999px;background:#10131a;border:1px solid var(--line);overflow:hidden}
+  html,body{height:100%}
+  body{margin:0;background:linear-gradient(180deg,#0c0f15,#0f131b);color:var(--ink);
+       font-family:Inter,system-ui,Segoe UI,Arial,sans-serif;font-size:16px;-webkit-tap-highlight-color:transparent}
+  header{position:sticky;top:0;z-index:10;background:rgba(15,17,21,.9);backdrop-filter:blur(8px);
+         border-bottom:1px solid var(--line)}
+  .wrap{max-width:980px;margin:0 auto;padding:14px 14px 10px}
+  h1{margin:0 0 6px;font-size:clamp(18px,4.5vw,24px)}
+  .sub{color:var(--muted);font-size:13px}
+
+  /* Controls */
+  .controls{display:grid;grid-template-columns:1fr;gap:10px;margin-top:12px}
+  @media (min-width:760px){ .controls{grid-template-columns:1fr 1fr 1fr auto auto auto} }
+  .input, select, button{height:46px;border-radius:12px;border:1px solid var(--line);background:#0f1522;color:var(--ink)}
+  .input, select{padding:0 12px}
+  button{padding:0 12px;cursor:pointer}
+  button:active{transform:scale(.98)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .chip{padding:8px 10px;border:1px solid var(--chipLine);border-radius:999px;background:var(--chip);font-size:14px;color:var(--muted)}
+
+  /* Global panel */
+  .panel{margin-top:12px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px}
+  .stats{display:flex;gap:10px;align-items:center}
+  .pct{min-width:46px;text-align:right;color:var(--muted);font-variant-numeric:tabular-nums}
+  .bar{height:10px;border-radius:999px;background:#0d121b;border:1px solid var(--line);overflow:hidden}
   .fill{height:100%;width:0}
-  .fill.ok{background:linear-gradient(90deg,var(--accent),var(--accent2))}
-  .fill.warn{background:linear-gradient(90deg,#f43f5e,#f59e0b)}
-  /* Évite la double ligne en haut quand thead est sticky */
-  table{ border:1px solid var(--line); border-top:0; }  /* <- retire la ligne du haut */
-  thead th{ border-bottom:1px solid var(--line); }      /* garde une seule ligne nette sous l’en-tête */
-  th,td{padding:10px;border-bottom:1px solid var(--line);text-align:center}
-  th:nth-child(1),td:nth-child(1){text-align:left}
-  tbody tr:nth-child(even){background:#12151b}
-  input[type="checkbox"]{transform:scale(1.2);cursor:pointer}
-  .rowbar{display:flex;align-items:center;gap:10px}
-  .pct{min-width:46px;text-align:right;font-variant-numeric:tabular-nums;color:var(--muted)}
-  .buttons{display:flex;gap:8px;margin-left:auto}
-  button{background:#0f1320;border:1px solid var(--line);color:var(--ink);padding:8px 10px;border-radius:10px;cursor:pointer}
-  button:hover{border-color:#334155}
-  .search{width:260px;max-width:100%;background:#0f1320;border:1px solid var(--line);color:var(--ink);padding:10px 12px;border-radius:10px}
-  .legend{display:flex;flex-wrap:wrap;gap:8px}
-  .legend .chip{display:flex;gap:8px;align-items:center}
-  .foot{color:var(--muted);font-size:12px;margin-top:6px}
-  @media (max-width:900px){th:nth-child(2),td:nth-child(2),th:nth-child(3),td:nth-child(3){position:sticky;left:0;background:inherit}}
+  .ok{background:linear-gradient(90deg,#67e8f9,#a78bfa)}
+  .warn{background:linear-gradient(90deg,#f43f5e,#f59e0b)}
+  .small{color:var(--muted);font-size:12px;margin-left:auto}
+
+  /* Cards */
+  main{padding:16px 14px 24px;max-width:980px;margin:0 auto}
+  .grid{display:grid;gap:12px}
+  @media (min-width:620px){ .grid{grid-template-columns:repeat(auto-fit,minmax(360px,1fr))} }
+
+  .card{display:grid;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px}
+  .barline{height:44px;border-radius:12px;display:flex;align-items:center;padding:0 12px;font-weight:700}
+  .name{background:color-mix(in srgb, var(--red) 30%, #000 70%);border:1px solid color-mix(in srgb, var(--red) 55%, #000 45%)}
+  .loc{background:color-mix(in srgb, var(--pink) 28%, #000 72%);border:1px solid color-mix(in srgb, var(--pink) 55%, #000 45%);font-weight:600}
+  .cond{background:color-mix(in srgb, var(--blue) 35%, #000 65%);border:1px solid color-mix(in srgb, var(--blue) 55%, #000 45%);font-weight:600}
+  .rowbar{display:flex;align-items:center;gap:10px;margin-top:4px}
+  .checklist{display:flex;flex-wrap:wrap;gap:8px}
+  .tick{
+    width:48px;height:48px;border-radius:12px;border:1px solid #315a3b;background:color-mix(in srgb, var(--green) 22%, #0b1510 78%);
+    display:inline-flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;user-select:none;
+    box-shadow:0 1px 0 rgba(0,0,0,.4) inset;transition:transform .06s ease, box-shadow .15s ease;
+  }
+  .tick[data-on="true"]{box-shadow:0 0 0 3px rgba(34,197,94,.35) inset, 0 0 0 1px #16a34a}
+  .tick:active{transform:scale(.98)}
 </style>
 </head>
 <body>
 <header>
   <div class="wrap">
     <h1>📜 Progression Animaux Légendaires RDO</h1>
-    <div class="sub">Sauvegarde automatique dans le navigateur (localStorage).</div>
-  </div>
-</header>
+    <div class="sub">Cartes optimisées iPhone • Sauvegarde locale</div>
 
-<main class="wrap grid">
-  <section class="panel">
-    <div class="stats">
-      <input id="search" class="search" type="search" placeholder="Rechercher un animal…">
+    <div class="controls">
+      <input id="q" class="input" type="search" placeholder="Rechercher (animal, lieu, condition)…" inputmode="search" />
+      <select id="fMission" title="Filtre mission">
+        <option value="">Mission — Tous</option>
+        <option value="mission">Mission uniquement</option>
+        <option value="libre">Hors mission</option>
+      </select>
+      <select id="fTag" title="Filtre condition">
+        <option value="">Condition — Toutes</option>
+        <option value="aube">Aube</option>
+        <option value="crepuscule">Crépuscule</option>
+        <option value="nuit">Nuit</option>
+        <option value="journee">Journée</option>
+        <option value="pluie">Pluie</option>
+        <option value="brouillard">Brouillard</option>
+        <option value="orage">Orage</option>
+        <option value="clair">Temps clair</option>
+      </select>
+      <button id="checkAll">Cocher visibles</button>
+      <button id="uncheckAll">Décocher visibles</button>
+      <button id="resetAll">Réinitialiser</button>
+    </div>
+
+    <div class="panel">
+      <div class="stats">
+        <strong>Progression globale</strong>
+        <div class="pct" id="gPct">0%</div>
+      </div>
+      <div class="bar" style="margin:8px 0 6px"><div class="fill warn" id="gFill"></div></div>
+      <div class="stats"><span class="small" id="gCount">0 / 0 actions</span></div>
       <div class="legend">
         <span class="chip">🐾 Pisté</span>
         <span class="chip">🪦 Tués</span>
@@ -60,225 +106,233 @@
         <span class="chip">🧬 Échantillon</span>
         <span class="chip">📸 Photo</span>
       </div>
-      <div class="buttons">
-        <button id="expand">Tout cocher visible</button>
-        <button id="collapse">Tout décocher visible</button>
-        <button id="reset">Réinitialiser tout</button>
-      </div>
     </div>
-    <div style="margin-top:12px;display:grid;gap:8px">
-      <div class="stats" style="gap:10px">
-        <strong>Progression globale</strong>
-        <div class="pct" id="globalPct">0%</div>
-      </div>
-      <div class="bar"><div class="fill warn" id="globalFill"></div></div>
-      <div class="foot" id="globalCounts">0 / 0 actions</div>
-    </div>
-  </section>
+  </div>
+</header>
 
-  <section>
-    <table id="animalsTable">
-      <thead>
-        <tr>
-          <th>Animal</th>
-          <th>Localisation</th>
-          <th>Condition spéciale</th>
-          <th>✅</th>
-          <th>🐾</th>
-          <th>🪦</th>
-          <th>🔪</th>
-          <th>🔎</th>
-          <th>💉</th>
-          <th>🧬</th>
-          <th>📸</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </section>
+<main>
+  <section class="grid" id="cards"></section>
 </main>
 
 <script>
-const actions = ["piste","tue","depece","etudie","anesthesie","echantillon","photo"];
-
-const animals = [
-  { name: "Ours esprit doré", location: "Big Valley", condition: "Mission" },
-  { name: "Ours Owiza", location: "Rivière Dakota", condition: "À l’aube ou au crépuscule" },
-  { name: "Ours esprit côtier", location: "Rivière Little Creek", condition: "En journée" },
-  { name: "Castor tenebreux", location: "Roanoke Ridge", condition: "Mission" },
-  { name: "Castor Zizi", location: "Ownjila", condition: "À l’aube ou au crépuscule" },
-  { name: "Castor lunaire", location: "Sud de Elysian Pool, à l’est de Van Horn", condition: "À l’aube ou au crépuscule sous la pluie" },
-  { name: "Bison Tatanka", location: "Champs pétrolifères de Heartland", condition: "Sous la pluie en journée" },
-  { name: "Bison Winyan", location: "Nord du lac Isabella", condition: "De nuit par temps clair" },
-  { name: "Bison Payta", location: "Little Creek", condition: "Mission" },
-  { name: "Sanglier Cogi", location: "Marais Bluewater", condition: "À l’aube par temps clair" },
-  { name: "Sanglier Wakpa", location: "Marais Stillwater", condition: "Sous la pluie en journée" },
-  { name: "Sanglier Icahi", location: "Est de New Austin", condition: "Mission" },
-  { name: "Cerf pataugeur", location: "Lac Flat Iron", condition: "En journée par temps clair" },
-  { name: "Cerf des neiges", location: "Bassin Aurora", condition: "À l’aube par temps clair" },
-  { name: "Cerf ombré", location: "Annesburg", condition: "Mission" },
-  { name: "Couguar Iguga", location: "Sud-est des Grandes Plaines (au sud de Blackwater)", condition: "Au crépuscule par temps orageux" },
-  { name: "Couguar Maza", location: "Mer de Coronado", condition: "À l’aube par temps clair" },
-  { name: "Couguar Sapa", location: "Nord-est de New Austin", condition: "Mission" },
-  { name: "Coyote rubigineux", location: "Pike’s Basin", condition: "Au crépuscule" },
-  { name: "Coyote d’ébène", location: "Sud-est de Strawberry", condition: "À l’aube et en journée par temps clair" },
-  { name: "Coyote laiteux", location: "Blackwater", condition: "Mission" },
-  { name: "Wapiti Katata", location: "Forêt de Cumberland", condition: "En journée dans le brouillard" },
-  { name: "Wapiti Ozula", location: "Cholla Springs", condition: "Au crépuscule et de nuit dans le brouillard" },
-  { name: "Wapiti Inahme", location: "Gorge de l’Araignée", condition: "Mission" },
-  { name: "Renard croisé", location: "Bayou Nwa", condition: "Mission" },
-  { name: "Renard marbré", location: "Colter", condition: "À l’aube ou au crépuscule par temps clair" },
-  { name: "Renard Ota", location: "Ouest de Rhodes", condition: "À l’aube ou au crépuscule par temps clair" },
-  { name: "Alligator doré", location: "Marais de Lagras (au nord de Saint Denis)", condition: "À l’aube dans le brouillard" },
-  { name: "Alligator Teca", location: "Rivière Lannahechee (au sud de Saint Denis)", condition: "De nuit par temps orageux" },
-  { name: "Alligator à bandes", location: "Saint Denis", condition: "Mission" },
-  { name: "Orignal flocon de neige", location: "Lagune Barrow", condition: "De nuit sous la pluie" },
-  { name: "Orignal roux", location: "Tall Trees", condition: "Mission" },
-  { name: "Orignal chevalier", location: "Nord de la rivière Kamassa", condition: "En journée" },
-  { name: "Panthère noctivague", location: "Bolger Glade", condition: "Au crépuscule dans le brouillard" },
-  { name: "Panthère fantôme", location: "Merkins Waller et Macomb’s", condition: "De nuit sous la pluie" },
-  { name: "Panthère Iwakta", location: "Près du manoir Braithwaite", condition: "Mission" },
-  { name: "Mouflon corne craie", location: "Sud de Cottora Springs", condition: "En journée par temps clair" },
-  { name: "Mouflon corne gabbro", location: "Rio Bravo", condition: "À l’aube et en journée par temps clair" },
-  { name: "Mouflon corne rutile", location: "Rio Bravo et Cholla Springs", condition: "Mission" },
-  { name: "Loup émeraude", location: "O’Creagh’s Run", condition: "De nuit" },
-  { name: "Loup d’onyx", location: "Sud du ravin Calumet et Cottora Springs", condition: "De nuit par temps clair" },
-  { name: "Loup pierre de lune", location: "Nord de la forêt de Cumberland", condition: "Mission" }
+const ACTIONS = [
+  { key:"piste", icon:"🐾" },
+  { key:"tue", icon:"🪦" },
+  { key:"depece", icon:"🔪" },
+  { key:"etudie", icon:"🔎" },
+  { key:"anesthesie", icon:"💉" },
+  { key:"echantillon", icon:"🧬" },
+  { key:"photo", icon:"📸" }
 ];
 
-const tbody = document.querySelector("#animalsTable tbody");
-const globalFill = document.querySelector("#globalFill");
-const globalPct = document.querySelector("#globalPct");
-const globalCounts = document.querySelector("#globalCounts");
-const searchInput = document.querySelector("#search");
-const btnExpand = document.querySelector("#expand");
-const btnCollapse = document.querySelector("#collapse");
-const btnReset = document.querySelector("#reset");
+const animals = [
+  { name:"Ours esprit doré", location:"Big Valley", condition:"Mission" },
+  { name:"Ours Owiza", location:"Rivière Dakota", condition:"À l’aube ou au crépuscule" },
+  { name:"Ours esprit côtier", location:"Rivière Little Creek", condition:"En journée" },
+  { name:"Castor tenebreux", location:"Roanoke Ridge", condition:"Mission" },
+  { name:"Castor Zizi", location:"Ownjila", condition:"À l’aube ou au crépuscule" },
+  { name:"Castor lunaire", location:"Sud de Elysian Pool, à l’est de Van Horn", condition:"À l’aube ou au crépuscule sous la pluie" },
+  { name:"Bison Tatanka", location:"Champs pétrolifères de Heartland", condition:"Sous la pluie en journée" },
+  { name:"Bison Winyan", location:"Nord du lac Isabella", condition:"De nuit par temps clair" },
+  { name:"Bison Payta", location:"Little Creek", condition:"Mission" },
+  { name:"Sanglier Cogi", location:"Marais Bluewater", condition:"À l’aube par temps clair" },
+  { name:"Sanglier Wakpa", location:"Marais Stillwater", condition:"Sous la pluie en journée" },
+  { name:"Sanglier Icahi", location:"Est de New Austin", condition:"Mission" },
+  { name:"Cerf pataugeur", location:"Lac Flat Iron", condition:"En journée par temps clair" },
+  { name:"Cerf des neiges", location:"Bassin Aurora", condition:"À l’aube par temps clair" },
+  { name:"Cerf ombré", location:"Annesburg", condition:"Mission" },
+  { name:"Couguar Iguga", location:"Sud-est des Grandes Plaines (au sud de Blackwater)", condition:"Au crépuscule par temps orageux" },
+  { name:"Couguar Maza", location:"Mer de Coronado", condition:"À l’aube par temps clair" },
+  { name:"Couguar Sapa", location:"Nord-est de New Austin", condition:"Mission" },
+  { name:"Coyote rubigineux", location:"Pike’s Basin", condition:"Au crépuscule" },
+  { name:"Coyote d’ébène", location:"Sud-est de Strawberry", condition:"À l’aube et en journée par temps clair" },
+  { name:"Coyote laiteux", location:"Blackwater", condition:"Mission" },
+  { name:"Wapiti Katata", location:"Forêt de Cumberland", condition:"En journée dans le brouillard" },
+  { name:"Wapiti Ozula", location:"Cholla Springs", condition:"Au crépuscule et de nuit dans le brouillard" },
+  { name:"Wapiti Inahme", location:"Gorge de l’Araignée", condition:"Mission" },
+  { name:"Renard croisé", location:"Bayou Nwa", condition:"Mission" },
+  { name:"Renard marbré", location:"Colter", condition:"À l’aube ou au crépuscule par temps clair" },
+  { name:"Renard Ota", location:"Ouest de Rhodes", condition:"À l’aube ou au crépuscule par temps clair" },
+  { name:"Alligator doré", location:"Marais de Lagras (au nord de Saint Denis)", condition:"À l’aube dans le brouillard" },
+  { name:"Alligator Teca", location:"Rivière Lannahechee (au sud de Saint Denis)", condition:"De nuit par temps orageux" },
+  { name:"Alligator à bandes", location:"Saint Denis", condition:"Mission" },
+  { name:"Orignal flocon de neige", location:"Lagune Barrow", condition:"De nuit sous la pluie" },
+  { name:"Orignal roux", location:"Tall Trees", condition:"Mission" },
+  { name:"Orignal chevalier", location:"Nord de la rivière Kamassa", condition:"En journée" },
+  { name:"Panthère noctivague", location:"Bolger Glade", condition:"Au crépuscule dans le brouillard" },
+  { name:"Panthère fantôme", location:"Merkins Waller et Macomb’s", condition:"De nuit sous la pluie" },
+  { name:"Panthère Iwakta", location:"Près du manoir Braithwaite", condition:"Mission" },
+  { name:"Mouflon corne craie", location:"Sud de Cottora Springs", condition:"En journée par temps clair" },
+  { name:"Mouflon corne gabbro", location:"Rio Bravo", condition:"À l’aube et en journée par temps clair" },
+  { name:"Mouflon corne rutile", location:"Rio Bravo et Cholla Springs", condition:"Mission" },
+  { name:"Loup émeraude", location:"O’Creagh’s Run", condition:"De nuit" },
+  { name:"Loup d’onyx", location:"Sud du ravin Calumet et Cottora Springs", condition:"De nuit par temps clair" },
+  { name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
+];
 
-function rowCheckedCount(index){
-  return actions.reduce((n,a)=> n + (localStorage.getItem(`${index}-${a}`)==="true"), 0);
+const cards = document.getElementById('cards');
+const gFill = document.getElementById('gFill');
+const gPct  = document.getElementById('gPct');
+const gCount= document.getElementById('gCount');
+const q = document.getElementById('q');
+const fMission = document.getElementById('fMission');
+const fTag = document.getElementById('fTag');
+
+function isOn(key){ return localStorage.getItem(key)==="true"; }
+function setOn(key,val){ localStorage.setItem(key, val ? "true" : "false"); }
+function rowCount(i){ return ACTIONS.reduce((n,a)=> n + (isOn(`${i}:${a.key}`)?1:0), 0); }
+
+function missionFlag(cond){
+  return /mission/i.test(cond) ? 'mission' : 'libre';
+}
+function tagSet(cond){
+  const s = cond.toLowerCase();
+  return {
+    aube:/aube/.test(s),
+    crepuscule:/crépuscule|crepuscule/.test(s),
+    nuit:/nuit/.test(s),
+    journee:/journée|journee/.test(s),
+    pluie:/pluie/.test(s),
+    brouillard:/brouillard/.test(s),
+    orage:/orage/.test(s),
+    clair:/clair/.test(s)
+  };
 }
 
-function drawTable(){
-  tbody.innerHTML = "";
-  animals.forEach((a, i)=>{
-    const tr = document.createElement("tr");
-    const done = rowCheckedCount(i);
-    const pct = Math.round((done/actions.length)*100);
-    tr.dataset.index = i;
-    tr.innerHTML = `
-      <td style="text-align:left">${a.name}</td>
-      <td>${a.location}</td>
-      <td>${a.condition}</td>
-      <td>
-        <div class="rowbar">
-          <div class="pct" data-row-pct>${pct}%</div>
-          <div class="bar" style="flex:1;min-width:140px"><div class="fill ${pct>=50?'ok':'warn'}" data-row-fill style="width:${pct}%"></div></div>
-          <div class="pct" data-row-count>${done}/${actions.length}</div>
-        </div>
-      </td>
-      ${actions.map(act=>{
-        const key=`${i}-${act}`;
-        const checked = localStorage.getItem(key)==="true" ? "checked" : "";
-        return `<td><input type="checkbox" data-key="${key}" ${checked}></td>`;
-      }).join("")}
+function render(){
+  cards.innerHTML = "";
+  animals.forEach((a,i)=>{
+    const c = document.createElement('article');
+    c.className = "card";
+    c.dataset.index = i;
+    c.dataset.mission = missionFlag(a.condition);
+    c.dataset.tags = JSON.stringify(tagSet(a.condition));
+    c.innerHTML = `
+      <div class="barline name">${a.name}</div>
+      <div class="barline loc">📍 ${a.location}</div>
+      <div class="barline cond">🧭 ${a.condition}</div>
+      <div class="rowbar">
+        <div class="pct" data-pct>0%</div>
+        <div class="bar" style="flex:1"><div class="fill warn" data-fill style="width:0%"></div></div>
+        <div class="small" data-count>0/${ACTIONS.length}</div>
+      </div>
+      <div class="checklist" role="group" aria-label="Checklist ${a.name}">
+        ${ACTIONS.map(ac=>{
+          const key=`${i}:${ac.key}`;
+          const on=isOn(key);
+          return `<button class="tick" data-key="${key}" data-on="${on}" title="${ac.key}">${ac.icon}</button>`;
+        }).join('')}
+      </div>
     `;
-    tbody.appendChild(tr);
+    cards.appendChild(c);
+    updateRow(i);
   });
-  bindCheckboxes();
+
+  cards.querySelectorAll('.tick').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const key = btn.dataset.key;
+      const now = btn.getAttribute('data-on') !== "true";
+      btn.setAttribute('data-on', String(now));
+      setOn(key, now);
+      const idx = key.split(':')[0];
+      updateRow(idx);
+      updateGlobal();
+    }, {passive:true});
+  });
+
+  applyFilters();
   updateGlobal();
 }
 
-function bindCheckboxes(){
-  document.querySelectorAll('input[type="checkbox"]').forEach(cb=>{
-    cb.addEventListener("change", ()=>{
-      localStorage.setItem(cb.dataset.key, cb.checked);
-      const [idx] = cb.dataset.key.split("-");
-      updateRow(idx);
-      updateGlobal();
-    });
-  });
-}
-
-function updateRow(index){
-  const row = tbody.querySelector(`tr[data-index="${index}"]`);
-  if(!row) return;
-  const done = rowCheckedCount(index);
-  const pct = Math.round((done/actions.length)*100);
-  const pctEl = row.querySelector('[data-row-pct]');
-  const countEl = row.querySelector('[data-row-count]');
-  const fillEl = row.querySelector('[data-row-fill]');
-  pctEl.textContent = `${pct}%`;
-  countEl.textContent = `${done}/${actions.length}`;
-  fillEl.style.width = `${pct}%`;
-  fillEl.classList.toggle("ok", pct>=50);
-  fillEl.classList.toggle("warn", pct<50);
+function updateRow(i){
+  const card = cards.querySelector(`.card[data-index="${i}"]`);
+  if(!card) return;
+  const done = rowCount(i);
+  const pct  = Math.round(done / ACTIONS.length * 100);
+  card.querySelector('[data-fill]').style.width = pct + "%";
+  card.querySelector('[data-fill]').classList.toggle('ok', pct>=50);
+  card.querySelector('[data-fill]').classList.toggle('warn', pct<50);
+  card.querySelector('[data-pct]').textContent = pct + "%";
+  card.querySelector('[data-count]').textContent = `${done}/${ACTIONS.length}`;
 }
 
 function updateGlobal(){
-  const totalBoxes = animals.length * actions.length;
+  const total = animals.length * ACTIONS.length;
   let checked = 0;
-  animals.forEach((_,i)=> checked += rowCheckedCount(i));
-  const pct = totalBoxes ? Math.round((checked/totalBoxes)*100) : 0;
-  globalFill.style.width = `${pct}%`;
-  globalFill.classList.toggle("ok", pct>=50);
-  globalFill.classList.toggle("warn", pct<50);
-  globalPct.textContent = `${pct}%`;
-  globalCounts.textContent = `${checked} / ${totalBoxes} actions`;
+  animals.forEach((_,i)=> checked += rowCount(i));
+  const pct = total ? Math.round(checked/total*100) : 0;
+  gFill.style.width = pct + "%";
+  gFill.classList.toggle('ok', pct>=50);
+  gFill.classList.toggle('warn', pct<50);
+  gPct.textContent = pct + "%";
+  gCount.textContent = `${checked} / ${total} actions`;
 }
 
-function visibleRows(){
-  return Array.from(tbody.querySelectorAll("tr")).filter(r=> r.style.display !== "none");
-}
+/* Filters */
+function applyFilters(){
+  const text = q.value.trim().toLowerCase();
+  const missionVal = fMission.value;
+  const tagVal = fTag.value;
 
-searchInput.addEventListener("input", ()=>{
-  const q = searchInput.value.trim().toLowerCase();
-  Array.from(tbody.querySelectorAll("tr")).forEach(tr=>{
-    const name = tr.children[0].textContent.toLowerCase();
-    const loc = tr.children[1].textContent.toLowerCase();
-    const cond = tr.children[2].textContent.toLowerCase();
-    tr.style.display = (name.includes(q) || loc.includes(q) || cond.includes(q)) ? "" : "none";
+  cards.querySelectorAll('.card').forEach(card=>{
+    const i = +card.dataset.index;
+    const a = animals[i];
+    let visible = true;
+
+    if (text){
+      const hay = `${a.name} ${a.location} ${a.condition}`.toLowerCase();
+      visible = hay.includes(text);
+    }
+    if (visible && missionVal){
+      visible = card.dataset.mission === missionVal;
+    }
+    if (visible && tagVal){
+      const tags = JSON.parse(card.dataset.tags);
+      visible = Boolean(tags[tagVal]);
+    }
+    card.style.display = visible ? "" : "none";
   });
-});
+}
 
-btnExpand.addEventListener("click", ()=>{
-  visibleRows().forEach(tr=>{
-    const idx = tr.dataset.index;
-    actions.forEach(a=>{
-      const key = `${idx}-${a}`;
-      if(localStorage.getItem(key)!=="true"){
-        localStorage.setItem(key,"true");
-        const input = tr.querySelector(`input[data-key="${key}"]`);
-        if(input) input.checked = true;
-      }
+q.addEventListener('input', applyFilters, {passive:true});
+fMission.addEventListener('change', applyFilters);
+fTag.addEventListener('change', applyFilters);
+
+/* Bulk */
+document.getElementById('checkAll').addEventListener('click', ()=>{
+  cards.querySelectorAll('.card').forEach(card=>{
+    if(card.style.display==="none") return;
+    const idx = card.dataset.index;
+    ACTIONS.forEach(a=>{
+      const k = `${idx}:${a.key}`;
+      if(!isOn(k)) setOn(k,true);
+      const b = card.querySelector(`.tick[data-key="${k}"]`);
+      if(b) b.setAttribute('data-on','true');
     });
     updateRow(idx);
   });
   updateGlobal();
 });
-
-btnCollapse.addEventListener("click", ()=>{
-  visibleRows().forEach(tr=>{
-    const idx = tr.dataset.index;
-    actions.forEach(a=>{
-      const key = `${idx}-${a}`;
-      if(localStorage.getItem(key)!=="false"){
-        localStorage.setItem(key,"false");
-        const input = tr.querySelector(`input[data-key="${key}"]`);
-        if(input) input.checked = false;
-      }
+document.getElementById('uncheckAll').addEventListener('click', ()=>{
+  cards.querySelectorAll('.card').forEach(card=>{
+    if(card.style.display==="none") return;
+    const idx = card.dataset.index;
+    ACTIONS.forEach(a=>{
+      const k = `${idx}:${a.key}`;
+      if(isOn(k)) setOn(k,false);
+      const b = card.querySelector(`.tick[data-key="${k}"]`);
+      if(b) b.setAttribute('data-on','false');
     });
     updateRow(idx);
   });
   updateGlobal();
 });
-
-btnReset.addEventListener("click", ()=>{
-  animals.forEach((_,i)=> actions.forEach(a=> localStorage.removeItem(`${i}-${a}`)));
-  drawTable();
+document.getElementById('resetAll').addEventListener('click', ()=>{
+  animals.forEach((_,i)=> ACTIONS.forEach(a=> localStorage.removeItem(`${i}:${a.key}`)));
+  render();
 });
 
-drawTable();
+render();
 </script>
 </body>
 </html>
