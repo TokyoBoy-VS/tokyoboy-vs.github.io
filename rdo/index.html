@@ -20,8 +20,9 @@
   .fill{height:100%;width:0}
   .fill.ok{background:linear-gradient(90deg,var(--accent),var(--accent2))}
   .fill.warn{background:linear-gradient(90deg,#f43f5e,#f59e0b)}
-  table{width:100%;border-collapse:separate;border-spacing:0;border:1px solid var(--line);border-radius:14px;overflow:hidden}
-  thead th{position:sticky;top:66px;background:#12161e;z-index:4}
+  /* Évite la double ligne en haut quand thead est sticky */
+  table{ border:1px solid var(--line); border-top:0; }  /* <- retire la ligne du haut */
+  thead th{ border-bottom:1px solid var(--line); }      /* garde une seule ligne nette sous l’en-tête */
   th,td{padding:10px;border-bottom:1px solid var(--line);text-align:center}
   th:nth-child(1),td:nth-child(1){text-align:left}
   tbody tr:nth-child(even){background:#12151b}
