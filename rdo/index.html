@@ -31,6 +31,7 @@
   /* BASE */
   *{box-sizing:border-box}
   html,body{height:100%}
+  html{touch-action:manipulation}
   body{
     margin:0; background:var(--bg); color:var(--ink);
     font-family: Inter, system-ui, -apple-system, Segoe UI, Arial, sans-serif;
@@ -672,6 +673,13 @@ document.getElementById('clearLS').addEventListener('click', ()=>{
     });
     location.reload();
   }
+});
+
+document.querySelectorAll('.tick').forEach(t => {
+  t.addEventListener('touchstart', e => {
+    e.preventDefault();
+    t.click();
+  }, { passive: false });
 });
 
 /* ===== Init ===== */
