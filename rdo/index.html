@@ -282,7 +282,7 @@ const RAW_ANIMALS = [
   { name:"Loup pierre de lune", location:"Nord de la forêt de Cumberland", condition:"Mission" }
 ];
 
-/* ============ CATEGORIES ============ */
+/* ============ CATEGORIES (OFFICIELLES) ============ */
 const CATS = {
   dark:  { fr:"Animaux légendaires : Foncés", en:"Legendary Animals : Dark" },
   light: { fr:"Animal légendaire : Clair",     en:"Legendary Animal : Light" },
@@ -290,32 +290,51 @@ const CATS = {
   patterned:{ fr:"Animaux légendaires : À motifs", en:"Legendary Animals : Patterned" }
 };
 
-const CATEGORY_OVERRIDE = {
-  "Coyote d’ébène": "dark",
-  "Loup d’onyx": "dark",
-  "Panthère noctivague": "dark",
-  "Orignal flocon de neige": "light",
-  "Coyote laiteux": "light",
-  "Alligator doré": "redblond",
-  "Orignal roux": "redblond",
-  "Renard marbré": "patterned",
-  "Alligator à bandes": "patterned",
-  "Renard croisé": "patterned"
+/* Mapping FR -> catégorie exacte */
+const CATEGORY_MAP = {
+  "Ours esprit doré":"redblond",
+  "Ours Owiza":"patterned",
+  "Ours esprit côtier":"redblond",
+  "Castor tenebreux":"dark",
+  "Castor Zizi":"redblond",
+  "Castor lunaire":"light",
+  "Bison Tatanka":"dark",
+  "Bison Winyan":"light",
+  "Bison Payta":"redblond",
+  "Sanglier Cogi":"redblond",
+  "Sanglier Wakpa":"redblond",
+  "Sanglier Icahi":"patterned",
+  "Cerf pataugeur":"patterned",
+  "Cerf des neiges":"light",
+  "Cerf ombré":"dark",
+  "Couguar Iguga":"light",
+  "Couguar Maza":"patterned",
+  "Couguar Sapa":"dark",
+  "Coyote rubigineux":"redblond",
+  "Coyote d’ébène":"dark",
+  "Coyote laiteux":"light",
+  "Wapiti Katata":"dark",
+  "Wapiti Ozula":"redblond",
+  "Wapiti Inahme":"dark",
+  "Renard croisé":"patterned",
+  "Renard marbré":"patterned",
+  "Renard Ota":"patterned",
+  "Alligator doré":"redblond",
+  "Alligator Teca":"dark",
+  "Alligator à bandes":"redblond",
+  "Orignal flocon de neige":"light",
+  "Orignal roux":"redblond",
+  "Orignal chevalier":"dark",
+  "Panthère noctivague":"dark",
+  "Panthère fantôme":"light",
+  "Panthère Iwakta":"patterned",
+  "Mouflon corne craie":"patterned",
+  "Mouflon corne gabbro":"patterned",
+  "Mouflon corne rutile":"dark",
+  "Loup émeraude":"redblond",
+  "Loup d’onyx":"dark",
+  "Loup pierre de lune":"light"
 };
-
-function inferCategoryByName(n){
-  const s = n.toLowerCase();
-  if (/(ébène|ebene|onyx|noctivague|fant[oô]me|sombre|ombre)/.test(s)) return 'dark';
-  if (/(flocon|neige|neigeux|laiteux|clair|chevalier)/.test(s)) return 'light';
-  if (/(dor[ée]|or|roux|blond)/.test(s)) return 'redblond';
-  if (/(marbr[ée]|bandes?|crois[ée]|tachet|rayures?)/.test(s)) return 'patterned';
-  return 'patterned';
-}
-
-const ANIMALS = RAW_ANIMALS.map(a=>{
-  const cat = CATEGORY_OVERRIDE[a.name] || inferCategoryByName(a.name);
-  return { ...a, displayName: `${a.name} légendaire`, category: cat };
-});
 
 /* ============ THEME ============ */
 function applyTheme(t){ document.documentElement.setAttribute("data-theme", t); localStorage.setItem(KEYS.theme,t); }
@@ -368,15 +387,21 @@ filtersToggleBtn.addEventListener('click', ()=>{
 });
 
 /* ============ RENDER (Sections + Cards) ============ */
+const ANIMALS = RAW_ANIMALS.map((a,idx)=>({
+  ...a,
+  displayName: `${a.name} légendaire`,
+  category: CATEGORY_MAP[a.name] || 'patterned', // fallback de sécu
+  idx,
+  mission: missionFlag(a.condition),
+  tags: tagSet(a.condition)
+}));
+
 function render(){
   groupsEl.innerHTML = "";
   const order = ['dark','light','redblond','patterned'];
 
   order.forEach(cat=>{
-    const items = ANIMALS
-      .map((a,idx)=> ({...a, idx, mission: missionFlag(a.condition), tags: tagSet(a.condition)}))
-      .filter(a=> a.category === cat);
-
+    const items = ANIMALS.filter(a=> a.category === cat);
     if (!items.length) return;
 
     // SECTION CARD (foldable)
@@ -384,9 +409,8 @@ function render(){
     section.className = "section-card";
     section.dataset.cat = cat;
 
-    const secKey = KEYS.sectionOpen(cat);
-    const saved = localStorage.getItem(secKey);
-    section.open = saved ? saved === "true" : true;
+    const secKey = localStorage.getItem(KEYS.sectionOpen(cat));
+    section.open = secKey ? secKey === "true" : true;
 
     const summary = document.createElement('summary');
     summary.innerHTML = `<span class="cat-dot"></span> ${CATS[cat].fr}`;
@@ -426,7 +450,7 @@ function render(){
     });
 
     section.addEventListener('toggle', ()=>{
-      localStorage.setItem(secKey, String(section.open));
+      localStorage.setItem(KEYS.sectionOpen(cat), String(section.open));
     });
 
     groupsEl.appendChild(section);
@@ -438,7 +462,7 @@ function render(){
       const now = btn.getAttribute('data-on') !== "true";
       btn.setAttribute('data-on', String(now));
       setOn(key, now);
-      const idx = key.replace(PREFIX,"").split(':')[0]; // extract index after prefix
+      const idx = key.replace(PREFIX,"").split(':')[0];
       const card = groupsEl.querySelector(`.card[data-index="${idx}"]`);
       updateRow(idx, card);
       updateGlobal();
